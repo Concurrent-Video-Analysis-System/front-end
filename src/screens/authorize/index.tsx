@@ -8,7 +8,7 @@ export const AuthorizeFragment = () => {
     <Container>
       <Title level={2}>登录到监控系统</Title>
       <Card style={{ width: 350 }}>
-        <LoginFragment />
+        <LoginFragment onLoginSuccess={() => {}} />
       </Card>
     </Container>
   );

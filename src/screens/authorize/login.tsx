@@ -1,14 +1,37 @@
-import React from "react";
-import { Button, Form, Input } from "antd";
+import React, { useState } from "react";
+import { Button, Form, Input, message } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { AuthForm } from "utils/authorize";
+import { useAuthContext } from "contexts/authorize";
+import { useHttp } from "../../utils/http";
 
-export const LoginFragment = () => {
+export const LoginFragment = ({
+  onLoginSuccess,
+}: {
+  onLoginSuccess: () => void;
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuthContext();
+
+  function onSubmit(form: AuthForm) {
+    setIsLoading(true);
+    login(form)
+      .then(() => {
+        setIsLoading(false);
+        onLoginSuccess();
+      })
+      .catch((error: Error) => {
+        message.error(`登录失败：${error.message}`, 3);
+        setIsLoading(false);
+      });
+  }
+
   return (
     <Form
       name="normal_login"
       className="login-form"
       initialValues={{ remember: true }}
-      onFinish={() => {}}
+      onFinish={onSubmit}
     >
       <Form.Item
         name="username"
@@ -39,6 +62,7 @@ export const LoginFragment = () => {
           htmlType="submit"
           className="login-form-button"
           size={"large"}
+          loading={isLoading}
           block
         >
           登录
