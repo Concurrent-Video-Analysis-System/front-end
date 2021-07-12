@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "store";
 
 interface State {
-  screensCount: number;
+  screensCount: 1 | 4 | 9 | 16;
   screensShown: number[];
   camerasTotalCount: number;
 }
