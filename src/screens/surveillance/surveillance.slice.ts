@@ -13,16 +13,27 @@ const initialState: State = {
   camerasTotalCount: 9,
 };
 
-const updateShownScreens = (state: State) => {
-  const firstScreen = state.screensShown[0];
-  let newScreensShown = [];
-  for (let i = firstScreen; i < firstScreen + state.screensCount; ++i) {
-    newScreensShown.push(i);
-    if (i >= state.camerasTotalCount) {
+const updateScreenState = (state: State) => {
+  let newState = state;
+  let firstScreen = newState.screensShown[0];
+  newState.screensShown = [];
+
+  // normalize border
+  if (firstScreen > newState.camerasTotalCount - newState.screensCount) {
+    firstScreen = newState.camerasTotalCount - newState.screensCount;
+  }
+  if (firstScreen < 0) {
+    firstScreen = 0;
+  }
+
+  // generate screensShown list
+  for (let i = firstScreen; i < firstScreen + newState.screensCount; i++) {
+    if (i >= newState.camerasTotalCount) {
       break;
     }
+    newState.screensShown.push(i);
   }
-  return newScreensShown;
+  return newState;
 };
 
 export const screensCountSlice = createSlice({
@@ -31,15 +42,15 @@ export const screensCountSlice = createSlice({
   reducers: {
     setScreensCount(state, action) {
       state.screensCount = action.payload;
-      state.screensShown = updateShownScreens(state);
+      state = updateScreenState(state);
     },
     setShownScreens(state, action) {
       state.screensShown[0] = action.payload;
-      state.screensShown = updateShownScreens(state);
+      state = updateScreenState(state);
     },
     setCameraTotalCount(state, action) {
       state.camerasTotalCount = action.payload;
-      state.screensShown = updateShownScreens(state);
+      state = updateScreenState(state);
     },
   },
 });
