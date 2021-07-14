@@ -1,8 +1,7 @@
 import React from "react";
 import "./App.css";
-import { AuthorizeFragment } from "./screens/authorize";
 import { useAuthContext } from "./contexts/authorize";
-import { SurveillanceFragment } from "./screens/surveillance";
+import { MainFragment } from "./screens/main";
 
 function App() {
   const { user } = useAuthContext();
@@ -11,7 +10,7 @@ function App() {
     /*user ?
       <SurveillanceFragment /> :
       <AuthorizeFragment />*/
-    <SurveillanceFragment />
+    <MainFragment />
   );
 }
 

@@ -3,7 +3,6 @@ import { Button, Form, Input, message } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { AuthForm } from "utils/authorize";
 import { useAuthContext } from "contexts/authorize";
-import { useHttp } from "../../utils/http";
 
 export const LoginFragment = ({
   onLoginSuccess,
@@ -32,6 +31,7 @@ export const LoginFragment = ({
       className="login-form"
       initialValues={{ remember: true }}
       onFinish={onSubmit}
+      requiredMark={false}
     >
       <Form.Item
         name="username"

@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { screensCountSlice } from "screens/surveillance/surveillance.slice";
+import { screensCountSlice } from "screens/main/surveillance.slice";
 
 export const rootReducer = {
   screensCountReducer: screensCountSlice.reducer,
