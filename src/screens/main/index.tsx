@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import { SurveillanceHeader } from "./header";
 import { AsidePanel } from "./aside";
-import { MonitorView } from "./monitor-view";
+import { RecordFragment } from "./record";
 
 export const MainFragment = () => {
   return (
@@ -11,7 +11,7 @@ export const MainFragment = () => {
         <SurveillanceHeader />
       </Header>
       <Main>
-        <MonitorView />
+        <RecordFragment />
       </Main>
       <Aside>
         <AsidePanel />
@@ -23,7 +23,7 @@ export const MainFragment = () => {
 const Container = styled.div`
   display: grid;
   grid-template-rows: 5rem 1fr;
-  grid-template-columns: 30rem 1fr;
+  grid-template-columns: 24rem 1fr;
   grid-template-areas:
     "header header"
     "aside main";
