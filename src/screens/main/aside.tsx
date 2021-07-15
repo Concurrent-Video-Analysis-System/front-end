@@ -82,7 +82,11 @@ export const AsidePanel = () => {
               </Form.Item>
 
               <Form.Item label={"违规时间"}>
-                <DatePicker placeholder={"请选择日期"} />
+                <DatePicker.RangePicker
+                  placeholder={["起始日期", "结束日期"]}
+                  style={{ width: "21.2rem" }}
+                  format={"M月D日"}
+                />
               </Form.Item>
             </Form>
           </FormContainer>

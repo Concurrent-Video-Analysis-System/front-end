@@ -38,9 +38,10 @@ const Navigation = styled.div`
 const Content = styled.div`
   grid-area: content;
   overflow: hidden auto;
+  padding: 1rem 0 0 0;
 `;
 
 const Pagination = styled.div`
   grid-area: pagination;
-  margin: 1.5rem 0 1.5rem 0;
+  padding: 1.5rem 0 1.5rem 0;
 `;

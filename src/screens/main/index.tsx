@@ -23,7 +23,7 @@ export const MainFragment = () => {
 const Container = styled.div`
   display: grid;
   grid-template-rows: 5rem 1fr;
-  grid-template-columns: 24rem 1fr;
+  grid-template-columns: 26rem 1fr;
   grid-template-areas:
     "header header"
     "aside main";
