@@ -18,7 +18,7 @@ const RecordCard = () => {
   );
 };
 
-export const RecordList = () => {
+export const RecordContent = () => {
   return (
     <Container>
       <RecordCard />

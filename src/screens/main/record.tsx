@@ -1,17 +1,17 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { RecordHeader } from "./record-header";
-import { RecordList } from "./record-list";
+import { RecordContent } from "./record-content";
 import { RecordFooter } from "./record-footer";
 
-export const RecordFragment = () => {
+export const RecordListFragment = () => {
   return (
     <Container>
       <Navigation>
         <RecordHeader />
       </Navigation>
       <Content>
-        <RecordList />
+        <RecordContent />
       </Content>
       <Pagination>
         <RecordFooter />
