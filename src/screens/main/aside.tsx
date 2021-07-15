@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
-import { Badge, DatePicker, Form, Menu, Select } from "antd";
+import { Badge, DatePicker, Form, Input, Menu, Select } from "antd";
 import { selectScreensCountProps } from "./surveillance.slice";
 import {
   CheckCircleOutlined,
@@ -10,12 +10,15 @@ import {
   UnorderedListOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+import { useUrlQueryParams } from "../../utils/url";
 
 const { SubMenu } = Menu;
 
 export const AsidePanel = () => {
   const dispatch = useDispatch();
   const screensCountProps = useSelector(selectScreensCountProps);
+
+  const [params, setParams] = useUrlQueryParams(["location", "type"]);
 
   return (
     <Menu
@@ -86,6 +89,16 @@ export const AsidePanel = () => {
                   placeholder={["起始日期", "结束日期"]}
                   style={{ width: "21.2rem" }}
                   format={"M月D日"}
+                />
+              </Form.Item>
+
+              <Form.Item label={"TEST"}>
+                <Input
+                  placeholder={"location"}
+                  value={params.location}
+                  onChange={(e) => {
+                    setParams({ location: String(e.target.value) });
+                  }}
                 />
               </Form.Item>
             </Form>
