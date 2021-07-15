@@ -2,8 +2,10 @@ import React from "react";
 import { Card, Typography } from "antd";
 import styled from "@emotion/styled";
 import { LoginFragment } from "./login";
+import { useDocumentTitle } from "../../utils/document-title";
 
 export const AuthorizeFragment = () => {
+  useDocumentTitle("登录到监控系统");
   return (
     <Container>
       <Title level={2}>登录到监控系统</Title>
