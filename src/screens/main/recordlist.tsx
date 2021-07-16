@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { RecordContent } from "./recordlist-component/record-content";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import { RecordHandlingFragment } from "./recordhandling";
 import { Breadcrumb, Pagination } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
@@ -24,6 +24,7 @@ export const RecordListFragment = () => {
           path={"/recordlist/:recordId/*"}
           element={<RecordHandlingFragment />}
         />
+        <Navigate to={"/recordlist"} />
       </Routes>
     </Container>
   );

@@ -18,6 +18,7 @@ const RecordCard = (props: RecordCardProps) => {
           cover={
             <img alt="example" src={props.imageUrl} style={{ opacity: 1 }} />
           }
+          size={"small"}
           hoverable
         >
           <div style={{ fontWeight: "bold", fontSize: "2rem" }}>
@@ -33,14 +34,14 @@ const RecordCard = (props: RecordCardProps) => {
 export const RecordContent = () => {
   return (
     <Container>
-      <RecordCard id={1} />
-      <RecordCard id={2} />
-      <RecordCard id={3} />
-      <RecordCard id={4} />
-      <RecordCard id={5} />
-      <RecordCard id={6} />
-      <RecordCard id={7} />
-      <RecordCard id={8} />
+      {Array.from(Array(8).keys()).map((i) => (
+        <RecordCard
+          id={i}
+          imageUrl={"/__test__/template2.jpg"}
+          title={"违规行为名称"}
+          text={"XX路XX网点"}
+        />
+      ))}
     </Container>
   );
 };
