@@ -16,14 +16,14 @@ const RecordCard = (props: RecordCardProps) => {
       <Badge.Ribbon text="待处理" color={"#FF0000"}>
         <Card
           cover={
-            <img alt="example" src="template.jpg" style={{ opacity: 1 }} />
+            <img alt="example" src={props.imageUrl} style={{ opacity: 1 }} />
           }
           hoverable
         >
           <div style={{ fontWeight: "bold", fontSize: "2rem" }}>
-            离开工位时未锁屏
+            {props.title}
           </div>
-          <div>XXX营业网点YYY分行</div>
+          <div>{props.text}</div>
         </Card>
       </Badge.Ribbon>
     </Link>
