@@ -8,7 +8,7 @@ import { DebugLogin } from "./__debug_login__";
 export const LoginFragment = ({
   onLoginSuccess,
 }: {
-  onLoginSuccess: () => void;
+  onLoginSuccess?: () => void;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuthContext();
@@ -18,7 +18,9 @@ export const LoginFragment = ({
     login(form)
       .then(() => {
         setIsLoading(false);
-        onLoginSuccess();
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
       })
       .catch((error: Error) => {
         message.error(`登录失败：${error.message}`, 3);
