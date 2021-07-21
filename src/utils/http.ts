@@ -51,6 +51,8 @@ export const fetchHttp = async (
     config.body = JSON.stringify(data || {});
   }
 
+  console.log(`${config.method.toUpperCase()} ${endpoint}`);
+
   return window
     .fetch(`${apiUrl}/${endpoint}`, config)
     .then(async (response) => {
@@ -66,11 +68,28 @@ export const fetchHttp = async (
     });
 };
 
-export const useHttp = (callback: (response: Response) => void) => {
+export const useAuthorizedHttp = (endpoint: string, body?: httpConfig) => {
   const { user } = useAuthContext();
-  return (...[endpoint, config]: [string, httpConfig]) => {
-    fetchHttp(endpoint, { ...config, token: user?.token }).then((response) =>
-      callback(response)
-    );
+  return (
+    bodyOverride?: httpConfig,
+    onSuccess?: (data: any) => void,
+    onFailed?: (error: Error) => void
+  ) => {
+    fetchHttp(endpoint, {
+      token: user?.token,
+      data: { ...body, ...bodyOverride },
+    })
+      .then((data) => {
+        if (data.code !== 0) {
+          // exception
+          if (onFailed) {
+            onFailed(new Error(data.message));
+          }
+        } else if (onSuccess) {
+          // success
+          onSuccess(data);
+        }
+      })
+      .catch((error) => (onFailed ? onFailed(error) : null));
   };
 };
