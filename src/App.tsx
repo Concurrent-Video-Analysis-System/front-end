@@ -7,12 +7,7 @@ import { AuthorizeFragment } from "./screens/authorize";
 function App() {
   const { user } = useAuthContext();
   console.log(user);
-  return (
-    /*user ?
-      <MainFragment /> :
-      <AuthorizeFragment />*/
-    <MainFragment />
-  );
+  return user ? <MainFragment /> : <AuthorizeFragment />;
 }
 
 export default App;

@@ -8,6 +8,9 @@ interface AuthProviderConfig {
   login: (form: AuthForm) => Promise<void>;
   register: (form: AuthForm) => Promise<void>;
   logout: () => Promise<void>;
+
+  // debug only
+  __debug_login__: () => void;
 }
 
 const AuthContext = React.createContext<AuthProviderConfig | undefined>(
@@ -22,13 +25,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = (form: AuthForm) => authUtils.register(form).then(setUser);
   const logout = () => authUtils.logout().then(() => setUser(null));
 
+  // Only for debug: will be deleted in the release version
+  const __debug_login__ = () => {
+    setUser({
+      id: "1",
+      name: "debug_user_name",
+      email: "",
+      title: "",
+      organization: "",
+      token: "debug_user_token",
+    });
+  };
+
   useEffect(() => {
     InitUser().then(setUser);
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logout }}
+      value={{ user, login, register, logout, __debug_login__ }}
       children={children}
     />
   );

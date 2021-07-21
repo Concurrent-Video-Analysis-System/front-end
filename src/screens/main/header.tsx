@@ -8,7 +8,7 @@ export const SurveillanceHeader = () => {
       <LeftPanel>
         <HomeOutlined />
       </LeftPanel>
-      <CenterPanel>2021-7-15 10:18</CenterPanel>
+      <CenterPanel>XX银行XX区XX网点</CenterPanel>
       <RightPanel>
         管理员 <a>123</a>
       </RightPanel>

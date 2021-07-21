@@ -3,6 +3,7 @@ import { Button, Form, Input, message } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { AuthForm } from "utils/authorize";
 import { useAuthContext } from "contexts/authorize";
+import { DebugLogin } from "./__debug_login__";
 
 export const LoginFragment = ({
   onLoginSuccess,
@@ -67,6 +68,10 @@ export const LoginFragment = ({
         >
           登录
         </Button>
+      </Form.Item>
+
+      <Form.Item>
+        <DebugLogin />
       </Form.Item>
     </Form>
   );
