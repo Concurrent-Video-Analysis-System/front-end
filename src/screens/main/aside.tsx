@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
 import { Badge, DatePicker, Form, Input, Menu, Select } from "antd";
@@ -10,33 +10,79 @@ import {
   UnorderedListOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { useUrlQueryParams } from "../../utils/url";
+import { useForm } from "utils/form";
+import { Moment } from "moment";
+import { RangeValue } from "rc-picker/lib/interface";
 
 const { SubMenu } = Menu;
+
+const FormSelector = ({ onChange }: { onChange: (value: unknown) => void }) => {
+  return (
+    <Select
+      showSearch
+      allowClear={true}
+      placeholder={"请选择"}
+      optionFilterProp="children"
+      filterOption={(input, option) =>
+        option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      }
+      onChange={(value) => onChange(value)}
+    >
+      <Select.Option value={1}>AAA分行</Select.Option>
+      <Select.Option value={2}>BBB分行</Select.Option>
+      <Select.Option value={3}>CCC分行</Select.Option>
+    </Select>
+  );
+};
+
+const FormDateSelector = ({
+  onChange,
+}: {
+  onChange: (date: RangeValue<Moment>) => void;
+}) => {
+  return (
+    <DatePicker.RangePicker
+      placeholder={["起始日期", "结束日期"]}
+      style={{ width: "21.2rem" }}
+      format={"M月D日"}
+      onChange={(dates) => onChange(dates)}
+    />
+  );
+};
 
 export const AsidePanel = () => {
   const dispatch = useDispatch();
   const screensCountProps = useSelector(selectScreensCountProps);
 
-  const [params, setParams] = useUrlQueryParams(["location", "type"]);
+  const [filterProps, setFilterProps] = useForm(
+    {
+      type: undefined,
+      location: undefined,
+      reason: undefined,
+      from: undefined,
+      to: undefined,
+    },
+    "recordlist"
+  );
 
   return (
     <Menu
       style={{ width: "100%", height: "100%" }}
-      defaultSelectedKeys={["1"]}
+      defaultSelectedKeys={["pending"]}
       defaultOpenKeys={["list", "filter"]}
       mode="inline"
+      onClick={(event) => setFilterProps({ type: event.key })}
     >
       <SubMenu key="list" icon={<UnorderedListOutlined />} title="违规行为列表">
-        <Menu.Item key="1" icon={<InfoCircleOutlined />}>
+        <Menu.Item key="pending" icon={<InfoCircleOutlined />}>
           <Badge count={5} offset={[15, 0]}>
             待处理
           </Badge>
         </Menu.Item>
-        <Menu.Item key="2" icon={<CheckCircleOutlined />}>
+        <Menu.Item key="processed" icon={<CheckCircleOutlined />}>
           <Badge count={0}>已处理</Badge>
         </Menu.Item>
-        <Menu.Item key="3" icon={<CloseCircleOutlined />}>
+        <Menu.Item key="deleted" icon={<CloseCircleOutlined />}>
           <Badge count={0}>已删除</Badge>
         </Menu.Item>
       </SubMenu>
@@ -49,55 +95,37 @@ export const AsidePanel = () => {
               layout="horizontal"
             >
               <Form.Item label={"营业网点"}>
-                <Select
-                  showSearch
-                  allowClear={true}
-                  placeholder={"请选择"}
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option?.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
+                <FormSelector
+                  onChange={(value) =>
+                    setFilterProps({
+                      location: value ? String(value) : undefined,
+                    })
                   }
-                >
-                  <Select.Option value={1}>AAA分行</Select.Option>
-                  <Select.Option value={2}>BBB分行</Select.Option>
-                  <Select.Option value={3}>CCC分行</Select.Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item label={"违规类型"}>
-                <Select
-                  showSearch
-                  allowClear={true}
-                  placeholder={"请选择"}
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option?.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  <Select.Option value={1}>手机拍照</Select.Option>
-                  <Select.Option value={2}>ATM违规操作</Select.Option>
-                  <Select.Option value={3}>遮挡摄像头</Select.Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item label={"违规时间"}>
-                <DatePicker.RangePicker
-                  placeholder={["起始日期", "结束日期"]}
-                  style={{ width: "21.2rem" }}
-                  format={"M月D日"}
                 />
               </Form.Item>
 
-              <Form.Item label={"TEST"}>
-                <Input
-                  placeholder={"location"}
-                  value={params.location}
-                  onChange={(e) => {
-                    setParams({ location: String(e.target.value) });
+              <Form.Item label={"违规类型"}>
+                <FormSelector
+                  onChange={(value) => {
+                    setFilterProps({
+                      reason: value ? String(value) : undefined,
+                    });
+                  }}
+                />
+              </Form.Item>
+
+              <Form.Item label={"违规时间"}>
+                <FormDateSelector
+                  onChange={(dates) => {
+                    if (dates === null) {
+                      setFilterProps({ from: undefined, to: undefined });
+                    } else {
+                      const [fromDate, toDate] = dates;
+                      setFilterProps({
+                        from: fromDate?.format("YYYY-MM-DD"),
+                        to: toDate?.format("YYYY-MM-DD"),
+                      });
+                    }
                   }}
                 />
               </Form.Item>
