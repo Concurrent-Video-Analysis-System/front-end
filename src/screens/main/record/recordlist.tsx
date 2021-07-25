@@ -19,12 +19,12 @@ export const RecordListFragment = () => {
         </Breadcrumb>
       </RecordHeader>
       <Routes>
-        <Route path={"/recordlist"} element={<RecordContentWithPagination />} />
+        <Route path={"recordlist"} element={<RecordContentWithPagination />} />
         <Route
-          path={"/recordlist/:recordId/*"}
+          path={"recordlist/:recordId/*"}
           element={<RecordHandlingFragment />}
         />
-        <Navigate to={"/recordlist"} />
+        <Navigate to={"recordlist"} />
       </Routes>
     </Container>
   );

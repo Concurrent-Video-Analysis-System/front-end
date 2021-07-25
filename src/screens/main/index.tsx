@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import { SurveillanceHeader } from "./header";
 import { AsidePanel } from "./aside";
-import { RecordListFragment } from "./recordlist";
+import { RecordListFragment } from "./record/recordlist";
 import { useDocumentTitle } from "../../utils/document-title";
 
 export const MainFragment = () => {

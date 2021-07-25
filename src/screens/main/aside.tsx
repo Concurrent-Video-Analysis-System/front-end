@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
-import { Badge, DatePicker, Form, Input, Menu, Select } from "antd";
-import { selectScreensCountProps } from "./surveillance.slice";
+import { Badge, DatePicker, Form, Menu, message, Select } from "antd";
+import { recordlistSlice } from "./recordlist.slice";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -52,9 +52,8 @@ const FormDateSelector = ({
 
 export const AsidePanel = () => {
   const dispatch = useDispatch();
-  const screensCountProps = useSelector(selectScreensCountProps);
 
-  const [filterProps, setFilterProps] = useForm(
+  const { props, setPartialProps, isLoading } = useForm(
     {
       type: undefined,
       location: undefined,
@@ -62,7 +61,13 @@ export const AsidePanel = () => {
       from: undefined,
       to: undefined,
     },
-    "recordlist"
+    "recordlist",
+    (data) => {
+      dispatch(recordlistSlice.actions.set(data));
+    },
+    (error) => {
+      message.error(error.message);
+    }
   );
 
   return (
@@ -71,7 +76,7 @@ export const AsidePanel = () => {
       defaultSelectedKeys={["pending"]}
       defaultOpenKeys={["list", "filter"]}
       mode="inline"
-      onClick={(event) => setFilterProps({ type: event.key })}
+      onClick={(event) => setPartialProps({ type: event.key })}
     >
       <SubMenu key="list" icon={<UnorderedListOutlined />} title="违规行为列表">
         <Menu.Item key="pending" icon={<InfoCircleOutlined />}>
@@ -97,7 +102,7 @@ export const AsidePanel = () => {
               <Form.Item label={"营业网点"}>
                 <FormSelector
                   onChange={(value) =>
-                    setFilterProps({
+                    setPartialProps({
                       location: value ? String(value) : undefined,
                     })
                   }
@@ -107,7 +112,7 @@ export const AsidePanel = () => {
               <Form.Item label={"违规类型"}>
                 <FormSelector
                   onChange={(value) => {
-                    setFilterProps({
+                    setPartialProps({
                       reason: value ? String(value) : undefined,
                     });
                   }}
@@ -118,10 +123,10 @@ export const AsidePanel = () => {
                 <FormDateSelector
                   onChange={(dates) => {
                     if (dates === null) {
-                      setFilterProps({ from: undefined, to: undefined });
+                      setPartialProps({ from: undefined, to: undefined });
                     } else {
                       const [fromDate, toDate] = dates;
-                      setFilterProps({
+                      setPartialProps({
                         from: fromDate?.format("YYYY-MM-DD"),
                         to: toDate?.format("YYYY-MM-DD"),
                       });
