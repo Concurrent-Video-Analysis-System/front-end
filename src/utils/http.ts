@@ -68,16 +68,17 @@ export const fetchHttp = async (
     });
 };
 
-export const useAuthorizedHttp = (endpoint: string, body?: httpConfig) => {
+export const useAuthorizedHttp = (endpoint: string, config?: httpConfig) => {
   const { user } = useAuthContext();
   return (
-    bodyOverride?: httpConfig,
+    configOverride?: httpConfig,
     onSuccess?: (data: any) => void,
     onFailed?: (error: Error) => void
   ) => {
     fetchHttp(endpoint, {
       token: user?.token,
-      data: { ...body, ...bodyOverride },
+      ...config,
+      ...configOverride,
     })
       .then((data) => {
         if (data.code !== 0) {
