@@ -5,8 +5,12 @@ import { Navigate, Route, Routes } from "react-router";
 import { RecordHandlingFragment } from "./recordhandling";
 import { Breadcrumb, Pagination } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import { selectNavigateReducer } from "./navigate.slice";
 
 export const RecordListFragment = () => {
+  const navigateSelector = useSelector(selectNavigateReducer);
+
   return (
     <Container>
       <RecordHeader>
@@ -15,7 +19,9 @@ export const RecordListFragment = () => {
             <HomeOutlined />
           </Breadcrumb.Item>
           <Breadcrumb.Item>违规行为列表</Breadcrumb.Item>
-          <Breadcrumb.Item>待处理</Breadcrumb.Item>
+          {navigateSelector.map((item) => (
+            <Breadcrumb.Item>{item.name}</Breadcrumb.Item>
+          ))}
         </Breadcrumb>
       </RecordHeader>
       <Routes>

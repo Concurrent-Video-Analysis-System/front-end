@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useUrlQueryParams } from "./url";
 import { useAuthorizedHttp } from "./http";
+import { message } from "antd";
 
 export const useForm = <K extends string>(
   initialProps: { [key in K]: unknown },
   endpoint: string = "",
   onSuccessCallback?: (data: any) => void,
-  onFailedCallback?: (error: Error) => void,
   debounce?: number
 ) => {
   const [props, setProps] = useState(initialProps);
@@ -19,7 +19,7 @@ export const useForm = <K extends string>(
   useEffect(() => {
     setIsLoading(true);
     sendHttp(
-      props,
+      { method: "GET", data: props },
       (data) => {
         setIsLoading(false);
         if (onSuccessCallback) {
@@ -28,9 +28,7 @@ export const useForm = <K extends string>(
       },
       (error) => {
         setIsLoading(false);
-        if (onFailedCallback) {
-          onFailedCallback(error);
-        }
+        message.error(`更新列表时出错：${error.message}`);
       }
     );
     setUrlParams(props);

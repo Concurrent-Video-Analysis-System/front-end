@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
-import { Badge, DatePicker, Form, Menu, message, Select } from "antd";
+import { Badge, DatePicker, Form, Menu, Select } from "antd";
 import { recordlistSlice } from "./recordlist.slice";
 import {
   CheckCircleOutlined,
@@ -11,12 +11,23 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { useForm } from "utils/form";
+import { FilterListItem, useFilters } from "utils/filter";
 import { Moment } from "moment";
 import { RangeValue } from "rc-picker/lib/interface";
+import {
+  recordfilterSlice,
+  selectRecordfilterReducer,
+} from "./recordfilter.slice";
 
 const { SubMenu } = Menu;
 
-const FormSelector = ({ onChange }: { onChange: (value: unknown) => void }) => {
+const FormSelector = ({
+  filterList,
+  onChange,
+}: {
+  filterList: FilterListItem[];
+  onChange: (value: unknown) => void;
+}) => {
   return (
     <Select
       showSearch
@@ -28,9 +39,9 @@ const FormSelector = ({ onChange }: { onChange: (value: unknown) => void }) => {
       }
       onChange={(value) => onChange(value)}
     >
-      <Select.Option value={1}>AAA分行</Select.Option>
-      <Select.Option value={2}>BBB分行</Select.Option>
-      <Select.Option value={3}>CCC分行</Select.Option>
+      {filterList.map((filter) => (
+        <Select.Option value={filter.id}>{filter.name}</Select.Option>
+      ))}
     </Select>
   );
 };
@@ -52,6 +63,7 @@ const FormDateSelector = ({
 
 export const AsidePanel = () => {
   const dispatch = useDispatch();
+  const filterSelector = useSelector(selectRecordfilterReducer);
 
   const { props, setPartialProps, isLoading } = useForm(
     {
@@ -64,11 +76,18 @@ export const AsidePanel = () => {
     "recordlist",
     (data) => {
       dispatch(recordlistSlice.actions.set(data));
-    },
-    (error) => {
-      message.error(error.message);
     }
   );
+
+  useEffect(() => {
+    dispatch(recordlistSlice.actions.setLoading(isLoading));
+  }, [dispatch, isLoading]);
+
+  useFilters(["location", "reason", "from", "to"], (filterName, itemList) => {
+    dispatch(
+      recordfilterSlice.actions.setFilter({ name: filterName, value: itemList })
+    );
+  });
 
   return (
     <Menu
@@ -80,7 +99,7 @@ export const AsidePanel = () => {
     >
       <SubMenu key="list" icon={<UnorderedListOutlined />} title="违规行为列表">
         <Menu.Item key="pending" icon={<InfoCircleOutlined />}>
-          <Badge count={5} offset={[15, 0]}>
+          <Badge count={5} offset={[20, 0]}>
             待处理
           </Badge>
         </Menu.Item>
@@ -101,6 +120,7 @@ export const AsidePanel = () => {
             >
               <Form.Item label={"营业网点"}>
                 <FormSelector
+                  filterList={filterSelector.locationList}
                   onChange={(value) =>
                     setPartialProps({
                       location: value ? String(value) : undefined,
@@ -111,6 +131,7 @@ export const AsidePanel = () => {
 
               <Form.Item label={"违规类型"}>
                 <FormSelector
+                  filterList={filterSelector.reasonList}
                   onChange={(value) => {
                     setPartialProps({
                       reason: value ? String(value) : undefined,
