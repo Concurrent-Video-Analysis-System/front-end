@@ -33,9 +33,9 @@ export const login = (data: AuthForm) => {
   return fetchHttp("login", {
     method: "POST",
     data: data,
-  }).then(async (response) => {
-    setToken(response.user.token);
-    return response.user;
+  }).then(async (data) => {
+    setToken(data.user.token);
+    return data.user;
   });
 };
 
@@ -43,9 +43,9 @@ export const register = (data: AuthForm) => {
   return fetchHttp("register", {
     method: "POST",
     data: data,
-  }).then(async (response) => {
-    setToken(response.user.token);
-    return response.user;
+  }).then(async (data) => {
+    setToken(data.user.token);
+    return data.user;
   });
 };
 
