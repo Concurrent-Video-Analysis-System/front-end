@@ -17,6 +17,9 @@ const getHttpStatus = (code: number | string) => {
  * Send the given data to the given endpoint via an HTTP request.
  * @return Returns a promise, which will fulfills when the [200 OK] response is received,
  *                 and will rejects when connection failed or other response is received.
+ *                 If fulfills, the responsed data will be returned. the data may be null
+ *                 when it cannot be parsed to json object, or data is empty.
+ *                 If rejects, a message will be returned to show reason of the error.
  *
  * @param endpoint Strings formatted like "path/to/somewhere".
  *                 Will be parsed to "http://online.net/path/to/somewhere".
@@ -66,27 +69,25 @@ export const fetchHttp = async (
         console.warn(`Data is not a JSON object: ${error.message}`);
       });
       if (response.ok) {
-        console.log(responseData);
         return Promise.resolve(responseData);
       } else {
-        console.log(
-          `${
-            responseData?.message
-              ? responseData?.message
-              : getHttpStatus(response.status)
-          }`
-        );
         return Promise.reject(
-          `${
-            responseData?.message
-              ? responseData?.message
-              : getHttpStatus(response.status)
-          }`
+          new Error(
+            `${
+              responseData?.message
+                ? responseData?.message
+                : getHttpStatus(response.status)
+            }`
+          )
         );
       }
     })
-    .catch(async (message) => {
-      return Promise.reject(message);
+    .catch(async (error: Error) => {
+      if (error.name === "TypeError") {
+        return Promise.reject("无法连接到服务器");
+      } else {
+        return Promise.reject(error.message);
+      }
     });
 };
 
