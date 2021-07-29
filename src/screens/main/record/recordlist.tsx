@@ -7,6 +7,7 @@ import { Breadcrumb, Pagination } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { selectNavigateReducer } from "./navigate.slice";
+import { useDebugImageCard } from "./__debug__/__debug_image_card__";
 
 export const RecordListFragment = () => {
   const navigateSelector = useSelector(selectNavigateReducer);
@@ -37,6 +38,8 @@ export const RecordListFragment = () => {
 };
 
 const RecordContentWithPagination = () => {
+  useDebugImageCard();
+
   return (
     <SubContainer>
       <Content>

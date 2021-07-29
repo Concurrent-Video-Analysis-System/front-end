@@ -11,7 +11,7 @@ const testPromise = () => {
     })
     .catch(async (error) => {
       console.log(error);
-      return Promise.resolve("no data");
+      return Promise.reject("no data");
     });
 };
 
