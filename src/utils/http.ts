@@ -9,6 +9,10 @@ export interface HttpConfig extends RequestInit {
   data?: object;
 }
 
+const getHttpStatus = (code: number | string) => {
+  return `${code} ${HTTP_STATUS_CODES[`CODE_${code}`]}`;
+};
+
 /**
  * Send the given data to the given endpoint via an HTTP request.
  * @return Returns a promise, which will fulfills when the [200 OK] response is received,
@@ -52,24 +56,37 @@ export const fetchHttp = async (
     config.body = JSON.stringify(data || {});
   }
 
+  // DEBUG in console
   console.log(`${config.method.toUpperCase()} ${endpoint}`);
 
   return window
     .fetch(`${apiUrl}/${endpoint}`, config)
     .then(async (response) => {
-      const data = await response.json().catch((error) => {
-        console.error(`Data is not a JSON object: ${error.message}`);
-        return Promise.reject(`Data is not a JSON object`);
+      const responseData = await response.json().catch((error) => {
+        console.warn(`Data is not a JSON object: ${error.message}`);
       });
-      console.log(data);
       if (response.ok) {
-        return data;
+        console.log(responseData);
+        return Promise.resolve(responseData);
       } else {
-        return Promise.reject(`${response.status} ${data?.message || ""}`);
+        console.log(
+          `${
+            responseData?.message
+              ? responseData?.message
+              : getHttpStatus(response.status)
+          }`
+        );
+        return Promise.reject(
+          `${
+            responseData?.message
+              ? responseData?.message
+              : getHttpStatus(response.status)
+          }`
+        );
       }
     })
-    .catch(async (error) => {
-      return Promise.reject(error);
+    .catch(async (message) => {
+      return Promise.reject(message);
     });
 };
 
@@ -78,7 +95,7 @@ export const useHttp = (endpoint: string, config?: HttpConfig) => {
   return (
     configOverride?: HttpConfig,
     onSuccess?: (data: any) => void,
-    onFailed?: (error: Error) => void
+    onFailed?: (message: string) => void
   ) => {
     fetchHttp(endpoint, {
       token: user?.token,
@@ -96,16 +113,14 @@ export const useHttp = (endpoint: string, config?: HttpConfig) => {
           // HTTP respond 200 (or OK code), but error code found
           if (onFailed) {
             onFailed(
-              new Error(
-                `${data?.message || ""}${data?.code ? `(${data?.code})` : ""}`
-              )
+              `${data?.message || ""}${data?.code ? `(${data?.code})` : ""}`
             );
           }
         }
       })
-      .catch(async (error) => {
+      .catch(async (message) => {
         if (onFailed) {
-          onFailed(error);
+          onFailed(message);
         }
       });
   };

@@ -4,8 +4,7 @@ const app = express();
 
 app.use(cors());
 
-app.post("/login", (req, res) => {
-  console.log("received:", req.body);
+const success = (res) => {
   res.status(200);
   res.json({
     code: 0,
@@ -16,6 +15,19 @@ app.post("/login", (req, res) => {
       token: "qwerty",
     },
   });
+};
+
+const failed = (res) => {
+  res.status(400);
+  res.json({
+    code: -1,
+    message: "用户名或密码错误",
+  });
+};
+
+app.post("/login", (req, res) => {
+  console.log("received:", req.body);
+  failed(res);
 });
 
 app.listen(12345, () => {

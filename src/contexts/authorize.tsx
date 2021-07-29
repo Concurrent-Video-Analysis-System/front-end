@@ -22,8 +22,16 @@ AuthContext.displayName = "AuthContext";
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserAttributes | null>(null);
 
-  const login = (form: AuthForm) => authUtils.login(form).then(setUser);
-  const register = (form: AuthForm) => authUtils.register(form).then(setUser);
+  const login = (form: AuthForm) =>
+    authUtils
+      .login(form)
+      .then(setUser)
+      .catch(() => setUser(null));
+  const register = (form: AuthForm) =>
+    authUtils
+      .register(form)
+      .then(setUser)
+      .catch(() => setUser(null));
   const logout = () => authUtils.logout().then(() => setUser(null));
 
   // Only for debug: will be deleted in the release version

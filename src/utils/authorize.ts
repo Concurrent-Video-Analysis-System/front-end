@@ -1,5 +1,6 @@
 import { fetchHttp } from "./http";
 import * as localStorage from "./local-storage";
+import { message } from "antd";
 
 const tokenKeyName = "__auth_provider_token__";
 
@@ -33,20 +34,30 @@ export const login = (data: AuthForm) => {
   return fetchHttp("login", {
     method: "POST",
     data: data,
-  }).then(async (data) => {
-    setToken(data.user.token);
-    return data.user;
-  });
+  })
+    .then(async (data) => {
+      setToken(data.user.token);
+      return Promise.resolve(data.user);
+    })
+    .catch(async (errorMessage) => {
+      message.error(`登录失败：${errorMessage}`);
+      return Promise.reject(errorMessage);
+    });
 };
 
 export const register = (data: AuthForm) => {
   return fetchHttp("register", {
     method: "POST",
     data: data,
-  }).then(async (data) => {
-    setToken(data.user.token);
-    return data.user;
-  });
+  })
+    .then(async (data) => {
+      setToken(data.user.token);
+      return Promise.resolve(data.user);
+    })
+    .catch(async (errorMessage) => {
+      message.error(`注册失败：${errorMessage}`);
+      return Promise.reject(errorMessage);
+    });
 };
 
 export const logout = async () => {

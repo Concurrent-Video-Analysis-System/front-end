@@ -26,9 +26,9 @@ export const useForm = <K extends string>(
           onSuccessCallback(data);
         }
       },
-      (error) => {
+      (errorMessage) => {
         setIsLoading(false);
-        message.error(`更新列表时出错：${error.message}`);
+        message.error(`更新列表时出错：${errorMessage}`);
       }
     );
     setUrlParams(props);

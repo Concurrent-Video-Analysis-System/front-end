@@ -18,8 +18,8 @@ export const useFilters = <K extends string>(
       sendHttp(
         { data: { item: filter } },
         (data) => onFetched(filter, data),
-        (error) => {
-          message.error(`更新筛选菜单时出错：${error.message}`);
+        (errorMessage) => {
+          message.error(`更新筛选菜单时出错：${errorMessage}`);
         }
       );
     }
