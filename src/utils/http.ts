@@ -57,11 +57,15 @@ export const fetchHttp = async (
   return window
     .fetch(`${apiUrl}/${endpoint}`, config)
     .then(async (response) => {
-      const data = await response.json();
+      const data = await response.json().catch((error) => {
+        console.error(`Data is not a JSON object: ${error.message}`);
+        return Promise.reject(`Data is not a JSON object`);
+      });
+      console.log(data);
       if (response.ok) {
         return data;
       } else {
-        return Promise.reject(await response.json());
+        return Promise.reject(`${response.status} ${data?.message || ""}`);
       }
     })
     .catch(async (error) => {
@@ -81,17 +85,28 @@ export const useHttp = (endpoint: string, config?: HttpConfig) => {
       ...config,
       ...configOverride,
     })
-      .then((data) => {
-        if (data.code !== 0) {
-          // exception
-          if (onFailed) {
-            onFailed(new Error(data.message));
+      .then(async (data) => {
+        // if data code is a string, convert it to number
+        if (+data?.code === 0) {
+          // Success
+          if (onSuccess) {
+            onSuccess(data);
           }
-        } else if (onSuccess) {
-          // success
-          onSuccess(data);
+        } else {
+          // HTTP respond 200 (or OK code), but error code found
+          if (onFailed) {
+            onFailed(
+              new Error(
+                `${data?.message || ""}${data?.code ? `(${data?.code})` : ""}`
+              )
+            );
+          }
         }
       })
-      .catch((error) => (onFailed ? onFailed(error) : null));
+      .catch(async (error) => {
+        if (onFailed) {
+          onFailed(error);
+        }
+      });
   };
 };
