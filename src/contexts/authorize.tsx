@@ -1,7 +1,8 @@
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { AuthForm, getToken, UserAttributes } from "utils/authorize";
 import * as authUtils from "utils/authorize";
-import { fetchHttp } from "utils/http";
+import { fetchHttp, useHttp } from "utils/http";
+import { message } from "antd";
 
 interface AuthProviderConfig {
   user: UserAttributes | null;
@@ -37,8 +38,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const token = getToken();
+
   useEffect(() => {
-    InitUser().then(setUser);
+    fetchHttp("me", { token: token || undefined })
+      .then((data) => setUser(data.user))
+      .catch((error) => {
+        message.error(`自动登录失败：${error}`);
+      });
   }, []);
 
   return (
@@ -47,17 +54,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       children={children}
     />
   );
-};
-
-// auto-get user attribute when token already exists
-export const InitUser = async () => {
-  let user = null;
-  const token = getToken();
-  if (token) {
-    const data = await fetchHttp("me", { token });
-    user = data.user;
-  }
-  return user;
 };
 
 export const useAuthContext = () => {
