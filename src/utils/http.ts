@@ -1,16 +1,17 @@
 import qs from "qs";
 import { useAuthContext } from "contexts/authorize";
+import { HTTP_STATUS_CODES } from "./constants";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-export interface httpConfig extends RequestInit {
+export interface HttpConfig extends RequestInit {
   token?: string;
   data?: object;
 }
 
 /**
  * Send the given data to the given endpoint via an HTTP request.
- * @return Returns a promise, which will fulfills when the OK response is received,
+ * @return Returns a promise, which will fulfills when the [200 OK] response is received,
  *                 and will rejects when connection failed or other response is received.
  *
  * @param endpoint Strings formatted like "path/to/somewhere".
@@ -29,7 +30,7 @@ export interface httpConfig extends RequestInit {
  */
 export const fetchHttp = async (
   endpoint: string,
-  { data, token, headers, ...customConfig }: httpConfig = {}
+  { data, token, headers, ...customConfig }: HttpConfig = {}
 ) => {
   const config = {
     // use GET as default method
@@ -68,10 +69,10 @@ export const fetchHttp = async (
     });
 };
 
-export const useAuthorizedHttp = (endpoint: string, config?: httpConfig) => {
+export const useHttp = (endpoint: string, config?: HttpConfig) => {
   const { user } = useAuthContext();
   return (
-    configOverride?: httpConfig,
+    configOverride?: HttpConfig,
     onSuccess?: (data: any) => void,
     onFailed?: (error: Error) => void
   ) => {

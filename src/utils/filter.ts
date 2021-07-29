@@ -1,4 +1,4 @@
-import { useAuthorizedHttp } from "./http";
+import { useHttp } from "./http";
 import { message } from "antd";
 import { useEffect } from "react";
 
@@ -11,7 +11,7 @@ export const useFilters = <K extends string>(
   filters: K[],
   onFetched: (filterName: K, itemList: FilterListItem[]) => void
 ) => {
-  const sendHttp = useAuthorizedHttp("recordlist/filter", { method: "GET" });
+  const sendHttp = useHttp("recordlist/filter", { method: "GET" });
 
   useEffect(() => {
     for (const filter of filters) {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUrlQueryParams } from "./url";
-import { useAuthorizedHttp } from "./http";
+import { useHttp } from "./http";
 import { message } from "antd";
 
 export const useForm = <K extends string>(
@@ -14,7 +14,7 @@ export const useForm = <K extends string>(
     Object.keys(initialProps)
   );
   const [isLoading, setIsLoading] = useState(false);
-  const sendHttp = useAuthorizedHttp(endpoint);
+  const sendHttp = useHttp(endpoint);
 
   useEffect(() => {
     setIsLoading(true);
