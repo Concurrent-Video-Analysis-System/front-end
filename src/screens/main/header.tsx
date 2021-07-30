@@ -12,7 +12,7 @@ export const SurveillanceHeader = () => {
       <LeftPanel>
         <HomeOutlined />
       </LeftPanel>
-      <CenterPanel>XX银行XX区XX网点</CenterPanel>
+      <CenterPanel>山东省建设银行数据中心</CenterPanel>
       <RightPanel>
         <Button onClick={() => logout()} type={"default"} ghost>
           {`${user?.name}`}
