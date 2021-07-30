@@ -69,7 +69,6 @@ const RecordCard = ({
 }) => {
   const typeLabel = type2typeLabel(props.type);
 
-  console.log(props);
   return (
     <Link to={`${props.id}`}>
       <Badge.Ribbon text={typeLabel?.label} color={typeLabel?.color}>
@@ -133,7 +132,6 @@ const RecordTableList = ({
   onRecordItemSelected?: (item: RecordItemProps) => void;
 }) => {
   // @ts-ignore
-  // @ts-ignore
   return (
     <Content>
       <Table dataSource={recordlist} size={"middle"} pagination={false}>
@@ -191,8 +189,6 @@ export const RecordContent = ({
   onRecordItemSelected?: (item: RecordItemProps) => void;
 }) => {
   const recordlistSelector = useSelector(selectRecordlistReducer);
-
-  console.log(recordlistSelector.recordlist);
 
   return (
     <Container>

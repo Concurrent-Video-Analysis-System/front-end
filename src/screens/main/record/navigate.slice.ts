@@ -8,18 +8,16 @@ interface NavigateItem {
 
 export const navigateSlice = createSlice({
   name: "navigateSlice",
-  initialState: [] as NavigateItem[],
+  initialState: { navigateList: [] as NavigateItem[] },
   reducers: {
     moveTo(state, action) {
-      console.log([...state]);
-      state = [...state, action.payload];
-      console.log(state);
+      state.navigateList = [...state.navigateList, action.payload];
     },
     back(state) {
-      state = [...state].slice(0, -1);
+      state.navigateList = state.navigateList.slice(0, -1);
     },
     home(state) {
-      state = [];
+      state.navigateList = [];
     },
   },
 });
