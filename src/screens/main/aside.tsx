@@ -28,8 +28,6 @@ const FormSelector = ({
   filterList: FilterListItem[];
   onChange: (value: unknown) => void;
 }) => {
-  console.log(filterList);
-
   return (
     <Select
       showSearch

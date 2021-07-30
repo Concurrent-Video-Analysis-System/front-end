@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "@emotion/styled";
 import { Button, Divider, Typography, Popconfirm } from "antd";
 import { RecordItemProps } from "./recordlist-component/record-content";
@@ -7,9 +7,20 @@ const { Title, Paragraph, Text } = Typography;
 
 export const RecordHandlingFragment = ({
   recordItem,
+  onUnmount,
 }: {
   recordItem: RecordItemProps | null;
+  onUnmount?: () => void;
 }) => {
+  useEffect(() => {
+    return () => {
+      console.log("Unmount called");
+      if (onUnmount) {
+        onUnmount();
+      }
+    };
+  }, []);
+
   return (
     <Container>
       <ImageDetail alt="Record Image" src={recordItem?.imageUrl} />

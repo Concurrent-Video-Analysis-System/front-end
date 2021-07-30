@@ -68,15 +68,19 @@ export const RecordListFragment = () => {
           </Breadcrumb>
         </FloatLeft>
         <FloatRight>
-          展示格式：&nbsp;
-          <TypeSwitcher
-            types={[
-              { label: "卡片", value: "card" },
-              { label: "表格", value: "table" },
-            ]}
-            initialType={displayType}
-            onChange={setDisplayType}
-          />
+          {selectedCard ? null : (
+            <>
+              展示格式：&nbsp;
+              <TypeSwitcher
+                types={[
+                  { label: "卡片", value: "card" },
+                  { label: "表格", value: "table" },
+                ]}
+                initialType={displayType}
+                onChange={setDisplayType}
+              />
+            </>
+          )}
         </FloatRight>
       </RecordHeader>
       <Routes>
@@ -99,7 +103,15 @@ export const RecordListFragment = () => {
         />
         <Route
           path={"recordlist/:recordId/*"}
-          element={<RecordHandlingFragment recordItem={selectedCard} />}
+          element={
+            <RecordHandlingFragment
+              recordItem={selectedCard}
+              onUnmount={() => {
+                setSelectedCard(null);
+                dispatch(navigateSlice.actions.back());
+              }}
+            />
+          }
         />
         <Navigate to={"recordlist"} />
       </Routes>
