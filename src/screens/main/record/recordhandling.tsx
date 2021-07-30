@@ -1,18 +1,29 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Button, Divider, Typography, Popconfirm } from "antd";
+import {
+  base64ToImage,
+  RecordItemProps,
+} from "./recordlist-component/record-content";
 
 const { Title, Paragraph, Text } = Typography;
 
-export const RecordHandlingFragment = () => {
+export const RecordHandlingFragment = ({
+  recordItem,
+}: {
+  recordItem: RecordItemProps | null;
+}) => {
   return (
     <Container>
-      <ImageDetail alt="example" src={"/__test__/template2.jpg"} />
+      <ImageDetail
+        alt="Record Image"
+        src={base64ToImage(recordItem?.imageUrl)}
+      />
       <VerticalDivider type={"vertical"} />
       <HandlingPanel>
         <Title level={5}>检测到：</Title>
         <Title level={3} style={{ marginTop: 0 }}>
-          「手机拍照违规行为」
+          「{recordItem?.reason}」
         </Title>
         <Title level={5}>处理办法：</Title>
         <Paragraph>
@@ -26,9 +37,9 @@ export const RecordHandlingFragment = () => {
 
         <Title level={5}>详细信息：</Title>
         <Paragraph>
-          检测地点：XXX网点
+          检测地点：{recordItem?.location}
           <br />
-          检测时间：2020年3月1日
+          检测时间：{recordItem?.date}
           <br />
           其它检测信息...
           <br />

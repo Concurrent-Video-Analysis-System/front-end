@@ -28,6 +28,8 @@ const FormSelector = ({
   filterList: FilterListItem[];
   onChange: (value: unknown) => void;
 }) => {
+  console.log(filterList);
+
   return (
     <Select
       showSearch
@@ -39,8 +41,8 @@ const FormSelector = ({
       }
       onChange={(value) => onChange(value)}
     >
-      {filterList.map((filter) => (
-        <Select.Option value={filter.id}>{filter.name}</Select.Option>
+      {filterList.map((filterName, index) => (
+        <Select.Option value={index}>{filterName}</Select.Option>
       ))}
     </Select>
   );

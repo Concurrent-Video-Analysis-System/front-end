@@ -13,7 +13,7 @@ export const useDebugImageCard = () => {
       return {
         id: item.id,
         date: item.time,
-        imageUrl: `data:image/png;base64,${item.image_data}`,
+        imageUrl: item.image_data,
         type: "pending",
         location: item.location,
         reason: item.abnormal_class,

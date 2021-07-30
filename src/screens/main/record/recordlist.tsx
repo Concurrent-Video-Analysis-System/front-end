@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { RecordContent } from "./recordlist-component/record-content";
+import {
+  RecordContent,
+  RecordItemProps,
+} from "./recordlist-component/record-content";
 import { Navigate, Route, Routes } from "react-router";
 import { RecordHandlingFragment } from "./recordhandling";
-import { Breadcrumb, Pagination } from "antd";
+import { Breadcrumb } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
-import { useSelector } from "react-redux";
-import { selectNavigateReducer } from "./navigate.slice";
+import { useDispatch, useSelector } from "react-redux";
+import { navigateSlice, selectNavigateReducer } from "./navigate.slice";
 import { useDebugImageCard } from "./__debug__/__debug_image_card__";
 
 export const RecordListFragment = () => {
+  const dispatch = useDispatch();
   const navigateSelector = useSelector(selectNavigateReducer);
+
+  useDebugImageCard();
+
+  const [selectedCard, setSelectedCard] = useState<RecordItemProps | null>(
+    null
+  );
 
   return (
     <Container>
@@ -26,35 +36,29 @@ export const RecordListFragment = () => {
         </Breadcrumb>
       </RecordHeader>
       <Routes>
-        <Route path={"recordlist"} element={<RecordContentWithPagination />} />
+        <Route
+          path={"recordlist"}
+          element={
+            <RecordContent
+              onRecordItemSelected={(item) => {
+                setSelectedCard(item);
+                dispatch(
+                  navigateSlice.actions.moveTo({
+                    name: `item.reason #${item.id}`,
+                    path: `recordlist/${item.id}`,
+                  })
+                );
+              }}
+            />
+          }
+        />
         <Route
           path={"recordlist/:recordId/*"}
-          element={<RecordHandlingFragment />}
+          element={<RecordHandlingFragment recordItem={selectedCard} />}
         />
         <Navigate to={"recordlist"} />
       </Routes>
     </Container>
-  );
-};
-
-const RecordContentWithPagination = () => {
-  useDebugImageCard();
-
-  return (
-    <SubContainer>
-      <Content>
-        <RecordContent />
-      </Content>
-      <RecordFooter>
-        <Pagination
-          showQuickJumper
-          showSizeChanger={false}
-          defaultCurrent={1}
-          total={100}
-          style={{ textAlign: "center" }}
-        />
-      </RecordFooter>
-    </SubContainer>
   );
 };
 
@@ -63,27 +67,8 @@ const Container = styled.div`
   padding: 0 2rem 0 2rem;
 `;
 
-const SubContainer = styled.div`
-  display: grid;
-  grid-template-rows: 1fr 8rem;
-  grid-template-areas: "content" "footer";
-  height: calc(100% - 4rem);
-`;
-
 const RecordHeader = styled.div`
   padding-top: 1.5rem;
   width: 100%;
   height: 4rem;
-`;
-
-const Content = styled.div`
-  padding: 1rem 0 0 0;
-  grid-area: content;
-`;
-
-const RecordFooter = styled.div`
-  padding: 2rem 0 2rem 0;
-  height: 6rem;
-  width: 100%;
-  grid-area: footer;
 `;

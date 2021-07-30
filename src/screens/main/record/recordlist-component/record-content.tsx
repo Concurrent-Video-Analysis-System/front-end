@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Card, Badge, Empty } from "antd";
+import { Card, Badge, Empty, Pagination } from "antd";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectRecordlistReducer } from "../../recordlist.slice";
@@ -14,13 +14,13 @@ export interface RecordItemProps {
   date?: string;
 }
 
-interface RecordCardProps {
+interface RecordLabelProps {
   label: string;
   color: string;
   imageOpacity: number;
 }
 
-const type2typeLabel = (type?: string): RecordCardProps | undefined => {
+const type2typeLabel = (type?: string): RecordLabelProps | undefined => {
   switch (type) {
     case "pending":
       return {
@@ -45,9 +45,22 @@ const type2typeLabel = (type?: string): RecordCardProps | undefined => {
   }
 };
 
-const RecordCard = (props: RecordItemProps) => {
+export const base64ToImage = (code?: string) => {
+  if (code) {
+    return `data:image/png;base64,${code}`;
+  }
+};
+
+const RecordCard = ({
+  props,
+  onSelected,
+}: {
+  props: RecordItemProps;
+  onSelected?: (item: RecordItemProps) => void;
+}) => {
   const typeLabel = type2typeLabel(props.type);
 
+  console.log(props);
   return (
     <Link to={`${props.id}`}>
       <Badge.Ribbon text={typeLabel?.label} color={typeLabel?.color}>
@@ -55,12 +68,13 @@ const RecordCard = (props: RecordItemProps) => {
           cover={
             <img
               alt="example"
-              src={props.imageUrl}
+              src={base64ToImage(props.imageUrl)}
               style={{ opacity: typeLabel?.imageOpacity }}
             />
           }
           size={"small"}
           hoverable
+          onClick={() => (onSelected ? onSelected(props) : null)}
         >
           <div style={{ fontWeight: "bold", fontSize: "2rem" }}>
             {props.reason}
@@ -73,24 +87,66 @@ const RecordCard = (props: RecordItemProps) => {
   );
 };
 
-export const RecordContent = () => {
+export const RecordContent = ({
+  onRecordItemSelected,
+}: {
+  onRecordItemSelected?: (item: RecordItemProps) => void;
+}) => {
   const screensCountProps = useSelector(selectRecordlistReducer);
 
-  return screensCountProps.recordlist.length === 0 ? (
-    <Empty description={<span style={{ color: "#A0A0A0" }}>无记录条目</span>} />
-  ) : (
+  console.log(screensCountProps.recordlist);
+
+  return (
     <Container>
-      {screensCountProps.recordlist.map((item) => (
-        <RecordCard {...item} />
-      ))}
+      <Content>
+        {screensCountProps.recordlist.length === 0 ? (
+          <Empty
+            description={<span style={{ color: "#A0A0A0" }}>无记录条目</span>}
+          />
+        ) : (
+          <RecordCardContainer>
+            {screensCountProps.recordlist.map((item) => (
+              <RecordCard props={item} onSelected={onRecordItemSelected} />
+            ))}
+          </RecordCardContainer>
+        )}
+      </Content>
+      <RecordFooter>
+        <Pagination
+          showQuickJumper
+          showSizeChanger={false}
+          defaultCurrent={1}
+          total={100}
+          style={{ textAlign: "center" }}
+        />
+      </RecordFooter>
     </Container>
   );
 };
 
 const Container = styled.div`
   display: grid;
+  grid-template-rows: 1fr 8rem;
+  grid-template-areas: "content" "footer";
+  height: calc(100% - 4rem);
+`;
+
+const RecordCardContainer = styled.div`
+  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(28rem, 1fr));
   grid-gap: 30px;
   padding-left: 0.8rem;
   padding-right: 0.8rem;
+`;
+
+const Content = styled.div`
+  padding: 1rem 0 0 0;
+  grid-area: content;
+`;
+
+const RecordFooter = styled.div`
+  padding: 2rem 0 2rem 0;
+  height: 6rem;
+  width: 100%;
+  grid-area: footer;
 `;
