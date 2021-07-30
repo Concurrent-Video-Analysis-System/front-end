@@ -120,6 +120,11 @@ const RecordCardList = ({
   );
 };
 
+const isRecordItemProps = (x: any): x is RecordItemProps => {
+  console.log(x);
+  return "id" in x;
+};
+
 const RecordTableList = ({
   recordlist,
   onRecordItemSelected,
@@ -127,6 +132,8 @@ const RecordTableList = ({
   recordlist: RecordItemProps[];
   onRecordItemSelected?: (item: RecordItemProps) => void;
 }) => {
+  // @ts-ignore
+  // @ts-ignore
   return (
     <Content>
       <Table dataSource={recordlist} size={"middle"} pagination={false}>
@@ -152,15 +159,23 @@ const RecordTableList = ({
           title={"操作"}
           key={"action"}
           render={(text, record) => (
-            <>
-              <Button type={"link"} size={"small"} color={"#0000FF"}>
+            <Link to={isRecordItemProps(record) ? `${record.id}` : ""}>
+              <Button
+                type={"link"}
+                size={"small"}
+                onClick={() => {
+                  if (isRecordItemProps(record) && onRecordItemSelected) {
+                    onRecordItemSelected(record);
+                  }
+                }}
+              >
                 查看详情
               </Button>
               <Divider type={"vertical"} />
               <Button type={"link"} size={"small"} danger>
                 完成处理
               </Button>
-            </>
+            </Link>
           )}
         />
       </Table>

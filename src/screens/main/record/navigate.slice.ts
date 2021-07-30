@@ -11,7 +11,9 @@ export const navigateSlice = createSlice({
   initialState: [] as NavigateItem[],
   reducers: {
     moveTo(state, action) {
+      console.log([...state]);
       state = [...state, action.payload];
+      console.log(state);
     },
     back(state) {
       state = [...state].slice(0, -1);

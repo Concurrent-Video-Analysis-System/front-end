@@ -63,7 +63,9 @@ export const RecordListFragment = () => {
               <Link to={"recordlist"}>违规行为列表</Link>
             </Breadcrumb.Item>
             {navigateSelector.map((item) => (
-              <Breadcrumb.Item>{item.name}</Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <Link to={item.path}>{item.name}</Link>
+              </Breadcrumb.Item>
             ))}
           </Breadcrumb>
         </FloatLeft>
@@ -87,6 +89,7 @@ export const RecordListFragment = () => {
               displayType={displayType}
               onRecordItemSelected={(item) => {
                 setSelectedCard(item);
+                console.log(selectedCard);
                 dispatch(
                   navigateSlice.actions.moveTo({
                     name: `item.reason #${item.id}`,
