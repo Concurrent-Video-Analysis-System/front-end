@@ -17,7 +17,7 @@ export const useFilters = <K extends string>(
     for (const filter of filters) {
       sendHttp(
         { data: { item: filter } },
-        (data) => onFetched(filter, data),
+        (data) => onFetched(filter, data.data),
         (errorMessage) => {
           message.error(`更新筛选菜单时出错：${errorMessage}`);
         }

@@ -23,7 +23,8 @@ export const useForm = <K extends string>(
       (data) => {
         setIsLoading(false);
         if (onSuccessCallback) {
-          onSuccessCallback(data);
+          // data includes code, message and real data
+          onSuccessCallback(data.data);
         }
       },
       (errorMessage) => {
