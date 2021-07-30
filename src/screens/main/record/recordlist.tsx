@@ -6,12 +6,39 @@ import {
 } from "./recordlist-component/record-content";
 import { Navigate, Route, Routes } from "react-router";
 import { RecordHandlingFragment } from "./recordhandling";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Radio } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { navigateSlice, selectNavigateReducer } from "./navigate.slice";
 import { useDebugImageCard } from "./__debug__/__debug_image_card__";
 import { Link } from "react-router-dom";
+
+const TypeSwitcher = <K extends string>({
+  types,
+  initialType,
+  onChange,
+}: {
+  types: { label: string; value: K }[];
+  initialType?: K;
+  onChange?: (type: K) => void;
+}) => {
+  return (
+    <Radio.Group
+      defaultValue={initialType}
+      optionType="button"
+      buttonStyle="solid"
+      onChange={(event) => {
+        if (onChange) {
+          onChange(event.target.value);
+        }
+      }}
+    >
+      {types.map((type) => (
+        <Radio.Button value={type.value}>{type.label}</Radio.Button>
+      ))}
+    </Radio.Group>
+  );
+};
 
 export const RecordListFragment = () => {
   const dispatch = useDispatch();
@@ -22,27 +49,42 @@ export const RecordListFragment = () => {
   const [selectedCard, setSelectedCard] = useState<RecordItemProps | null>(
     null
   );
+  const [displayType, setDisplayType] = useState<string>("card");
 
   return (
     <Container>
       <RecordHeader>
-        <Breadcrumb>
-          <Breadcrumb.Item>
-            <HomeOutlined />
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <Link to={"recordlist"}>违规行为列表</Link>
-          </Breadcrumb.Item>
-          {navigateSelector.map((item) => (
-            <Breadcrumb.Item>{item.name}</Breadcrumb.Item>
-          ))}
-        </Breadcrumb>
+        <FloatLeft>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              <HomeOutlined />
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link to={"recordlist"}>违规行为列表</Link>
+            </Breadcrumb.Item>
+            {navigateSelector.map((item) => (
+              <Breadcrumb.Item>{item.name}</Breadcrumb.Item>
+            ))}
+          </Breadcrumb>
+        </FloatLeft>
+        <FloatRight>
+          展示格式：&nbsp;
+          <TypeSwitcher
+            types={[
+              { label: "卡片", value: "card" },
+              { label: "表格", value: "table" },
+            ]}
+            initialType={displayType}
+            onChange={setDisplayType}
+          />
+        </FloatRight>
       </RecordHeader>
       <Routes>
         <Route
           path={"recordlist"}
           element={
             <RecordContent
+              displayType={displayType}
               onRecordItemSelected={(item) => {
                 setSelectedCard(item);
                 dispatch(
@@ -71,7 +113,17 @@ const Container = styled.div`
 `;
 
 const RecordHeader = styled.div`
-  padding-top: 1.5rem;
+  padding-top: 2rem;
   width: 100%;
-  height: 4rem;
+  height: 6rem;
+`;
+
+const FloatLeft = styled.div`
+  float: left;
+  padding-left: 0.5rem;
+`;
+
+const FloatRight = styled.div`
+  float: right;
+  padding-right: 2rem;
 `;

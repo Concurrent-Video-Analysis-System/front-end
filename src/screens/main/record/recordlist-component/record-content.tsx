@@ -1,8 +1,17 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Card, Badge, Empty, Pagination } from "antd";
+import {
+  Card,
+  Badge,
+  Empty,
+  Pagination,
+  Table,
+  Tag,
+  Button,
+  Divider,
+} from "antd";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectRecordlistReducer } from "../../recordlist.slice";
 
 export interface RecordItemProps {
@@ -87,30 +96,103 @@ const RecordCard = ({
   );
 };
 
-export const RecordContent = ({
+const RecordCardList = ({
+  recordlist,
   onRecordItemSelected,
 }: {
+  recordlist: RecordItemProps[];
   onRecordItemSelected?: (item: RecordItemProps) => void;
 }) => {
-  const screensCountProps = useSelector(selectRecordlistReducer);
+  return (
+    <Content>
+      {recordlist.length === 0 ? (
+        <Empty
+          description={<span style={{ color: "#A0A0A0" }}>无记录条目</span>}
+        />
+      ) : (
+        <RecordCardContainer>
+          {recordlist.map((item) => (
+            <RecordCard props={item} onSelected={onRecordItemSelected} />
+          ))}
+        </RecordCardContainer>
+      )}
+    </Content>
+  );
+};
 
-  console.log(screensCountProps.recordlist);
+const RecordTableList = ({
+  recordlist,
+  onRecordItemSelected,
+}: {
+  recordlist: RecordItemProps[];
+  onRecordItemSelected?: (item: RecordItemProps) => void;
+}) => {
+  return (
+    <Content>
+      <Table dataSource={recordlist} size={"middle"} pagination={false}>
+        <Table.Column title={"序号"} dataIndex={"id"} key={"id"} />
+        <Table.Column title={"违规原因"} dataIndex={"reason"} key={"reason"} />
+        <Table.Column
+          title={"营业网点"}
+          dataIndex={"location"}
+          key={"location"}
+        />
+        <Table.Column title={"时间"} dataIndex={"date"} key={"date"} />
+        <Table.Column
+          title={"处理情况"}
+          dataIndex={"type"}
+          key={"type"}
+          render={(type) => (
+            <Tag color={type2typeLabel(type)?.color}>
+              {type2typeLabel(type)?.label}
+            </Tag>
+          )}
+        />
+        <Table.Column
+          title={"操作"}
+          key={"action"}
+          render={(text, record) => (
+            <>
+              <Button type={"link"} size={"small"} color={"#0000FF"}>
+                查看详情
+              </Button>
+              <Divider type={"vertical"} />
+              <Button type={"link"} size={"small"} danger>
+                完成处理
+              </Button>
+            </>
+          )}
+        />
+      </Table>
+    </Content>
+  );
+};
+
+export const RecordContent = ({
+  displayType,
+  onRecordItemSelected,
+}: {
+  displayType: string;
+  onRecordItemSelected?: (item: RecordItemProps) => void;
+}) => {
+  const recordlistSelector = useSelector(selectRecordlistReducer);
+
+  console.log(recordlistSelector.recordlist);
 
   return (
     <Container>
-      <Content>
-        {screensCountProps.recordlist.length === 0 ? (
-          <Empty
-            description={<span style={{ color: "#A0A0A0" }}>无记录条目</span>}
-          />
-        ) : (
-          <RecordCardContainer>
-            {screensCountProps.recordlist.map((item) => (
-              <RecordCard props={item} onSelected={onRecordItemSelected} />
-            ))}
-          </RecordCardContainer>
-        )}
-      </Content>
+      {displayType === "card" ? (
+        <RecordCardList
+          recordlist={recordlistSelector.recordlist}
+          onRecordItemSelected={onRecordItemSelected}
+        />
+      ) : null}
+      {displayType === "table" ? (
+        <RecordTableList
+          recordlist={recordlistSelector.recordlist}
+          onRecordItemSelected={onRecordItemSelected}
+        />
+      ) : null}
       <RecordFooter>
         <Pagination
           showQuickJumper
@@ -128,7 +210,7 @@ const Container = styled.div`
   display: grid;
   grid-template-rows: 1fr 8rem;
   grid-template-areas: "content" "footer";
-  height: calc(100% - 4rem);
+  height: calc(100% - 6rem);
 `;
 
 const RecordCardContainer = styled.div`
