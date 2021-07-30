@@ -11,6 +11,7 @@ import { HomeOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { navigateSlice, selectNavigateReducer } from "./navigate.slice";
 import { useDebugImageCard } from "./__debug__/__debug_image_card__";
+import { Link } from "react-router-dom";
 
 export const RecordListFragment = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,9 @@ export const RecordListFragment = () => {
           <Breadcrumb.Item>
             <HomeOutlined />
           </Breadcrumb.Item>
-          <Breadcrumb.Item>违规行为列表</Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to={"recordlist"}>违规行为列表</Link>
+          </Breadcrumb.Item>
           {navigateSelector.map((item) => (
             <Breadcrumb.Item>{item.name}</Breadcrumb.Item>
           ))}
