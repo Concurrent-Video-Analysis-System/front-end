@@ -1,10 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Button, Divider, Typography, Popconfirm } from "antd";
-import {
-  base64ToImage,
-  RecordItemProps,
-} from "./recordlist-component/record-content";
+import { RecordItemProps } from "./recordlist-component/record-content";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -15,10 +12,7 @@ export const RecordHandlingFragment = ({
 }) => {
   return (
     <Container>
-      <ImageDetail
-        alt="Record Image"
-        src={base64ToImage(recordItem?.imageUrl)}
-      />
+      <ImageDetail alt="Record Image" src={recordItem?.imageUrl} />
       <VerticalDivider type={"vertical"} />
       <HandlingPanel>
         <Title level={5}>检测到：</Title>

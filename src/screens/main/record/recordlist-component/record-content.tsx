@@ -77,7 +77,7 @@ const RecordCard = ({
           cover={
             <img
               alt="example"
-              src={base64ToImage(props.imageUrl)}
+              src={props.imageUrl}
               style={{ opacity: typeLabel?.imageOpacity }}
             />
           }

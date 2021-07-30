@@ -44,8 +44,6 @@ export const RecordListFragment = () => {
   const dispatch = useDispatch();
   const navigateSelector = useSelector(selectNavigateReducer);
 
-  useDebugImageCard();
-
   const [selectedCard, setSelectedCard] = useState<RecordItemProps | null>(
     null
   );
