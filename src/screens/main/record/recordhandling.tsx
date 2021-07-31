@@ -7,6 +7,68 @@ import { useNavigate } from "react-router-dom";
 
 const { Title, Paragraph, Text } = Typography;
 
+const HandlerOnPending = ({
+  isLoading,
+  processType,
+  onClick,
+}: {
+  isLoading: boolean;
+  processType: string | null;
+  onClick: (type: string) => void;
+}) => {
+  return (
+    <>
+      <Button
+        type={"primary"}
+        size={"large"}
+        loading={processType === "processed" && isLoading}
+        onClick={() => onClick("processed")}
+      >
+        完成处理
+      </Button>
+      <Popconfirm
+        title={"确定要删除这条记录吗？"}
+        okText={"删除"}
+        cancelText={"取消"}
+        onConfirm={() => onClick("deleted")}
+      >
+        <Button
+          type={"primary"}
+          danger
+          size={"large"}
+          style={{ marginLeft: "2rem" }}
+          loading={processType === "deleted" && isLoading}
+        >
+          反馈误报并删除
+        </Button>
+      </Popconfirm>
+    </>
+  );
+};
+
+const HandlerOnOther = ({
+  isLoading,
+  processType,
+  onClick,
+}: {
+  isLoading: boolean;
+  processType: string | null;
+  onClick: (type: string) => void;
+}) => {
+  return (
+    <>
+      <Button
+        type={"primary"}
+        size={"large"}
+        loading={processType === "pending" && isLoading}
+        onClick={() => onClick("pending")}
+      >
+        撤销处理状态
+      </Button>
+    </>
+  );
+};
+
 export const RecordHandlingFragment = ({
   recordItem,
   onUnmount,
@@ -67,30 +129,19 @@ export const RecordHandlingFragment = ({
         </Paragraph>
 
         <BottomParagraph>
-          <Button
-            type={"primary"}
-            size={"large"}
-            loading={processType === "processed" && isLoading}
-            onClick={() => onHandleButtonClick("processed")}
-          >
-            完成处理
-          </Button>
-          <Popconfirm
-            title={"确定要删除这条记录吗？"}
-            okText={"删除"}
-            cancelText={"取消"}
-            onConfirm={() => onHandleButtonClick("deleted")}
-          >
-            <Button
-              type={"primary"}
-              danger
-              size={"large"}
-              style={{ marginLeft: "2rem" }}
-              loading={processType === "deleted" && isLoading}
-            >
-              反馈误报并删除
-            </Button>
-          </Popconfirm>
+          {recordItem?.type === "pending" ? (
+            <HandlerOnPending
+              isLoading={isLoading}
+              processType={processType}
+              onClick={onHandleButtonClick}
+            />
+          ) : (
+            <HandlerOnOther
+              isLoading={isLoading}
+              processType={processType}
+              onClick={onHandleButtonClick}
+            />
+          )}
         </BottomParagraph>
       </HandlingPanel>
     </Container>
