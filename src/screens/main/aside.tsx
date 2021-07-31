@@ -89,6 +89,16 @@ export const AsidePanel = () => {
     );
   });
 
+  // use for badge
+  const [pendingItemsCount, setPendingItemsCount] = useState(0);
+  useEffect(() => {
+    setPendingItemsCount(
+      recordlistSelector.recordlist.reduce((prev, item) => {
+        return prev + +(item.type === "pending");
+      }, 0)
+    );
+  }, [recordlistSelector.recordlist]);
+
   return (
     <Menu
       style={{ width: "100%", height: "100%" }}
@@ -99,15 +109,15 @@ export const AsidePanel = () => {
     >
       <SubMenu key="list" icon={<UnorderedListOutlined />} title="违规行为列表">
         <Menu.Item key="pending" icon={<InfoCircleOutlined />}>
-          <Badge count={5} offset={[20, 0]}>
+          <Badge count={pendingItemsCount} offset={[20, 0]}>
             待处理
           </Badge>
         </Menu.Item>
         <Menu.Item key="processed" icon={<CheckCircleOutlined />}>
-          <Badge count={0}>已处理</Badge>
+          已处理
         </Menu.Item>
         <Menu.Item key="deleted" icon={<CloseCircleOutlined />}>
-          <Badge count={0}>已删除</Badge>
+          已删除
         </Menu.Item>
       </SubMenu>
       <SubMenu key="filter" icon={<SearchOutlined />} title="筛选列表">
