@@ -72,9 +72,9 @@ export const LoginFragment = ({
         </Button>
       </Form.Item>
 
-      <Form.Item>
+      {/*<Form.Item>
         <DebugLogin />
-      </Form.Item>
+      </Form.Item>*/}
     </Form>
   );
 };
