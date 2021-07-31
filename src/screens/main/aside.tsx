@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
 import { Badge, DatePicker, Form, Menu, Select } from "antd";
-import { recordlistSlice } from "./recordlist.slice";
+import { selectRecordlistReducer } from "./recordlist.slice";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -10,7 +10,6 @@ import {
   UnorderedListOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { useForm } from "utils/form";
 import { FilterListItem, useFilters } from "utils/filter";
 import { Moment } from "moment";
 import { RangeValue } from "rc-picker/lib/interface";
@@ -61,27 +60,14 @@ const FormDateSelector = ({
   );
 };
 
-export const AsidePanel = () => {
+export const AsidePanel = ({
+  setPartialProps,
+}: {
+  setPartialProps: (props: any) => void;
+}) => {
   const dispatch = useDispatch();
   const filterSelector = useSelector(selectRecordfilterReducer);
-
-  const { props, setPartialProps, isLoading } = useForm(
-    {
-      type: undefined,
-      location: undefined,
-      reason: undefined,
-      from: undefined,
-      to: undefined,
-    },
-    "recordlist",
-    (data) => {
-      dispatch(recordlistSlice.actions.set(data));
-    }
-  );
-
-  useEffect(() => {
-    dispatch(recordlistSlice.actions.setLoading(isLoading));
-  }, [dispatch, isLoading]);
+  const recordlistSelector = useSelector(selectRecordlistReducer);
 
   useFilters(["location", "reason", "from", "to"], (filterName, itemList) => {
     dispatch(

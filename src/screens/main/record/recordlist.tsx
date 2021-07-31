@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { navigateSlice, selectNavigateReducer } from "./navigate.slice";
 import { useDebugImageCard } from "./__debug__/__debug_image_card__";
 import { Link } from "react-router-dom";
+import { useForm } from "../../../utils/form";
+import { recordlistSlice } from "../recordlist.slice";
 
 const TypeSwitcher = <K extends string>({
   types,
@@ -40,7 +42,11 @@ const TypeSwitcher = <K extends string>({
   );
 };
 
-export const RecordListFragment = () => {
+export const RecordListFragment = ({
+  reloadList,
+}: {
+  reloadList: () => void;
+}) => {
   const dispatch = useDispatch();
   const navigateSelector = useSelector(selectNavigateReducer);
 
@@ -108,6 +114,7 @@ export const RecordListFragment = () => {
               recordItem={selectedCard}
               onUnmount={() => {
                 setSelectedCard(null);
+                reloadList();
                 dispatch(navigateSlice.actions.back());
               }}
             />

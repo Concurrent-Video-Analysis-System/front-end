@@ -4,19 +4,38 @@ import { SurveillanceHeader } from "./header";
 import { AsidePanel } from "./aside";
 import { RecordListFragment } from "./record/recordlist";
 import { useDocumentTitle } from "../../utils/document-title";
+import { useForm } from "../../utils/form";
+import { recordlistSlice } from "./recordlist.slice";
+import { useDispatch } from "react-redux";
 
 export const MainFragment = () => {
   useDocumentTitle("违规行为列表");
+  const dispatch = useDispatch();
+
+  const { setPartialProps, reload } = useForm(
+    {
+      type: undefined,
+      location: undefined,
+      reason: undefined,
+      from: undefined,
+      to: undefined,
+    },
+    "recordlist",
+    (data) => {
+      dispatch(recordlistSlice.actions.set(data));
+    }
+  );
+
   return (
     <Container>
       <Header>
         <SurveillanceHeader />
       </Header>
       <Main>
-        <RecordListFragment />
+        <RecordListFragment reloadList={reload} />
       </Main>
       <Aside>
-        <AsidePanel />
+        <AsidePanel setPartialProps={setPartialProps} />
       </Aside>
     </Container>
   );

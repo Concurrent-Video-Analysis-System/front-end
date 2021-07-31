@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Button, Divider, Typography, Popconfirm } from "antd";
 import { RecordItemProps } from "./recordlist-component/record-content";
+import { useProcess } from "../../../utils/process";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -14,12 +16,26 @@ export const RecordHandlingFragment = ({
 }) => {
   useEffect(() => {
     return () => {
-      console.log("Unmount called");
       if (onUnmount) {
         onUnmount();
       }
     };
   }, []);
+
+  const navigate = useNavigate();
+
+  const [processType, setProcessedType] = useState<string | null>(null);
+  const { isLoading, setProcess } = useProcess(recordItem?.id, () => {
+    setProcessedType(null);
+    navigate("/recordlist");
+  });
+
+  const onHandleButtonClick = (type: string) => {
+    if (!isLoading) {
+      setProcessedType(type);
+      setProcess(type);
+    }
+  };
 
   return (
     <Container>
@@ -51,19 +67,26 @@ export const RecordHandlingFragment = ({
         </Paragraph>
 
         <BottomParagraph>
-          <Button type={"primary"} size={"large"}>
+          <Button
+            type={"primary"}
+            size={"large"}
+            loading={processType === "processed" && isLoading}
+            onClick={() => onHandleButtonClick("processed")}
+          >
             完成处理
           </Button>
           <Popconfirm
             title={"确定要删除这条记录吗？"}
             okText={"删除"}
             cancelText={"取消"}
+            onConfirm={() => onHandleButtonClick("deleted")}
           >
             <Button
               type={"primary"}
               danger
               size={"large"}
               style={{ marginLeft: "2rem" }}
+              loading={processType === "deleted" && isLoading}
             >
               反馈误报并删除
             </Button>

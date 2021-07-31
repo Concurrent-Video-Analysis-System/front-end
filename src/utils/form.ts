@@ -39,5 +39,9 @@ export const useForm = <K extends string>(
     setProps({ ...props, ...partialProps });
   };
 
-  return { props, setPartialProps, isLoading } as const;
+  const reload = () => {
+    setProps({ ...props });
+  };
+
+  return { props, setPartialProps, isLoading, reload } as const;
 };
