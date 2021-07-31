@@ -47,7 +47,7 @@ export const RecordListFragment = () => {
   const [selectedCard, setSelectedCard] = useState<RecordItemProps | null>(
     null
   );
-  const [displayType, setDisplayType] = useState<string>("card");
+  const [displayType, setDisplayType] = useState("card");
 
   return (
     <Container>

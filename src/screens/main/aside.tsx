@@ -39,7 +39,7 @@ const FormSelector = ({
       }
       onChange={(value) => onChange(value)}
     >
-      {filterList.map((filterName, index) => (
+      {filterList?.map((filterName, index) => (
         <Select.Option value={index}>{filterName}</Select.Option>
       ))}
     </Select>

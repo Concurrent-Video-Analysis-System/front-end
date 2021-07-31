@@ -80,7 +80,7 @@ const Container = styled.div`
   grid-template-areas: "image-detail vertical-divider handling-panel";
   grid-gap: 1.5rem;
   width: 100%;
-  height: calc(100% - 4rem);
+  height: calc(100% - 6rem);
   padding: 3rem 0 3rem 0;
 `;
 

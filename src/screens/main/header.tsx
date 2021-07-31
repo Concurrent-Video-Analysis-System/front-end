@@ -1,8 +1,16 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styled from "@emotion/styled";
 import { HomeOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, Popover } from "antd";
 import { useAuthContext } from "../../contexts/authorize";
+
+export const LogoutPopoverContent = ({ logout }: { logout: () => void }) => {
+  return (
+    <Button type={"primary"} onClick={logout}>
+      退出当前账号
+    </Button>
+  );
+};
 
 export const SurveillanceHeader = () => {
   const { user, logout } = useAuthContext();
@@ -14,9 +22,12 @@ export const SurveillanceHeader = () => {
       </LeftPanel>
       <CenterPanel>山东省建设银行数据中心</CenterPanel>
       <RightPanel>
-        <Button onClick={() => logout()} type={"default"} ghost>
-          {`${user?.name}`}
-        </Button>
+        <Popover
+          placement={"bottom"}
+          content={<LogoutPopoverContent logout={logout} />}
+        >
+          {user?.name}
+        </Popover>
       </RightPanel>
     </HeaderContainer>
   );
