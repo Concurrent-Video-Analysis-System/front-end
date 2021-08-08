@@ -1,6 +1,10 @@
+/**
+ * 实现使用HTTP从后端获取数据的部分方法。
+ * Author: HeKaiqi@SDU
+ */
 import qs from "qs";
 import { useAuthContext } from "contexts/authorize";
-import { HTTP_STATUS_CODES } from "./constants";
+import { HTTP_STATUS_CODES } from "./static/constants";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -9,35 +13,34 @@ export interface HttpConfig extends RequestInit {
   data?: object;
 }
 
+/**
+ * 根据HTTP状态码返回完整状态信息；状态信息储存在{@link HTTP_STATUS_CODES}中。
+ * @param code 要查询的HTTP状态码
+ */
 const getHttpStatus = (code: number | string) => {
   return `${code} ${HTTP_STATUS_CODES[`CODE_${code}`]}`;
 };
 
 /**
- * Send the given data to the given endpoint via an HTTP request.
- * @return Returns a promise, which will fulfills when the [200 OK] response is received,
- *                 and will rejects when connection failed or other response is received.
- *                 If fulfills, the responsed data will be returned. the data may be null
- *                 when it cannot be parsed to json object, or data is empty.
- *                 If rejects, a message will be returned to show reason of the error.
+ * 向指定路径地址通过HTTP请求发送数据，返回收到的数据。
+ * @returns {Promise<unknown>} - 返回一个Promise，当请求成功时满足，当请求失败时（包括连接
+ * 失败、返回码非2xx错误）拒绝并提供错误信息。当收到的数据为空或无法被解析为json对象时返回空。
+ * 这个方法不会检验返回数据内部设置的code。
  *
- * @param endpoint Strings formatted like "path/to/somewhere".
- *                 Will be parsed to "http://online.net/path/to/somewhere".
- * @param data     The object to be sent. When the method is GET, it will be
- *                 parsed in query string and concatenated behind the url;
- *                 otherwise it will be sent in body of the request.
- *                 If null, an empty json object - {} will be sent.
- * @param token    If token is given, the request will attach bearer token as
- *                 as authorization. This method will never fetch token from
- *                 userinfo automatically.
- * @param headers  The headers to be sent. It will override authorization and
- *                 content-type if attributes are given.
- * @param customConfig Other custom config to send. The method override can be
- *                 written here.
+ * @param endpoint - HTTP请求发送到的路径地址，格式形如path/to/somewhere；完整地址会由
+ * {@link apiUrl}和该路径地址拼接而成。
+ * @param parsingFormat - 返回数据被解码的格式，默认为JSON。
+ * @param {data, token, headers, ...customConfig} -
+ * data: 要发送的对象数据。当方法为GET时，对象会被编码query字符串并连接到url后面；其它方法下
+ * 会直接在body中传送对象。
+ * token: 授权令牌码。如果不为空则会添加到头部字段中；这个方法不会自动从UserContext中获取令牌码。
+ * header: 头部字段。如果制定了token等信息，它会覆盖上面填入的参数。
+ * customConfig: 其它要发送的自定义信息。这里可以重写方法字段，指定方法为POST或PATCH等。
  */
 export const fetchHttp = async (
   endpoint: string,
-  { data, token, headers, ...customConfig }: HttpConfig = {}
+  { data, token, headers, ...customConfig }: HttpConfig = {},
+  parsingFormat: string = "json"
 ) => {
   const config = {
     // use GET as default method
@@ -65,9 +68,20 @@ export const fetchHttp = async (
   return window
     .fetch(`${apiUrl}/${endpoint}`, config)
     .then(async (response) => {
-      const responseData = await response.json().catch((error) => {
-        console.warn(`Data is not a JSON object: ${error.message}`);
-      });
+      let responseData;
+      if (parsingFormat === "json") {
+        responseData = await response.json().catch((error) => {
+          console.warn(`Data is not a JSON object: ${error.message}`);
+        });
+      } else if (parsingFormat === "blob") {
+        responseData = await response.blob().catch((error) => {
+          console.warn(`Data is not a BLOB object: ${error.message}`);
+        });
+      } else if (parsingFormat === "text" || parsingFormat === "plain") {
+        responseData = await response.text().catch((error) => {
+          console.warn(`Data is not a TEXT object: ${error.message}`);
+        });
+      }
       if (response.ok) {
         return Promise.resolve(responseData);
       } else {
