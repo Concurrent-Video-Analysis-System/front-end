@@ -32,11 +32,12 @@ export const MainFragment = () => {
         <SurveillanceHeader />
       </Header>
       <Main>
-        <RecordListFragment reloadList={reload} />
+        <Routes>
+          <Route path={"recordlist/*"} element={<RecordListFragment />} />
+          <Route path={"device/*"} element={<DeviceFragment />} />
+          <Navigate to={"recordlist"} />
+        </Routes>
       </Main>
-      <Aside>
-        <AsidePanel setPartialProps={setPartialProps} />
-      </Aside>
     </Container>
   );
 };

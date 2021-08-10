@@ -64,7 +64,7 @@ export const RecordListFragment = ({
               <HomeOutlined />
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <Link to={"recordlist"}>违规行为列表</Link>
+              <Link to={"/"}>违规行为列表</Link>
             </Breadcrumb.Item>
             {navigateSelector.navigateList.map((item) => (
               <Breadcrumb.Item>
@@ -89,39 +89,32 @@ export const RecordListFragment = ({
           )}
         </FloatRight>
       </RecordHeader>
-      <Routes>
-        <Route
-          path={"recordlist"}
-          element={
-            <RecordContent
-              displayType={displayType}
-              onRecordItemSelected={(item) => {
-                setSelectedCard(item);
-                dispatch(
-                  navigateSlice.actions.moveTo({
-                    name: `${item.reason} #${item.id}`,
-                    path: `recordlist/${item.id}`,
-                  })
-                );
-              }}
-            />
-          }
-        />
-        <Route
-          path={"recordlist/:recordId/*"}
-          element={
-            <RecordHandlingFragment
-              recordItem={selectedCard}
-              onUnmount={() => {
-                setSelectedCard(null);
-                reloadList();
-                dispatch(navigateSlice.actions.back());
-              }}
-            />
-          }
-        />
-        <Navigate to={"recordlist"} />
-      </Routes>
+      <Content>
+        <Routes>
+          <Route
+            path={"/"}
+            element={
+              <RecordContent
+                displayType={displayType}
+                onRecordItemSelected={onRecordItemSelected}
+              />
+            }
+          />
+          <Route
+            path={":recordId/*"}
+            element={
+              <RecordHandlingFragment
+                recordItem={selectedCard}
+                onUnmount={onHandlingUnmount}
+              />
+            }
+          />
+          <Navigate to={"/"} />
+        </Routes>
+      </Content>
+      <Aside>
+        <AsidePanel setPartialProps={setPartialProps} />
+      </Aside>
     </Container>
   );
 };
