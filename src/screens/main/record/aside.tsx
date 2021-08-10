@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
 import { Badge, DatePicker, Form, Menu, Select } from "antd";
-import { selectRecordlistReducer } from "./recordlist.slice";
+import { selectRecordlistReducer } from "../recordlist.slice";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -16,7 +16,7 @@ import { RangeValue } from "rc-picker/lib/interface";
 import {
   recordfilterSlice,
   selectRecordfilterReducer,
-} from "./recordfilter.slice";
+} from "../recordfilter.slice";
 
 const { SubMenu } = Menu;
 
