@@ -6,7 +6,7 @@ import {
 } from "./recordlist-component/record-content";
 import { Navigate, Route, Routes } from "react-router";
 import { RecordHandlingFragment } from "./recordhandling";
-import { Breadcrumb, Radio } from "antd";
+import { Breadcrumb, Button, Radio } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { navigateSlice, selectNavigateReducer } from "./navigate.slice";
@@ -14,6 +14,8 @@ import { useDebugImageCard } from "./__debug__/__debug_image_card__";
 import { Link } from "react-router-dom";
 import { useForm } from "../../../utils/form";
 import { recordlistSlice } from "../recordlist.slice";
+import { exportRecordList } from "./export";
+import { AsidePanel } from "./aside";
 
 const TypeSwitcher = <K extends string>({
   types,
@@ -42,11 +44,7 @@ const TypeSwitcher = <K extends string>({
   );
 };
 
-export const RecordListFragment = ({
-  reloadList,
-}: {
-  reloadList: () => void;
-}) => {
+export const RecordListFragment = () => {
   const dispatch = useDispatch();
   const navigateSelector = useSelector(selectNavigateReducer);
 
@@ -54,6 +52,38 @@ export const RecordListFragment = ({
     null
   );
   const [displayType, setDisplayType] = useState("card");
+
+  const { setPartialProps, reload } = useForm(
+    {
+      type: undefined,
+      location: undefined,
+      reason: undefined,
+      from: undefined,
+      to: undefined,
+    },
+    "recordlist",
+    (data) => {
+      dispatch(recordlistSlice.actions.set(data));
+    }
+  );
+
+  useDebugImageCard();
+
+  const onRecordItemSelected = (item: RecordItemProps) => {
+    setSelectedCard(item);
+    dispatch(
+      navigateSlice.actions.moveTo({
+        name: `${item.reason} #${item.id}`,
+        path: `recordlist/${item.id}`,
+      })
+    );
+  };
+
+  const onHandlingUnmount = () => {
+    setSelectedCard(null);
+    reload();
+    dispatch(navigateSlice.actions.back());
+  };
 
   return (
     <Container>
@@ -85,6 +115,9 @@ export const RecordListFragment = ({
                 initialType={displayType}
                 onChange={setDisplayType}
               />
+              <Button type={"primary"} onClick={exportRecordList}>
+                导出数据
+              </Button>
             </>
           )}
         </FloatRight>
@@ -121,11 +154,17 @@ export const RecordListFragment = ({
 
 const Container = styled.div`
   height: 100%;
-  padding: 0 2rem 0 2rem;
+  display: grid;
+  grid-template-rows: 5rem 1fr;
+  grid-template-columns: 26rem 1fr;
+  grid-template-areas:
+    "aside header"
+    "aside main";
 `;
 
 const RecordHeader = styled.div`
-  padding-top: 2rem;
+  grid-area: header;
+  padding: 2rem 2rem 0 2rem;
   width: 100%;
   height: 6rem;
 `;
@@ -133,6 +172,16 @@ const RecordHeader = styled.div`
 const FloatLeft = styled.div`
   float: left;
   padding-left: 0.5rem;
+`;
+
+const Content = styled.header`
+  grid-area: main;
+  padding: 0 2rem;
+`;
+
+const Aside = styled.header`
+  grid-area: aside;
+  overflow: hidden auto;
 `;
 
 const FloatRight = styled.div`
