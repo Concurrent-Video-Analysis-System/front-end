@@ -8,7 +8,7 @@ import { useForm } from "../../utils/form";
 import { recordlistSlice } from "./recordlist.slice";
 import { useDispatch } from "react-redux";
 import { Navigate, Route, Routes } from "react-router";
-import { DeviceFragment } from "./device";
+import { DeviceIndexFragment } from "./device";
 
 export const MainFragment = () => {
   useDocumentTitle("违规行为列表");
@@ -22,7 +22,7 @@ export const MainFragment = () => {
       <Main>
         <Routes>
           <Route path={"recordlist/*"} element={<RecordListFragment />} />
-          <Route path={"device/*"} element={<DeviceFragment />} />
+          <Route path={"device/*"} element={<DeviceIndexFragment />} />
           <Navigate to={"recordlist"} />
         </Routes>
       </Main>
