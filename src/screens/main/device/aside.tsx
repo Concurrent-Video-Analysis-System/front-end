@@ -9,7 +9,16 @@ import { DownOutlined } from "@ant-design/icons";
 
 // 好像可以不设置treeData，改为使用TreeNode手动构建
 
-export const DeviceAside = () => {
+export const DeviceAside = ({
+  onCreateTask,
+  onSelectItem,
+}: {
+  onCreateTask: (deviceIdList: string[]) => void;
+  onSelectItem: (
+    itemType: string,
+    id: { locationId?: string; deviceId?: string }
+  ) => void;
+}) => {
   const deviceSelector = useSelector(selectDeviceReducer);
   const locationSelector = useSelector(selectLocationReducer);
 
@@ -56,8 +65,35 @@ export const DeviceAside = () => {
     setCheckedKeys(getKeys(treeData));
   };
 
-  const UncheckAll = () => {
+  const uncheckAll = () => {
     setCheckedKeys([] as React.Key[]);
+  };
+
+  const [selectedKeys, setSelectedKeys] = useState([] as React.Key[]);
+  const onSelect = (selectedKeys: React.Key[]) => {
+    setSelectedKeys(selectedKeys);
+    if (selectedKeys.length === 0) {
+      onSelectItem("none", {});
+    } else {
+      const idList = selectedKeys[0].toString().split("-");
+      onSelectItem(idList.length === 1 ? "location" : "device", {
+        locationId: idList[0],
+        deviceId: idList[1],
+      });
+    }
+  };
+
+  const createTask = () => {
+    setSelectedKeys([]);
+    const deviceKeys = checkedKeys.reduce((prev, item) => {
+      const deviceId = item.toString().split("-")[1];
+      if (deviceId) {
+        return [...prev, deviceId];
+      } else {
+        return prev;
+      }
+    }, [] as string[]);
+    onCreateTask(deviceKeys);
   };
 
   return (
@@ -65,14 +101,14 @@ export const DeviceAside = () => {
       <TopContainer>
         <Button
           type={"default"}
-          onClick={allHaveChecked() ? UncheckAll : checkAll}
+          onClick={allHaveChecked() ? uncheckAll : checkAll}
         >
           {allHaveChecked() ? "取消全选" : "全选"}
         </Button>
         <Button
           type={"primary"}
           disabled={noneHaveChecked()}
-          onClick={() => console.log(checkedKeys)}
+          onClick={createTask}
         >
           创建任务
         </Button>
@@ -83,6 +119,8 @@ export const DeviceAside = () => {
         style={{ padding: "1rem 0" }}
         onCheck={onCheck}
         checkedKeys={checkedKeys}
+        onSelect={onSelect}
+        selectedKeys={selectedKeys}
         treeData={treeData}
         titleRender={(nodeData) => (
           <TreeNodeItem>{nodeData.title}</TreeNodeItem>
