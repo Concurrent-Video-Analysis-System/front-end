@@ -81,6 +81,62 @@ const deviceTemplate: DeviceProps[] = [
     viewport: "N3-203",
     rtsp: "rtsp://sdu/n3-203",
   },
+  {
+    id: 9,
+    location_id: 3,
+    location_name: "山东大学网点",
+    viewport: "N3-203",
+    rtsp: "rtsp://sdu/n3-203",
+  },
+  {
+    id: 10,
+    location_id: 3,
+    location_name: "山东大学网点",
+    viewport: "N3-203",
+    rtsp: "rtsp://sdu/n3-203",
+  },
+  {
+    id: 11,
+    location_id: 3,
+    location_name: "山东大学网点",
+    viewport: "N3-203",
+    rtsp: "rtsp://sdu/n3-203",
+  },
+  {
+    id: 12,
+    location_id: 3,
+    location_name: "山东大学网点",
+    viewport: "N3-203",
+    rtsp: "rtsp://sdu/n3-203",
+  },
+  {
+    id: 13,
+    location_id: 3,
+    location_name: "山东大学网点",
+    viewport: "N3-203",
+    rtsp: "rtsp://sdu/n3-203",
+  },
+  {
+    id: 14,
+    location_id: 3,
+    location_name: "山东大学网点",
+    viewport: "N3-203",
+    rtsp: "rtsp://sdu/n3-203",
+  },
+  {
+    id: 15,
+    location_id: 3,
+    location_name: "山东大学网点",
+    viewport: "N3-203",
+    rtsp: "rtsp://sdu/n3-203",
+  },
+  {
+    id: 16,
+    location_id: 3,
+    location_name: "山东大学网点",
+    viewport: "N3-203",
+    rtsp: "rtsp://sdu/n3-203",
+  },
 ];
 
 export const useDebugDeviceLocation = () => {

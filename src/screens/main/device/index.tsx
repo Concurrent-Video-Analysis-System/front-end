@@ -7,8 +7,21 @@ export const DeviceFragment = () => {
   useDebugDeviceLocation();
 
   return (
-    <Layout>
-      <DeviceAside />
-    </Layout>
+    <Container>
+      <Aside>
+        <DeviceAside />
+      </Aside>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  display: grid;
+  grid-template-areas: "aside content";
+  grid-template-columns: 40rem 1fr;
+  height: 100%;
+`;
+
+const Aside = styled.div`
+  grid-area: aside;
+`;
