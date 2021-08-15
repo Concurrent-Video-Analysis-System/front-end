@@ -59,7 +59,9 @@ export const SurveillanceHeader = () => {
 
 const HeaderContainer = styled.div`
   background-color: #363636;
-  height: 100%;
+  position: fixed;
+  height: 5.5rem;
+  width: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
