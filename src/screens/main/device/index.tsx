@@ -34,6 +34,9 @@ export const DeviceIndexFragment = () => {
               navigate(`location/${itemId.locationId}`);
             } else if (itemType === "device") {
               navigate(`${itemId.deviceId}`);
+            } else {
+              // itemType === "none"
+              navigate(`/device`);
             }
           }}
         />
