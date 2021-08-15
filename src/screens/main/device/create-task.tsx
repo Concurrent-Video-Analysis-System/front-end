@@ -24,6 +24,43 @@ interface TaskProps {
   reasonList?: string[];
 }
 
+export const DeviceTagList = ({
+  deviceList,
+  preStr,
+  afterStr,
+  clickable,
+}: {
+  deviceList: DeviceProps[];
+  preStr?: string;
+  afterStr?: string;
+  clickable?: boolean;
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <TitleContainer>
+      {preStr}
+      {deviceList.map((item) => (
+        <DeviceTag>
+          {" "}
+          {clickable ? (
+            <a
+              onClick={() => {
+                navigate(`/device/${item.id}`);
+              }}
+            >
+              {item?.viewport}
+            </a>
+          ) : (
+            item?.viewport
+          )}{" "}
+        </DeviceTag>
+      ))}
+      {afterStr}
+    </TitleContainer>
+  );
+};
+
 export const CreateTaskFragment = ({
   deviceIdList,
 }: {
@@ -53,13 +90,11 @@ export const CreateTaskFragment = ({
 
   return (
     <Container>
-      <TitleContainer>
-        为
-        {deviceList.map((item) => (
-          <DeviceTag>{item?.viewport}</DeviceTag>
-        ))}
-        创建监察任务：
-      </TitleContainer>
+      <DeviceTagList
+        deviceList={deviceList}
+        preStr={"为"}
+        afterStr={"创建监查任务"}
+      />
       <Divider />
       <Form
         name="basic"
