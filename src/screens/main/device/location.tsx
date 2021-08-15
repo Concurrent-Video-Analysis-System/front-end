@@ -85,11 +85,6 @@ const Container = styled.div`
   padding: 2rem 4rem;
 `;
 
-const Title = styled(Typography.Title)`
-  display: inline;
-  margin: 2rem 2rem;
-`;
-
 const ParagraphContainer = styled.div`
   font-size: 1.8rem;
   margin-bottom: 1rem;
@@ -98,7 +93,7 @@ const ParagraphContainer = styled.div`
 const ParagraphLabel = styled.div`
   display: inline-block;
   text-align: right;
-  width: 9.2rem;
+  width: 9.6rem;
 `;
 
 const Paragraph = styled(Typography.Paragraph)`
