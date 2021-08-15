@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import { selectLocationReducer } from "./location.slice";
 import { selectDeviceReducer } from "./device.slice";

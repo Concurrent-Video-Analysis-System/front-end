@@ -110,7 +110,7 @@ export const DeviceAside = ({
           disabled={noneHaveChecked()}
           onClick={createTask}
         >
-          创建任务
+          添加新任务
         </Button>
       </TopContainer>
       <Tree

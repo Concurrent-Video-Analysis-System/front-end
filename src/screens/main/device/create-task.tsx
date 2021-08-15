@@ -15,6 +15,7 @@ import {
   TimePicker,
   TreeSelect,
 } from "antd";
+import { useDocumentTitle } from "utils/document-title";
 
 interface TaskProps {
   name?: string;
@@ -66,6 +67,7 @@ export const CreateTaskFragment = ({
 }: {
   deviceIdList: string[];
 }) => {
+  useDocumentTitle("创建新任务");
   const navigate = useNavigate();
   const deviceSelector = useSelector(selectDeviceReducer);
 
