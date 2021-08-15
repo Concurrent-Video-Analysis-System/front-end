@@ -1,17 +1,12 @@
-import { Checkbox, Layout, Menu } from "antd";
 import { useDebugDeviceLocation } from "./__debug__/__debug_add_device__";
 import styled from "@emotion/styled";
 import { DeviceAside } from "./aside";
-import { Routes, useNavigate } from "react-router-dom";
-import { Route, useParams } from "react-router";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { LocationFragment } from "./location";
-import { useSelector } from "react-redux";
-import { selectDeviceReducer } from "./device.slice";
-import { selectLocationReducer } from "./location.slice";
 import { DeviceFragment } from "./device";
 import { CreateTaskFragment } from "./create-task";
 import { OverviewFragment } from "./overview";
-import { useDocumentTitle } from "../../../utils/document-title";
+import { useDocumentTitle } from "utils/document-title";
 import { useState } from "react";
 
 export const DeviceIndexFragment = () => {

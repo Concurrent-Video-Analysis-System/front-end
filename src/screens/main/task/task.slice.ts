@@ -9,6 +9,7 @@ export interface TaskProps {
   isEverydayTask: boolean;
   deviceId: number[];
   reasonId: number[];
+  state: string;
 }
 
 interface State {
