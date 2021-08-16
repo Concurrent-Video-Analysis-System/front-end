@@ -1,7 +1,7 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { HomeOutlined } from "@ant-design/icons";
-import { Button, Divider, Popover } from "antd";
+import { Button, Popover } from "antd";
 import { useAuthContext } from "contexts/authorize";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -27,7 +27,9 @@ export const SurveillanceHeader = () => {
 
   return (
     <HeaderContainer>
-      <HomeOutlined style={{ padding: "0 3rem", fontSize: "2.2rem" }} />
+      <HomeNavigation onClick={() => navigate("/")}>
+        <HomeOutlined style={{ fontSize: "2.2rem" }} />
+      </HomeNavigation>
       <div style={{ paddingLeft: "2rem", borderLeft: "2px solid #808080" }}>
         海量数据智能并发解析平台
       </div>
@@ -98,6 +100,20 @@ const Navigation = styled.div`
   height: 100%;
   width: 12rem;
   font-size: 1.9rem;
+  &:hover {
+    color: #ffffff;
+    background-color: #606060;
+    transition: 0.3s ease-out;
+  }
+`;
+
+const HomeNavigation = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 1rem;
+  padding: 0 2rem;
+  height: 100%;
   &:hover {
     color: #ffffff;
     background-color: #606060;
