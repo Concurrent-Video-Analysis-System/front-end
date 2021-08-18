@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { DeviceProps, deviceSlice } from "../device.slice";
 import { LocationProps, locationSlice } from "../location.slice";
+import { ReasonProps, reasonSlice } from "../reason.slice";
 
 const locationTemplate: LocationProps[] = [
   {
@@ -177,11 +178,23 @@ const deviceTemplate: DeviceProps[] = [
   },
 ];
 
+const reasonTemplate: ReasonProps[] = [
+  {
+    id: 1,
+    name: "离岗未锁屏",
+  },
+  {
+    id: 2,
+    name: "日终封箱",
+  },
+];
+
 export const useDebugDeviceLocation = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(deviceSlice.actions.set(deviceTemplate));
     dispatch(locationSlice.actions.set(locationTemplate));
+    dispatch(reasonSlice.actions.set(reasonTemplate));
   }, []);
 };

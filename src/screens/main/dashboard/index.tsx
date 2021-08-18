@@ -15,8 +15,8 @@ import { selectRecordlistReducer } from "../recordlist.slice";
 import { selectLocationReducer } from "../device/location.slice";
 import { useDebugDeviceLocation } from "../device/__debug__/__debug_add_device__";
 import { pad } from "utils/time";
-import { useFetchRecordList } from "../../../utils/fetcher/recordlist";
-import { useFetchLocation } from "../../../utils/fetcher/location";
+import { useFetchRecordList } from "utils/fetcher/recordlist";
+import { useFetchLocation } from "utils/fetcher/location";
 
 const usePastXDays = (x: number) => {
   return useMemo(() => {
