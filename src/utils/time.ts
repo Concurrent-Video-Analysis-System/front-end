@@ -12,7 +12,7 @@ export const pad = (value: number, digits: number = 2) => {
 };
 
 const difference = (target: Date, current: Date) => {
-  return ms2Date(target.getTime() - current.getTime()).date;
+  return ms2time(target.getTime() - current.getTime()).date;
 };
 
 export const getTimeOfToday = (
@@ -41,7 +41,7 @@ const atSameDay = (date1: Date, date2: Date) => {
   );
 };
 
-const ms2Date = (milliseconds: number) => {
+const ms2time = (milliseconds: number) => {
   const bases = [24, 60, 60, 1000];
   return {
     date: new Date(

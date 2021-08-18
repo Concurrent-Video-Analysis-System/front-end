@@ -8,11 +8,14 @@ import { CreateTaskFragment } from "./create-task";
 import { OverviewFragment } from "./overview";
 import { useDocumentTitle } from "utils/document-title";
 import { useState } from "react";
+import { useFetchDevice } from "../../../utils/fetcher/device";
+import { useFetchLocation } from "../../../utils/fetcher/location";
 
 export const DeviceIndexFragment = () => {
-  useDebugDeviceLocation();
   useDocumentTitle("设备列表");
   const navigate = useNavigate();
+  useFetchDevice();
+  useFetchLocation();
 
   const [deviceIdList, setDeviceIdList] = useState([] as string[]);
 

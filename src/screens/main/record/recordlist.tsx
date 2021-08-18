@@ -10,7 +10,6 @@ import { Breadcrumb, Button, Radio } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { navigateSlice, selectNavigateReducer } from "./navigate.slice";
-import { useDebugImageCard } from "./__debug__/__debug_image_card__";
 import { Link } from "react-router-dom";
 import { useForm } from "../../../utils/form";
 import { recordlistSlice } from "../recordlist.slice";
@@ -66,8 +65,6 @@ export const RecordListFragment = () => {
       dispatch(recordlistSlice.actions.set(data));
     }
   );
-
-  useDebugImageCard();
 
   const onRecordItemSelected = (item: RecordItemProps) => {
     setSelectedCard(item);
