@@ -46,7 +46,7 @@ export const fetchHttp = async (
     // use GET as default method
     method: "GET",
     headers: {
-      Authorization: token ? `Bearer ${token}` : "",
+      Authorization: token ? `${token}` : "",
       "Content-Type": data ? "application/json" : "",
       ...headers,
     },

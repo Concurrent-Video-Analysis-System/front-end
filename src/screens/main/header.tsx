@@ -63,6 +63,7 @@ const HeaderContainer = styled.div`
   background-color: #363636;
   position: fixed;
   height: 5.5rem;
+  z-index: 3;
   width: 100%;
   display: flex;
   justify-content: flex-start;

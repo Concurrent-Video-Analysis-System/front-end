@@ -50,10 +50,10 @@ export const DeviceTagList = ({
                 navigate(`/device/${item.id}`);
               }}
             >
-              {item?.viewport}
+              {item?.name}
             </a>
           ) : (
-            item?.viewport
+            item?.name
           )}{" "}
         </DeviceTag>
       ))}
