@@ -11,18 +11,26 @@ import {
   Divider,
   Form,
   Input,
+  message,
+  Select,
   Tag,
   TimePicker,
   TreeSelect,
 } from "antd";
 import { useDocumentTitle } from "utils/document-title";
+import { useTask } from "../../../utils/task";
+import { selectReasonReducer } from "./reason.slice";
+import { useFetchReason } from "../../../utils/fetcher/reason";
+import { TaskProps } from "../task/task.slice";
+import { useDebugDeviceLocation } from "./__debug__/__debug_add_device__";
+import { usePartialState } from "../../../utils/state-pro";
 
-interface TaskProps {
-  name?: string;
-  from?: string;
-  to?: string;
-  deviceIdList?: string[];
-  reasonList?: string[];
+export interface CreateTaskProps {
+  name: string;
+  from: string;
+  to: string;
+  reasonIdList: number[];
+  state: string;
 }
 
 export const DeviceTagList = ({
@@ -31,7 +39,7 @@ export const DeviceTagList = ({
   afterStr,
   clickable,
 }: {
-  deviceList: DeviceProps[];
+  deviceList: { id: number; name: string }[];
   preStr?: string;
   afterStr?: string;
   clickable?: boolean;
@@ -67,9 +75,14 @@ export const CreateTaskFragment = ({
 }: {
   deviceIdList: string[];
 }) => {
+  // useDebugDeviceLocation();
+
   useDocumentTitle("创建新任务");
   const navigate = useNavigate();
+  useFetchReason();
+  const reasonSelector = useSelector(selectReasonReducer);
   const deviceSelector = useSelector(selectDeviceReducer);
+  const { newTask } = useTask();
 
   const deviceList = useMemo(() => {
     const newDeviceList = deviceIdList
@@ -89,6 +102,15 @@ export const CreateTaskFragment = ({
   const formItemStyle: React.CSSProperties = {
     width: "75%",
   };
+
+  const [taskFormProps, setTaskFormProps] = usePartialState<CreateTaskProps>({
+    name: "",
+    from: "",
+    to: "",
+    state: "",
+    reasonIdList: [],
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Container>
@@ -111,7 +133,15 @@ export const CreateTaskFragment = ({
           name="task_name"
           rules={[{ required: true, message: "请填写任务名称" }]}
         >
-          <Input style={formItemStyle} />
+          <Input
+            style={formItemStyle}
+            disabled={isLoading}
+            onChange={(value) =>
+              setTaskFormProps({
+                name: value.target.value,
+              })
+            }
+          />
         </Form.Item>
 
         <Form.Item
@@ -122,44 +152,94 @@ export const CreateTaskFragment = ({
           {isEverydayTask ? (
             <TimePicker.RangePicker
               style={formItemStyle}
+              disabled={isLoading}
               placeholder={["开始时间", "结束时间"]}
             />
           ) : (
             <DatePicker.RangePicker
               showTime
               style={formItemStyle}
+              disabled={isLoading}
               placeholder={["开始日期", "结束日期"]}
+              onChange={(dates) => {
+                if (dates === null) {
+                  setTaskFormProps({ from: undefined, to: undefined });
+                } else {
+                  const [fromDate, toDate] = dates;
+                  setTaskFormProps({
+                    from: fromDate?.format("YYYY-MM-DD hh:mm:ss"),
+                    to: toDate?.format("YYYY-MM-DD hh:mm:ss"),
+                  });
+                }
+              }}
             />
           )}
         </Form.Item>
 
-        <Form.Item label="每日任务" name="everyday_task">
+        {/*<Form.Item label="每日任务" name="everyday_task">
           <Checkbox
             checked={isEverydayTask}
             onChange={(e) => setIsEverydayTask(e.target.checked)}
           >
             （勾选后会在每天的固定时段自动进行）
           </Checkbox>
+        </Form.Item>*/}
+
+        <Form.Item
+          label="检测的违规类型"
+          name="task_reason"
+          rules={[{ required: true, message: "请填写需要检测的违规类型" }]}
+        >
+          <Select
+            style={formItemStyle}
+            mode="multiple"
+            disabled={isLoading}
+            allowClear
+            onChange={(value) =>
+              setTaskFormProps({
+                reasonIdList: Object.values(value || {}),
+              })
+            }
+          >
+            {reasonSelector.reasonList.map((reason) => (
+              <Select.Option value={reason.id} key={reason.id}>
+                {reason.name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
-        <Form.Item label="检测的违规类型" name="everyday_task">
-          <TreeSelect style={formItemStyle} treeCheckable>
-            <TreeSelect.TreeNode value={"1"} key={"1"} title={"违规类型#1"} />
-            <TreeSelect.TreeNode value={"2"} key={"2"} title={"违规类型#2"} />
-            <TreeSelect.TreeNode value={"3"} key={"3"} title={"违规类型#3"} />
-            <TreeSelect.TreeNode value={"4"} key={"4"} title={"违规类型#4"} />
-            <TreeSelect.TreeNode value={"5"} key={"5"} title={"违规类型#5"} />
-          </TreeSelect>
+        <Form.Item label="立即开始" name="task_state">
+          <Checkbox
+            disabled={isLoading}
+            onChange={(e) =>
+              setTaskFormProps({
+                state: e.target.checked ? "start" : "pause",
+              })
+            }
+          >
+            创建后将自动启动任务
+          </Checkbox>
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 4 }} name="submit">
-          <Button type="primary" htmlType="submit">
-            创建任务并开始
-          </Button>
           <Button
-            type="default"
-            htmlType="submit"
-            style={{ marginLeft: "2rem" }}
+            type="primary"
+            htmlType={"submit"}
+            loading={isLoading}
+            onClick={() => {
+              setIsLoading(true);
+              newTask(taskFormProps)
+                .then(() => {
+                  setIsLoading(false);
+                  message.success("任务创建成功！");
+                  navigate("/task");
+                })
+                .catch((errorMessage) => {
+                  setIsLoading(false);
+                  message.error("任务创建失败，" + errorMessage);
+                });
+            }}
           >
             创建任务
           </Button>

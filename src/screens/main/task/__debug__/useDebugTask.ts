@@ -6,22 +6,50 @@ export const taskTemplate: TaskProps[] = [
   {
     id: 1,
     name: "每日检查任务",
-    from: "2021-08-14",
-    to: "2021-08-16",
+    from: "2021-08-14 10:00:00",
+    to: "2021-08-16 12:00:00",
     isEverydayTask: false,
-    deviceId: [1, 2, 3, 4],
-    reasonId: [1, 2, 3],
-    state: "processing",
+    device: [
+      {
+        id: 1,
+        name: "三号门口",
+      },
+      {
+        id: 2,
+        name: "五号门口",
+      },
+    ],
+    reason: [
+      {
+        id: 1,
+        name: "离岗未锁屏",
+      },
+    ],
+    state: "start",
   },
   {
     id: 2,
     name: "日终封箱",
-    from: "17:00:00",
-    to: "18:00:00",
-    isEverydayTask: true,
-    deviceId: [1, 2, 3, 4],
-    reasonId: [4],
-    state: "pending",
+    from: "2021-08-15 17:00:00",
+    to: "2021-08-18 18:00:00",
+    isEverydayTask: false,
+    device: [
+      {
+        id: 1,
+        name: "三号门口",
+      },
+      {
+        id: 2,
+        name: "五号门口",
+      },
+    ],
+    reason: [
+      {
+        id: 1,
+        name: "离岗未锁屏",
+      },
+    ],
+    state: "pause",
   },
 ];
 

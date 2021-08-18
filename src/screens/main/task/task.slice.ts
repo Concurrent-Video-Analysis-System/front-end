@@ -6,9 +6,15 @@ export interface TaskProps {
   name: string;
   from: string;
   to: string;
-  isEverydayTask: boolean;
-  deviceId: number[];
-  reasonId: number[];
+  isEverydayTask?: boolean;
+  device: {
+    id: number;
+    name: string;
+  }[];
+  reason: {
+    id: number;
+    name: string;
+  }[];
   state: string;
 }
 

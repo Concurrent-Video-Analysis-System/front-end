@@ -13,27 +13,28 @@ import { useCurrentTime } from "../../../utils/time";
 import { Button, Divider } from "antd";
 import { DeviceTagList } from "../device/create-task";
 import { useMemo } from "react";
+import { useTask } from "../../../utils/task";
 
 const state2label = (state: string) => {
   switch (state) {
-    case "processing":
+    case "start":
       return {
         color: "#00ba0e",
         label: "进行中",
         icon: <PlayCircleTwoTone twoToneColor={"#00ba0e"} />,
       };
-    case "pending":
+    case "pause":
       return {
         color: "#d4a000",
         label: "等待中",
         icon: <ClockCircleTwoTone twoToneColor={"#d4a000"} />,
       };
-    case "paused":
+    /*case "paused":
       return {
         color: "#FF7080",
         label: "等待中",
         icon: <PauseCircleTwoTone twoToneColor={"#FF7080"} />,
-      };
+      };*/
     default:
       return {
         color: "#C0C0C0",
@@ -46,20 +47,26 @@ const state2label = (state: string) => {
 // Author: Morgan
 // April 10, 2020
 const ProgressBar = (config: any) => {
-  const SuperContainer = styled.div`
+  const TotalContainer = styled.div`
     width: 100%;
-    overflow: hidden;
+    margin: 1rem 0;
+    background-color: #e7e7e7;
+    border: 1px solid #c0c0c0;
   `;
 
-  const Container = styled.div`
+  const Restraint = styled.div`
+    width: 50%;
+    /*overflow-x: hidden;*/
+  `;
+
+  const AnimationBackground = styled.div`
     height: 100%;
-    margin: 1rem 0;
     display: flex;
     justify-content: center;
     align-items: center;
   `;
 
-  const Bar = styled.div`
+  const AnimationSlide = styled.div`
     min-height: 10px;
     width: calc(
       ${(config.dashWidth * 2) / Math.sin((config.deg * Math.PI) / 180)}px *
@@ -90,11 +97,13 @@ const ProgressBar = (config: any) => {
 
   return useMemo(
     () => (
-      <SuperContainer>
-        <Container>
-          <Bar />
-        </Container>
-      </SuperContainer>
+      <TotalContainer>
+        <Restraint>
+          <AnimationBackground>
+            <AnimationSlide />
+          </AnimationBackground>
+        </Restraint>
+      </TotalContainer>
     ),
     []
   );
@@ -104,7 +113,13 @@ export const TaskCard = ({ taskProps }: { taskProps: TaskProps }) => {
   const deviceSelector = useSelector(selectDeviceReducer);
   const locationSelector = useSelector(selectLocationReducer);
 
+  const { setTaskState, deleteTask } = useTask();
+
   // const currentTime = useCurrentTime();
+
+  // console.log(1);
+
+  console.log(taskProps.device);
 
   const processingAnimationConfig = {
     widthScale: 50,
@@ -121,7 +136,16 @@ export const TaskCard = ({ taskProps }: { taskProps: TaskProps }) => {
     deg: 30,
     color1: "#ffd124",
     color2: "#bb8e00",
-    speed: "0.4s",
+    speed: "0s",
+  };
+
+  const pausedAnimationConfig = {
+    widthScale: 50,
+    dashWidth: 10,
+    deg: 30,
+    color1: "#C0C0C0",
+    color2: "#C0C0C0",
+    speed: "0s",
   };
 
   return (
@@ -137,26 +161,43 @@ export const TaskCard = ({ taskProps }: { taskProps: TaskProps }) => {
           </span>
         </Title>
         <FloatRight>
-          <Button type={"default"} style={{ marginRight: "1.2rem" }}>
-            暂停任务
-          </Button>
-          <Button type={"primary"} danger>
+          {taskProps.state === "start" ? (
+            <Button
+              type={"default"}
+              style={{ marginRight: "1.2rem" }}
+              onClick={() => setTaskState({ id: taskProps.id, order: "pause" })}
+            >
+              暂停任务
+            </Button>
+          ) : (
+            <Button
+              type={"default"}
+              style={{ backgroundColor: "#4ae75a", marginRight: "1.2rem" }}
+              onClick={() => setTaskState({ id: taskProps.id, order: "start" })}
+            >
+              开始任务
+            </Button>
+          )}
+          <Button
+            type={"primary"}
+            danger
+            onClick={() => {
+              deleteTask({ id: taskProps.id });
+            }}
+          >
             删除任务
           </Button>
         </FloatRight>
       </TitleContainer>
-      {taskProps.state === "processing" ? (
+      {taskProps.state === "start" ? (
         <ProgressBar {...processingAnimationConfig} />
       ) : (
-        <ProgressBar {...pendingAnimationConfig} />
+        /*<ProgressBar {...pendingAnimationConfig} />*/
+        <ProgressBar {...pausedAnimationConfig} />
       )}
       <Content>
         调用的设备：
-        <DeviceTagList
-          deviceList={deviceSelector.deviceList.filter(
-            (device) => device.id in taskProps.deviceId
-          )}
-        />
+        <DeviceTagList deviceList={taskProps.device} />
       </Content>
     </CardContainer>
   );
