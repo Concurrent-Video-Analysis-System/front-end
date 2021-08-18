@@ -24,7 +24,7 @@ export const OverviewFragment = () => {
           </Typography.Title>
           <DeviceTagList
             deviceList={deviceSelector.deviceList.filter(
-              (device) => device.location_id === location.id
+              (device) => device.location.id === location.id
             )}
             clickable
           />

@@ -26,7 +26,7 @@ export const LocationFragment = () => {
       return [] as DeviceProps[];
     }
     return deviceSelector.deviceList.filter(
-      (device) => device.location_id === location.id
+      (device) => device.location.id === location.id
     );
   }, [location, deviceSelector.deviceList]);
 

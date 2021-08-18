@@ -25,16 +25,16 @@ export const DeviceAside = ({
   const treeData = locationSelector.locationList.map((location) => {
     return {
       key: location.id.toString(),
-      title: location.name + ` (${location.device_count})`,
+      title: location.name,
       description: location.location,
       children: deviceSelector.deviceList
         .filter((device) => {
-          return device.location_id === location.id;
+          return device.location.id === location.id;
         })
         .map((device) => {
           return {
             key: location.id.toString() + "-" + device.id.toString(),
-            title: device.viewport,
+            title: device.name,
             description: device.rtsp,
             children: [] as TreeItem[],
           };

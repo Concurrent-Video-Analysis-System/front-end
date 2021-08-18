@@ -3,9 +3,11 @@ import { RootState } from "store";
 
 export interface DeviceProps {
   id: number;
-  location_id: number;
-  location_name: string;
-  viewport: string;
+  location: {
+    id: number;
+    name: string;
+  };
+  name: string;
   rtsp: string;
 }
 

@@ -37,7 +37,7 @@ export const DeviceFragment = () => {
   return (
     <Container>
       <Typography.Title level={2} editable={editableConfig("2rem")}>
-        {device?.location_name + " - " + device?.viewport}
+        {device?.location.name + " - " + device?.name}
       </Typography.Title>
 
       <ParagraphContainer>
@@ -48,7 +48,7 @@ export const DeviceFragment = () => {
       <ParagraphContainer>
         <ParagraphLabel>网点名称：</ParagraphLabel>
         <Paragraph editable={editableConfig("2rem")}>
-          {device?.location_name}
+          {device?.location.name}
         </Paragraph>
       </ParagraphContainer>
 
