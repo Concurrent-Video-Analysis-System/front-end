@@ -18,6 +18,7 @@ import {
   recordfilterSlice,
   selectRecordfilterReducer,
 } from "../recordfilter.slice";
+import { TaskProps } from "./task.slice";
 
 const { SubMenu } = Menu;
 
@@ -66,20 +67,20 @@ export const TaskAsidePanel = ({
 }: {
   setPartialProps: (props: any) => void;
 }) => {
-  const [filter, setFilter] = useState({
+  const [filter, setFilter] = useState<TaskProps>({
+    id: 0,
+    name: "",
+    state: "",
     from: "",
     to: "",
     isEverydayTask: false,
-    deviceId: [] as number[],
-    reasonId: [] as number[],
+    device: [] as { id: number; name: "string" }[],
+    reason: [] as { id: number; name: "string" }[],
   });
 
-  useFilters(
-    ["from", "to", "isEverydayTask", "deviceId", "reasonId"],
-    (filterName, itemList) => {
-      setFilter({ ...filter, [filterName]: itemList });
-    }
-  );
+  useFilters(["from", "to", "device", "reason"], (filterName, itemList) => {
+    setFilter({ ...filter, [filterName]: itemList });
+  });
 
   return (
     <Menu
@@ -110,12 +111,7 @@ export const TaskAsidePanel = ({
             >
               <Form.Item label={"设备编号"}>
                 <FormSelector
-                  filterList={filter.deviceId.map((item) => {
-                    return {
-                      id: item,
-                      name: item.toString(),
-                    };
-                  })}
+                  filterList={filter.device}
                   onChange={(value) =>
                     setPartialProps({
                       location: value ? String(value) : undefined,
@@ -126,12 +122,7 @@ export const TaskAsidePanel = ({
 
               <Form.Item label={"违规类型"}>
                 <FormSelector
-                  filterList={filter.reasonId.map((item) => {
-                    return {
-                      id: item,
-                      name: item.toString(),
-                    };
-                  })}
+                  filterList={filter.reason}
                   onChange={(value) => {
                     setPartialProps({
                       reason: value ? String(value) : undefined,
