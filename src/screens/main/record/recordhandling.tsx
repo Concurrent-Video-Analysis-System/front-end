@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { Button, Divider, Typography, Popconfirm } from "antd";
 import { RecordItemProps } from "./recordlist-component/record-content";
 import { useProcess } from "../../../utils/process";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useParams } from "react-router";
+import { selectRecordlistReducer } from "../recordlist.slice";
+import { useSelector } from "react-redux";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -70,10 +73,8 @@ const HandlerOnOther = ({
 };
 
 export const RecordHandlingFragment = ({
-  recordItem,
   onUnmount,
 }: {
-  recordItem: RecordItemProps | null;
   onUnmount?: () => void;
 }) => {
   useEffect(() => {
@@ -85,6 +86,14 @@ export const RecordHandlingFragment = ({
   }, []);
 
   const navigate = useNavigate();
+  const { recordId } = useParams();
+
+  const recordlistSelector = useSelector(selectRecordlistReducer);
+  const recordItem = useMemo(() => {
+    return recordlistSelector.recordlist.find((record) => {
+      return +record.id === +recordId;
+    });
+  }, [recordId]);
 
   const [processType, setProcessedType] = useState<string | null>(null);
   const { isLoading, setProcess } = useProcess(recordItem?.id, () => {
