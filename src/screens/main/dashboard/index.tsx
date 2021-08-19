@@ -56,12 +56,13 @@ export const DashBoard = () => {
     const reason = record.reason;
     const date = record.date?.split(" ")[0];
     if (reason && date) {
-      if (prev[reason]) {
-        prev[reason][date] = (prev[reason][date] || 0) + 1;
-      } else {
+      if (!prev[reason]) {
         prev[reason] = Object.fromEntries(
           pastDayList.map((dayString) => [dayString, 0])
         );
+      }
+      if (pastDayList.includes(date)) {
+        prev[reason][date] = (prev[reason][date] || 0) + 1;
       }
     }
     return prev;
@@ -73,13 +74,12 @@ export const DashBoard = () => {
     const reason = record.reason;
     const location = record.location;
     if (reason && location) {
-      if (prev[reason]) {
-        prev[reason][location] = (prev[reason][location] || 0) + 1;
-      } else {
+      if (!prev[reason]) {
         prev[reason] = Object.fromEntries(
           locationSelector.locationList.map((location) => [location.name, 0])
         );
       }
+      prev[reason][location] = (prev[reason][location] || 0) + 1;
     }
     return prev;
   }, {} as { [type in string]: { [date in string]: number } });
@@ -90,13 +90,12 @@ export const DashBoard = () => {
     const reason = record.reason;
     const time = record.date?.split(" ")[1];
     if (reason && time) {
-      if (prev[reason]) {
-        prev[reason][time] = (prev[reason][time] || 0) + 1;
-      } else {
+      if (!prev[reason]) {
         prev[reason] = Object.fromEntries(
           timeList.map((timeString) => [timeString, 0])
         );
       }
+      prev[reason][time] = (prev[reason][time] || 0) + 1;
     }
     return prev;
   }, {} as { [type in string]: { [time in string]: number } });
@@ -186,7 +185,7 @@ const Header = styled.div`
 `;
 
 const ChartContainer = styled.div<{ id: string }>`
-  grid-area: chart${(props) => props.id};
+  grid-area: chart ${(props) => props.id};
   display: flex;
   justify-content: center;
   align-items: center;
