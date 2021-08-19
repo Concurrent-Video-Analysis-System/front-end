@@ -17,14 +17,18 @@ import {
   recordfilterSlice,
   selectRecordfilterReducer,
 } from "../recordfilter.slice";
+import { selectLocationReducer } from "../device/location.slice";
+import { selectReasonReducer } from "../device/reason.slice";
+import { useFetchLocation } from "../../../utils/fetcher/location";
+import { useFetchReason } from "../../../utils/fetcher/reason";
 
 const { SubMenu } = Menu;
 
 const FormSelector = ({
-  filterList,
+  optionList,
   onChange,
 }: {
-  filterList: FilterListItem[];
+  optionList: { id: number; name: string }[];
   onChange: (value: unknown) => void;
 }) => {
   return (
@@ -38,8 +42,8 @@ const FormSelector = ({
       }
       onChange={(value) => onChange(value)}
     >
-      {filterList?.map((filterName, index) => (
-        <Select.Option value={index}>{filterName}</Select.Option>
+      {optionList?.map((option) => (
+        <Select.Option value={option.id}>{option.name}</Select.Option>
       ))}
     </Select>
   );
@@ -65,15 +69,12 @@ export const AsidePanel = ({
 }: {
   setPartialProps: (props: any) => void;
 }) => {
-  const dispatch = useDispatch();
-  const filterSelector = useSelector(selectRecordfilterReducer);
-  const recordlistSelector = useSelector(selectRecordlistReducer);
+  useFetchLocation();
+  useFetchReason();
 
-  useFilters(["location", "reason", "from", "to"], (filterName, itemList) => {
-    dispatch(
-      recordfilterSlice.actions.setFilter({ name: filterName, value: itemList })
-    );
-  });
+  const recordlistSelector = useSelector(selectRecordlistReducer);
+  const locationSelector = useSelector(selectLocationReducer);
+  const reasonSelector = useSelector(selectReasonReducer);
 
   // use for badge
   const [pendingItemsCount, setPendingItemsCount] = useState(0);
@@ -88,7 +89,6 @@ export const AsidePanel = ({
   return (
     <Menu
       style={{ width: "100%", height: "100%" }}
-      defaultSelectedKeys={["pending"]}
       defaultOpenKeys={["list", "filter"]}
       mode="inline"
       onClick={(event) => setPartialProps({ type: event.key })}
@@ -116,7 +116,10 @@ export const AsidePanel = ({
             >
               <Form.Item label={"营业网点"}>
                 <FormSelector
-                  filterList={filterSelector.locationList}
+                  optionList={locationSelector.locationList.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                  }))}
                   onChange={(value) =>
                     setPartialProps({
                       location: value ? String(value) : undefined,
@@ -127,7 +130,10 @@ export const AsidePanel = ({
 
               <Form.Item label={"违规类型"}>
                 <FormSelector
-                  filterList={filterSelector.reasonList}
+                  optionList={reasonSelector.reasonList.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                  }))}
                   onChange={(value) => {
                     setPartialProps({
                       reason: value ? String(value) : undefined,

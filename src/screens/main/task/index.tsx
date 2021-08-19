@@ -19,7 +19,7 @@ export const TaskIndexFragment = () => {
   const { setPartialProps, reload } = useForm(
     {
       type: undefined,
-      location: undefined,
+      device: undefined,
       reason: undefined,
       from: undefined,
       to: undefined,

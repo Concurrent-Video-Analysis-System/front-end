@@ -19,14 +19,19 @@ import {
   selectRecordfilterReducer,
 } from "../recordfilter.slice";
 import { TaskProps } from "./task.slice";
+import { useFetchLocation } from "../../../utils/fetcher/location";
+import { useFetchReason } from "../../../utils/fetcher/reason";
+import { selectLocationReducer } from "../device/location.slice";
+import { selectReasonReducer } from "../device/reason.slice";
+import { selectDeviceReducer } from "../device/device.slice";
 
 const { SubMenu } = Menu;
 
 const FormSelector = ({
-  filterList,
+  optionList,
   onChange,
 }: {
-  filterList: FilterListItem[];
+  optionList: { id: number; name: string }[];
   onChange: (value: unknown) => void;
 }) => {
   return (
@@ -40,8 +45,8 @@ const FormSelector = ({
       }
       onChange={(value) => onChange(value)}
     >
-      {filterList?.map((filterName, index) => (
-        <Select.Option value={index}>{filterName}</Select.Option>
+      {optionList?.map((option) => (
+        <Select.Option value={option.id}>{option.name}</Select.Option>
       ))}
     </Select>
   );
@@ -67,20 +72,10 @@ export const TaskAsidePanel = ({
 }: {
   setPartialProps: (props: any) => void;
 }) => {
-  const [filter, setFilter] = useState<TaskProps>({
-    id: 0,
-    name: "",
-    state: "",
-    from: "",
-    to: "",
-    isEverydayTask: false,
-    device: [] as { id: number; name: "string" }[],
-    reason: [] as { id: number; name: "string" }[],
-  });
-
-  useFilters(["from", "to", "device", "reason"], (filterName, itemList) => {
-    setFilter({ ...filter, [filterName]: itemList });
-  });
+  useFetchLocation();
+  useFetchReason();
+  const deviceSelector = useSelector(selectDeviceReducer);
+  const reasonSelector = useSelector(selectReasonReducer);
 
   return (
     <Menu
@@ -109,12 +104,15 @@ export const TaskAsidePanel = ({
               wrapperCol={{ span: "1rem" }}
               layout="horizontal"
             >
-              <Form.Item label={"设备编号"}>
+              <Form.Item label={"网点"}>
                 <FormSelector
-                  filterList={filter.device}
+                  optionList={deviceSelector.deviceList.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                  }))}
                   onChange={(value) =>
                     setPartialProps({
-                      location: value ? String(value) : undefined,
+                      device: value ? String(value) : undefined,
                     })
                   }
                 />
@@ -122,7 +120,10 @@ export const TaskAsidePanel = ({
 
               <Form.Item label={"违规类型"}>
                 <FormSelector
-                  filterList={filter.reason}
+                  optionList={reasonSelector.reasonList.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                  }))}
                   onChange={(value) => {
                     setPartialProps({
                       reason: value ? String(value) : undefined,
