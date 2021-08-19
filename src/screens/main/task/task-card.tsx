@@ -110,16 +110,8 @@ const ProgressBar = (config: any) => {
 };
 
 export const TaskCard = ({ taskProps }: { taskProps: TaskProps }) => {
-  const deviceSelector = useSelector(selectDeviceReducer);
-  const locationSelector = useSelector(selectLocationReducer);
-
   const { setTaskState, deleteTask } = useTask();
-
   // const currentTime = useCurrentTime();
-
-  // console.log(1);
-
-  console.log(taskProps.device);
 
   const processingAnimationConfig = {
     widthScale: 50,
@@ -192,8 +184,8 @@ export const TaskCard = ({ taskProps }: { taskProps: TaskProps }) => {
       {taskProps.state === "start" ? (
         <ProgressBar {...processingAnimationConfig} />
       ) : (
-        /*<ProgressBar {...pendingAnimationConfig} />*/
-        <ProgressBar {...pausedAnimationConfig} />
+        <ProgressBar {...pendingAnimationConfig} />
+        /*<ProgressBar {...pausedAnimationConfig} />*/
       )}
       <Content>
         调用的设备：

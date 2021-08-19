@@ -139,7 +139,7 @@ export const RecordListFragment = () => {
               />
             }
           />
-          <Navigate to={"/"} />
+          <Navigate to={"/recordlist"} />
         </Routes>
       </Content>
       <Aside>

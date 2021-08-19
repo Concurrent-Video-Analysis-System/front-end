@@ -11,7 +11,6 @@ import { useCurrentTime } from "utils/time";
 export const TaskIndexFragment = () => {
   const dispatch = useDispatch();
   const taskSelector = useSelector(selectTaskReducer);
-  useDebugTask();
 
   const currentTime = useCurrentTime();
 
