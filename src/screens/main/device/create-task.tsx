@@ -167,8 +167,8 @@ export const CreateTaskFragment = ({
                 } else {
                   const [fromDate, toDate] = dates;
                   setTaskFormProps({
-                    from: fromDate?.format("YYYY-MM-DD hh:mm:ss"),
-                    to: toDate?.format("YYYY-MM-DD hh:mm:ss"),
+                    from: fromDate?.format("YYYY-MM-DD HH:mm:ss"),
+                    to: toDate?.format("YYYY-MM-DD HH:mm:ss"),
                   });
                 }
               }}
