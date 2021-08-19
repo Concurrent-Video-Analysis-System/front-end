@@ -53,7 +53,7 @@ const StatefulProgressBar = ({
 }) => {
   const config = useMemo(() => {
     const commonConfig = {
-      widthScale: 50,
+      widthScale: 100,
       dashWidth: 10,
       deg: 30,
     };
@@ -61,7 +61,7 @@ const StatefulProgressBar = ({
     const processingConfig = {
       color1: "#38ef06",
       color2: "#009311",
-      speed: "0.4s",
+      speed: "0.5s",
     };
     const pendingConfig = { color1: "#ffd124", color2: "#bb8e00", speed: "0s" };
     const pausedConfig = { color1: "#C0C0C0", color2: "#C0C0C0", speed: "0s" };
@@ -81,7 +81,7 @@ const StatefulProgressBar = ({
         { ...commonConfig, ...pendingConfig };
   }, [state, value]);
 
-  return <ProgressBar config={config} />;
+  return useMemo(() => <ProgressBar config={config} />, [state, value]);
 };
 
 // Author: Morgan
@@ -189,7 +189,7 @@ export const TaskCard = ({
         ? "已完成"
         : currentTime.diff(fromMoment, "seconds") > 0
         ? "将在 " + toMoment.from(currentTime) + "完成"
-        : "将在 " + currentTime.from(fromMoment) + "开始",
+        : "将在 " + fromMoment.from(currentTime) + "开始",
     [currentTime, fromMoment, toMoment]
   );
 
@@ -211,7 +211,7 @@ export const TaskCard = ({
           </span>
         </Title>
         <FloatRight>
-          {processState === ("processing" || "pending") ? (
+          {processState === "processing" || processState === "pending" ? (
             <Button
               type={"default"}
               style={{ marginRight: "1.2rem" }}
