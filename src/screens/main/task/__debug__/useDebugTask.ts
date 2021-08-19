@@ -51,6 +51,54 @@ export const taskTemplate: TaskProps[] = [
     ],
     state: "pause",
   },
+  {
+    id: 3,
+    name: "手机拍屏违规检测",
+    from: "2021-08-19 15:00:00",
+    to: "2021-08-19 16:00:00",
+    isEverydayTask: false,
+    device: [
+      {
+        id: 1,
+        name: "三号门口",
+      },
+      {
+        id: 2,
+        name: "五号门口",
+      },
+    ],
+    reason: [
+      {
+        id: 1,
+        name: "手机拍照",
+      },
+    ],
+    state: "start",
+  },
+  {
+    id: 4,
+    name: "日终封箱",
+    from: "2021-08-15 17:00:00",
+    to: "2021-08-18 18:00:00",
+    isEverydayTask: false,
+    device: [
+      {
+        id: 1,
+        name: "三号门口",
+      },
+      {
+        id: 2,
+        name: "五号门口",
+      },
+    ],
+    reason: [
+      {
+        id: 1,
+        name: "离岗未锁屏",
+      },
+    ],
+    state: "pause",
+  },
 ];
 
 export const useDebugTask = () => {

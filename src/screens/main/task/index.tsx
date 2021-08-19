@@ -6,13 +6,15 @@ import { selectTaskReducer, taskSlice } from "./task.slice";
 import { useDebugTask } from "./__debug__/useDebugTask";
 import { TaskCard } from "./task-card";
 import { Divider } from "antd";
-import { useCurrentTime } from "utils/time";
+import { updateCurrentTime, useCurrentTime } from "utils/time";
+import { useEffect } from "react";
 
 export const TaskIndexFragment = () => {
   const dispatch = useDispatch();
   const taskSelector = useSelector(selectTaskReducer);
 
   const currentTime = useCurrentTime();
+  useEffect(() => updateCurrentTime, []);
 
   const { setPartialProps, reload } = useForm(
     {
@@ -35,15 +37,11 @@ export const TaskIndexFragment = () => {
       </Aside>
       <Header>
         <Title>任务列表</Title>
-        <Title style={{ marginLeft: "2rem" }}>
-          当前时间：
-          {`${currentTime.getHours()}:${currentTime.getMinutes()}:${currentTime.getSeconds()}`}
-        </Title>
-        <Divider />
+        <SmallDivider />
       </Header>
       <Content>
         {taskSelector.taskList.map((item) => (
-          <TaskCard taskProps={item} />
+          <TaskCard taskProps={item} currentTime={currentTime} />
         ))}
       </Content>
     </Container>
@@ -58,6 +56,10 @@ const Container = styled.div`
   grid-template-areas:
     "aside header"
     "aside content";
+`;
+
+const SmallDivider = styled(Divider)`
+  margin: 1rem 0;
 `;
 
 const Header = styled.div`

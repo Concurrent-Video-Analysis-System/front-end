@@ -186,7 +186,7 @@ const Header = styled.div`
 `;
 
 const ChartContainer = styled.div<{ id: string }>`
-  grid-area: chart ${(props) => props.id};
+  grid-area: chart${(props) => props.id};
   display: flex;
   justify-content: center;
   align-items: center;

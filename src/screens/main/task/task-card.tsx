@@ -2,18 +2,15 @@ import { TaskProps } from "./task.slice";
 import styled from "@emotion/styled";
 import {
   ClockCircleTwoTone,
-  PauseCircleTwoTone,
   PlayCircleTwoTone,
   QuestionCircleTwoTone,
 } from "@ant-design/icons";
-import { useSelector } from "react-redux";
-import { selectDeviceReducer } from "../device/device.slice";
-import { selectLocationReducer } from "../device/location.slice";
-import { useCurrentTime } from "../../../utils/time";
 import { Button, Divider } from "antd";
 import { DeviceTagList } from "../device/create-task";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useTask } from "../../../utils/task";
+import moment from "moment";
+import { updateCurrentTime } from "../../../utils/time";
 
 const state2label = (state: string) => {
   switch (state) {
@@ -46,7 +43,7 @@ const state2label = (state: string) => {
 
 // Author: Morgan
 // April 10, 2020
-const ProgressBar = (config: any) => {
+const ProgressBar = ({ config }: { config: any }) => {
   const TotalContainer = styled.div`
     width: 100%;
     margin: 1rem 0;
@@ -55,7 +52,7 @@ const ProgressBar = (config: any) => {
   `;
 
   const Restraint = styled.div`
-    width: 50%;
+    width: ${config.process * 100}%;
     /*overflow-x: hidden;*/
   `;
 
@@ -95,6 +92,8 @@ const ProgressBar = (config: any) => {
     will-change: background-position;
   `;
 
+  console.log(config.process);
+
   return useMemo(
     () => (
       <TotalContainer>
@@ -109,9 +108,36 @@ const ProgressBar = (config: any) => {
   );
 };
 
-export const TaskCard = ({ taskProps }: { taskProps: TaskProps }) => {
+export const TaskCard = ({
+  taskProps,
+  currentTime,
+}: {
+  taskProps: TaskProps;
+  currentTime: moment.Moment;
+}) => {
   const { setTaskState, deleteTask } = useTask();
-  // const currentTime = useCurrentTime();
+
+  const getProcessPercentage = () => {
+    const fromMoment = moment(taskProps.from);
+    const toMoment = moment(taskProps.to);
+    let result =
+      currentTime.diff(fromMoment, "seconds") /
+      toMoment.diff(fromMoment, "seconds");
+    result = Math.min(1, Math.max(0, result));
+    return result;
+  };
+
+  const getProcessLabel = () => {
+    const fromMoment = moment(taskProps.from);
+    const toMoment = moment(taskProps.to);
+    if (currentTime.diff(toMoment, "seconds") > 0) {
+      return "已完成";
+    } else if (currentTime.diff(fromMoment, "seconds") > 0) {
+      return "将在 " + toMoment.from(currentTime) + "完成";
+    } else {
+      return "将在 " + currentTime.from(fromMoment) + "开始";
+    }
+  };
 
   const processingAnimationConfig = {
     widthScale: 50,
@@ -149,7 +175,8 @@ export const TaskCard = ({ taskProps }: { taskProps: TaskProps }) => {
         </Title>
         <Title>
           <span style={{ color: state2label(taskProps.state).color }}>
-            {state2label(taskProps.state).label}
+            {state2label(taskProps.state).label}&nbsp;&nbsp;
+            {getProcessLabel()}
           </span>
         </Title>
         <FloatRight>
@@ -182,9 +209,19 @@ export const TaskCard = ({ taskProps }: { taskProps: TaskProps }) => {
         </FloatRight>
       </TitleContainer>
       {taskProps.state === "start" ? (
-        <ProgressBar {...processingAnimationConfig} />
+        <ProgressBar
+          config={{
+            ...processingAnimationConfig,
+            process: getProcessPercentage(),
+          }}
+        />
       ) : (
-        <ProgressBar {...pendingAnimationConfig} />
+        <ProgressBar
+          config={{
+            ...pendingAnimationConfig,
+            process: getProcessPercentage(),
+          }}
+        />
         /*<ProgressBar {...pausedAnimationConfig} />*/
       )}
       <Content>
