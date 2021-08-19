@@ -51,7 +51,7 @@ export const TaskIndexFragment = () => {
 const Container = styled.div`
   height: 100%;
   display: grid;
-  grid-template-rows: 10rem 1fr;
+  grid-template-rows: 8rem 1fr;
   grid-template-columns: 26rem 1fr;
   grid-template-areas:
     "aside header"
@@ -79,7 +79,7 @@ const Title = styled.span`
 
 const Content = styled.header`
   grid-area: content;
-  padding: 0 2rem;
+  padding: 0 1rem;
 `;
 
 const Aside = styled.header`

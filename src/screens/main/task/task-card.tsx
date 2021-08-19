@@ -1,44 +1,87 @@
 import { TaskProps } from "./task.slice";
 import styled from "@emotion/styled";
 import {
+  CheckCircleTwoTone,
   ClockCircleTwoTone,
+  PauseCircleTwoTone,
   PlayCircleTwoTone,
-  QuestionCircleTwoTone,
 } from "@ant-design/icons";
 import { Button, Divider } from "antd";
 import { DeviceTagList } from "../device/create-task";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useTask } from "../../../utils/task";
 import moment from "moment";
-import { updateCurrentTime } from "../../../utils/time";
 
-const state2label = (state: string) => {
+type TaskState = "start" | "pause";
+type ProcessState = "processing" | "paused" | "pending" | "finished";
+
+const state2label = (state: ProcessState) => {
   switch (state) {
-    case "start":
+    case "processing":
       return {
         color: "#00ba0e",
         label: "进行中",
         icon: <PlayCircleTwoTone twoToneColor={"#00ba0e"} />,
       };
-    case "pause":
+    case "pending":
       return {
         color: "#d4a000",
         label: "等待中",
         icon: <ClockCircleTwoTone twoToneColor={"#d4a000"} />,
       };
-    /*case "paused":
+    case "finished":
       return {
-        color: "#FF7080",
-        label: "等待中",
-        icon: <PauseCircleTwoTone twoToneColor={"#FF7080"} />,
-      };*/
-    default:
+        color: "#00b3ee",
+        label: "已完成",
+        icon: <CheckCircleTwoTone twoToneColor={"#00b3ee"} />,
+      };
+    case "paused":
       return {
         color: "#C0C0C0",
-        label: "等待中",
-        icon: <QuestionCircleTwoTone twoToneColor={"#C0C0C0"} />,
+        label: "已停止",
+        icon: <PauseCircleTwoTone twoToneColor={"#C0C0C0"} />,
       };
   }
+};
+
+const StatefulProgressBar = ({
+  state,
+  value,
+}: {
+  state: ProcessState;
+  value?: number;
+}) => {
+  const config = useMemo(() => {
+    const commonConfig = {
+      widthScale: 50,
+      dashWidth: 10,
+      deg: 30,
+    };
+
+    const processingConfig = {
+      color1: "#38ef06",
+      color2: "#009311",
+      speed: "0.4s",
+    };
+    const pendingConfig = { color1: "#ffd124", color2: "#bb8e00", speed: "0s" };
+    const pausedConfig = { color1: "#C0C0C0", color2: "#C0C0C0", speed: "0s" };
+    const finishedConfig = {
+      color1: "#00b3ee",
+      color2: "#0077d2",
+      speed: "0s",
+    };
+
+    return state === "processing"
+      ? { ...commonConfig, ...processingConfig, value }
+      : state === "finished"
+      ? { ...commonConfig, ...finishedConfig }
+      : state === "paused"
+      ? { ...commonConfig, ...pausedConfig }
+      : // else: "pending"
+        { ...commonConfig, ...pendingConfig };
+  }, [state, value]);
+
+  return <ProgressBar config={config} />;
 };
 
 // Author: Morgan
@@ -52,7 +95,7 @@ const ProgressBar = ({ config }: { config: any }) => {
   `;
 
   const Restraint = styled.div`
-    width: ${config.process * 100}%;
+    width: ${config.value * 100}%;
     /*overflow-x: hidden;*/
   `;
 
@@ -94,17 +137,14 @@ const ProgressBar = ({ config }: { config: any }) => {
 
   console.log(config.process);
 
-  return useMemo(
-    () => (
-      <TotalContainer>
-        <Restraint>
-          <AnimationBackground>
-            <AnimationSlide />
-          </AnimationBackground>
-        </Restraint>
-      </TotalContainer>
-    ),
-    []
+  return (
+    <TotalContainer>
+      <Restraint>
+        <AnimationBackground>
+          <AnimationSlide />
+        </AnimationBackground>
+      </Restraint>
+    </TotalContainer>
   );
 };
 
@@ -117,70 +157,63 @@ export const TaskCard = ({
 }) => {
   const { setTaskState, deleteTask } = useTask();
 
-  const getProcessPercentage = () => {
-    const fromMoment = moment(taskProps.from);
-    const toMoment = moment(taskProps.to);
-    let result =
-      currentTime.diff(fromMoment, "seconds") /
-      toMoment.diff(fromMoment, "seconds");
-    result = Math.min(1, Math.max(0, result));
-    return result;
-  };
+  const fromMoment = moment(taskProps.from);
+  const toMoment = moment(taskProps.to);
 
-  const getProcessLabel = () => {
-    const fromMoment = moment(taskProps.from);
-    const toMoment = moment(taskProps.to);
-    if (currentTime.diff(toMoment, "seconds") > 0) {
-      return "已完成";
-    } else if (currentTime.diff(fromMoment, "seconds") > 0) {
-      return "将在 " + toMoment.from(currentTime) + "完成";
-    } else {
-      return "将在 " + currentTime.from(fromMoment) + "开始";
-    }
-  };
+  const processState = useMemo(
+    () =>
+      taskProps.state === "pause"
+        ? "paused"
+        : currentTime.diff(toMoment, "seconds") > 0
+        ? "finished"
+        : currentTime.diff(fromMoment, "seconds") > 0
+        ? "processing"
+        : "pending",
+    [currentTime, fromMoment, taskProps.state, toMoment]
+  );
 
-  const processingAnimationConfig = {
-    widthScale: 50,
-    dashWidth: 10,
-    deg: 30,
-    color1: "#38ef06",
-    color2: "#009311",
-    speed: "0.4s",
-  };
+  const processPercentage = useMemo(
+    () =>
+      Math.min(
+        1,
+        Math.max(
+          0,
+          currentTime.diff(fromMoment, "seconds") /
+            toMoment.diff(fromMoment, "seconds")
+        )
+      ),
+    [currentTime, fromMoment, toMoment]
+  );
 
-  const pendingAnimationConfig = {
-    widthScale: 50,
-    dashWidth: 10,
-    deg: 30,
-    color1: "#ffd124",
-    color2: "#bb8e00",
-    speed: "0s",
-  };
+  const processLabel = useMemo(
+    () =>
+      currentTime.diff(toMoment, "seconds") > 0
+        ? "已完成"
+        : currentTime.diff(fromMoment, "seconds") > 0
+        ? "将在 " + toMoment.from(currentTime) + "完成"
+        : "将在 " + currentTime.from(fromMoment) + "开始",
+    [currentTime, fromMoment, toMoment]
+  );
 
-  const pausedAnimationConfig = {
-    widthScale: 50,
-    dashWidth: 10,
-    deg: 30,
-    color1: "#C0C0C0",
-    color2: "#C0C0C0",
-    speed: "0s",
-  };
+  const processStatusLabel = useMemo(
+    () => state2label(processState),
+    [processState]
+  );
 
   return (
     <CardContainer style={{ maxWidth: "calc(100vw - 35rem)" }}>
       <TitleContainer>
         <Title style={{ minWidth: "24rem" }}>
-          {state2label(taskProps.state).icon}{" "}
-          {taskProps.name + " - #" + taskProps.id}
+          {processStatusLabel.icon} {taskProps.name + " - #" + taskProps.id}
         </Title>
         <Title>
-          <span style={{ color: state2label(taskProps.state).color }}>
-            {state2label(taskProps.state).label}&nbsp;&nbsp;
-            {getProcessLabel()}
+          <span style={{ color: processStatusLabel.color }}>
+            {processStatusLabel.label}&nbsp;&nbsp;
+            {processState !== ("paused" && "finished") ? processLabel : null}
           </span>
         </Title>
         <FloatRight>
-          {taskProps.state === "start" ? (
+          {processState === ("processing" || "pending") ? (
             <Button
               type={"default"}
               style={{ marginRight: "1.2rem" }}
@@ -188,7 +221,7 @@ export const TaskCard = ({
             >
               暂停任务
             </Button>
-          ) : (
+          ) : processState === "paused" ? (
             <Button
               type={"default"}
               style={{ backgroundColor: "#4ae75a", marginRight: "1.2rem" }}
@@ -196,7 +229,7 @@ export const TaskCard = ({
             >
               开始任务
             </Button>
-          )}
+          ) : null}
           <Button
             type={"primary"}
             danger
@@ -208,22 +241,7 @@ export const TaskCard = ({
           </Button>
         </FloatRight>
       </TitleContainer>
-      {taskProps.state === "start" ? (
-        <ProgressBar
-          config={{
-            ...processingAnimationConfig,
-            process: getProcessPercentage(),
-          }}
-        />
-      ) : (
-        <ProgressBar
-          config={{
-            ...pendingAnimationConfig,
-            process: getProcessPercentage(),
-          }}
-        />
-        /*<ProgressBar {...pausedAnimationConfig} />*/
-      )}
+      <StatefulProgressBar state={processState} value={processPercentage} />
       <Content>
         调用的设备：
         <DeviceTagList deviceList={taskProps.device} />
@@ -247,10 +265,6 @@ const TitleContainer = styled.div`
 const Title = styled.div`
   font-size: 2rem;
   font-weight: bold;
-`;
-
-const CardDivider = styled(Divider)`
-  margin: 1rem 0;
 `;
 
 const FloatRight = styled.div`
