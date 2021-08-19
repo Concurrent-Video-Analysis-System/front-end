@@ -135,8 +135,6 @@ const ProgressBar = ({ config }: { config: any }) => {
     will-change: background-position;
   `;
 
-  console.log(config.process);
-
   return (
     <TotalContainer>
       <Restraint>

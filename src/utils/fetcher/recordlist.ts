@@ -19,10 +19,6 @@ export const useFetchRecordList = (filter: object) => {
           JSON.stringify(data.data) !==
           JSON.stringify(recordlistSelector.recordlist)
         ) {
-          console.log(
-            JSON.stringify(data.data),
-            JSON.stringify(recordlistSelector.recordlist)
-          );
           dispatch(recordlistSlice.actions.set(data.data));
         }
       },

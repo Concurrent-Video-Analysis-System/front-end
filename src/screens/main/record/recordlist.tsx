@@ -91,7 +91,7 @@ export const RecordListFragment = () => {
               <HomeOutlined />
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <Link to={"/"}>违规行为列表</Link>
+              <Link to={"/recordlist"}>违规行为列表</Link>
             </Breadcrumb.Item>
             {navigateSelector.navigateList.map((item) => (
               <Breadcrumb.Item>
@@ -122,6 +122,10 @@ export const RecordListFragment = () => {
       <Content>
         <Routes>
           <Route
+            path={":recordId/*"}
+            element={<RecordHandlingFragment onUnmount={onHandlingUnmount} />}
+          />
+          <Route
             path={"/"}
             element={
               <RecordContent
@@ -130,16 +134,6 @@ export const RecordListFragment = () => {
               />
             }
           />
-          <Route
-            path={":recordId/*"}
-            element={
-              <RecordHandlingFragment
-                recordItem={selectedCard}
-                onUnmount={onHandlingUnmount}
-              />
-            }
-          />
-          <Navigate to={"/recordlist"} />
         </Routes>
       </Content>
       <Aside>
