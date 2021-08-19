@@ -7,7 +7,7 @@ import styled from "@emotion/styled";
 import { EditTwoTone } from "@ant-design/icons";
 import { selectLocationReducer } from "./location.slice";
 import { DeviceProps, selectDeviceReducer } from "./device.slice";
-import { DeviceTagList } from "./create-task";
+import { TagList } from "./create-task";
 
 export const LocationFragment = () => {
   const navigate = useNavigate();
@@ -75,7 +75,10 @@ export const LocationFragment = () => {
 
       <ParagraphContainer>
         <ParagraphLabel>设备列表：</ParagraphLabel>
-        <DeviceTagList deviceList={deviceAtLocation} clickable={true} />
+        <TagList
+          propList={deviceAtLocation}
+          onClick={(id) => navigate(`/device/${id}`)}
+        />
       </ParagraphContainer>
     </Container>
   );

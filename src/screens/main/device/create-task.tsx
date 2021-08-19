@@ -15,14 +15,11 @@ import {
   Select,
   Tag,
   TimePicker,
-  TreeSelect,
 } from "antd";
 import { useDocumentTitle } from "utils/document-title";
 import { useTask } from "../../../utils/task";
 import { selectReasonReducer } from "./reason.slice";
 import { useFetchReason } from "../../../utils/fetcher/reason";
-import { TaskProps } from "../task/task.slice";
-import { useDebugDeviceLocation } from "./__debug__/__debug_add_device__";
 import { usePartialState } from "../../../utils/state-pro";
 
 export interface CreateTaskProps {
@@ -33,38 +30,39 @@ export interface CreateTaskProps {
   state: string;
 }
 
-export const DeviceTagList = ({
-  deviceList,
+export const TagList = ({
+  propList,
   preStr,
   afterStr,
-  clickable,
+  onClick,
+  maxTagCount,
 }: {
-  deviceList: { id: number; name: string }[];
+  propList: { id: number; name: string }[];
   preStr?: string;
   afterStr?: string;
-  clickable?: boolean;
+  onClick?: (id: number, name: string) => void;
+  maxTagCount?: number;
 }) => {
-  const navigate = useNavigate();
-
   return (
     <TitleContainer>
       {preStr}
-      {deviceList.map((item) => (
+      {propList
+        .filter((value, index) => !maxTagCount || index < maxTagCount)
+        .map((item) => (
+          <DeviceTag>
+            {" "}
+            {onClick ? (
+              <a onClick={() => onClick(item.id, item.name)}>{item?.name}</a>
+            ) : (
+              item?.name
+            )}{" "}
+          </DeviceTag>
+        ))}
+      {maxTagCount && propList.length > maxTagCount ? (
         <DeviceTag>
-          {" "}
-          {clickable ? (
-            <a
-              onClick={() => {
-                navigate(`/device/${item.id}`);
-              }}
-            >
-              {item?.name}
-            </a>
-          ) : (
-            item?.name
-          )}{" "}
+          <Unselectable>以及其它{propList.length - maxTagCount}个</Unselectable>
         </DeviceTag>
-      ))}
+      ) : null}
       {afterStr}
     </TitleContainer>
   );
@@ -114,11 +112,7 @@ export const CreateTaskFragment = ({
 
   return (
     <Container>
-      <DeviceTagList
-        deviceList={deviceList}
-        preStr={"为"}
-        afterStr={"创建监查任务"}
-      />
+      <TagList propList={deviceList} preStr={"为"} afterStr={"创建监查任务"} />
       <Divider />
       <Form
         name="basic"
@@ -270,4 +264,8 @@ const DeviceTag = styled(Tag)`
   margin-right: 0;
   font-size: 1.8rem;
   font-weight: normal;
+`;
+
+const Unselectable = styled.div`
+  color: #b0b0b0;
 `;

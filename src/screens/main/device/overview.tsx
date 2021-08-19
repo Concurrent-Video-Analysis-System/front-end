@@ -4,7 +4,7 @@ import { selectLocationReducer } from "./location.slice";
 import { selectDeviceReducer } from "./device.slice";
 import styled from "@emotion/styled";
 import { Divider, Typography } from "antd";
-import { DeviceTagList } from "./create-task";
+import { TagList } from "./create-task";
 
 export const OverviewFragment = () => {
   const navigate = useNavigate();
@@ -22,11 +22,11 @@ export const OverviewFragment = () => {
               {location.name}
             </a>
           </Typography.Title>
-          <DeviceTagList
-            deviceList={deviceSelector.deviceList.filter(
+          <TagList
+            propList={deviceSelector.deviceList.filter(
               (device) => device.location.id === location.id
             )}
-            clickable
+            onClick={(id) => navigate(`/device/${id}`)}
           />
         </DeviceGroup>
       ))}

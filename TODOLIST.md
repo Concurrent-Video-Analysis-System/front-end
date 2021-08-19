@@ -13,3 +13,5 @@
 - [x] 任务界面的 device 有个 bug
 - [ ] 导出表格换地址问题
 - [x] 进度条动画用 useMemo 包一下减少卡顿
+- [x] task-card 上面应该显示算法检查的原因
+- [ ] /device/edit 接口的实现

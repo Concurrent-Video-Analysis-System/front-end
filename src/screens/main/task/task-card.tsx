@@ -7,7 +7,7 @@ import {
   PlayCircleTwoTone,
 } from "@ant-design/icons";
 import { Button, Divider } from "antd";
-import { DeviceTagList } from "../device/create-task";
+import { TagList } from "../device/create-task";
 import { useMemo } from "react";
 import { useTask } from "../../../utils/task";
 import moment from "moment";
@@ -167,7 +167,7 @@ export const TaskCard = ({
         : currentTime.diff(fromMoment, "seconds") > 0
         ? "processing"
         : "pending",
-    [currentTime, fromMoment, taskProps.state, toMoment]
+    [currentTime, taskProps.state, fromMoment, toMoment]
   );
 
   const processPercentage = useMemo(
@@ -240,10 +240,16 @@ export const TaskCard = ({
         </FloatRight>
       </TitleContainer>
       <StatefulProgressBar state={processState} value={processPercentage} />
-      <Content>
-        调用的设备：
-        <DeviceTagList deviceList={taskProps.device} />
-      </Content>
+      <ContentContainer>
+        <Content>
+          调用的设备：
+          <TagList propList={taskProps.device} maxTagCount={3} />
+        </Content>
+        <Content>
+          检测违规类型：
+          <TagList propList={taskProps.reason} maxTagCount={3} />
+        </Content>
+      </ContentContainer>
     </CardContainer>
   );
 };
@@ -269,8 +275,15 @@ const FloatRight = styled.div`
   margin-left: auto;
 `;
 
+const ContentContainer = styled.div`
+  display: flex;
+  justify-content: start;
+`;
+
 const Content = styled.div`
   display: flex;
   justify-content: start;
   font-size: 1.8rem;
+  margin-right: 2rem;
+  min-width: 60rem;
 `;
