@@ -7,16 +7,17 @@ import {
   RecordTypeChart,
   RecordTimeChart,
 } from "./chart";
-import { useDebugImageCard } from "../record/__debug__/__debug_image_card__";
 import { useMemo, useState } from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { selectRecordlistReducer } from "../recordlist.slice";
 import { selectLocationReducer } from "../device/location.slice";
-import { useDebugDeviceLocation } from "../device/__debug__/__debug_add_device__";
 import { pad } from "utils/time";
 import { useFetchRecordList } from "utils/fetcher/recordlist";
 import { useFetchLocation } from "utils/fetcher/location";
+import { useDebugDeviceLocation } from "../device/__debug__/__debug_add_device__";
+import { useDebugImageCard } from "../record/__debug__/__debug_image_card__";
+import { useFetchDevice } from "../../../utils/fetcher/device";
 
 const usePastXDays = (x: number) => {
   return useMemo(() => {
@@ -38,9 +39,11 @@ const useEveryHourInADay = () => {
 
 export const DashBoard = () => {
   useFetchRecordList({});
+  useFetchDevice();
   useFetchLocation();
   const recordlistSelector = useSelector(selectRecordlistReducer);
   const locationSelector = useSelector(selectLocationReducer);
+  // useDebugImageCard();
 
   const [pastDays, setPastDays] = useState(7);
   const pastDayList = usePastXDays(pastDays);
@@ -54,7 +57,9 @@ export const DashBoard = () => {
     [type in string]: { [date in string]: number };
   } = recordlistSelector.recordlist.reduce((prev, record) => {
     const reason = record.reason;
-    const date = record.date?.split(" ")[0];
+    const date = moment(record.date, "YYYY-MM-DD HH:mm:ss").format(
+      "YYYY-MM-DD"
+    );
     if (reason && date) {
       if (!prev[reason]) {
         prev[reason] = Object.fromEntries(
@@ -88,7 +93,9 @@ export const DashBoard = () => {
     [type in string]: { [time in string]: number };
   } = recordlistSelector.recordlist.reduce((prev, record) => {
     const reason = record.reason;
-    const time = record.date?.split(" ")[1];
+    const time = moment(record.date, "YYYY-MM-DD HH:mm:ss")
+      .startOf("hours")
+      .format("HH:mm:ss");
     if (reason && time) {
       if (!prev[reason]) {
         prev[reason] = Object.fromEntries(
@@ -168,6 +175,7 @@ const Aside = styled.div`
   grid-area: aside;
   position: fixed;
   width: 34rem;
+  height: 100%;
   overflow-y: auto;
   background-color: #f7f7f7;
   padding: 1.5rem 2rem;

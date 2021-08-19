@@ -32,15 +32,10 @@ export const RecordTypeChart = ({
         type: "pie",
         radius: "75%",
         center: ["50%", "55%"],
-        data: Object.entries(recordFilter).map(([key, value]) => {
-          return {
-            name: key,
-            value: Object.values(value).reduce(
-              (prev, value) => prev + value,
-              0
-            ),
-          };
-        }),
+        data: Object.entries(recordFilter).map(([key, value]) => ({
+          name: key,
+          value: Object.values(value).reduce((prev, value) => prev + value, 0),
+        })),
         itemStyle: {
           emphasis: {
             shadowBlur: 10,
@@ -51,6 +46,8 @@ export const RecordTypeChart = ({
       },
     ],
   };
+
+  console.log();
 
   return (
     <ReactECharts
@@ -93,7 +90,7 @@ export const RecordDateChart = ({
       {
         type: "category",
         boundaryGap: false,
-        data: Object.keys(Object.values(recordFilter)[0] || {}),
+        data: Object.keys(Object.values(recordFilter)[0] || {}).sort(),
       },
     ],
     yAxis: [
@@ -107,7 +104,9 @@ export const RecordDateChart = ({
         type: "line",
         stack: "总量",
         areaStyle: { normal: {} },
-        data: Object.values(values),
+        data: Object.entries(values)
+          .sort(([a, _a], [b, _b]) => (a < b ? -1 : a > b ? 1 : 0))
+          .map(([key, value]) => value),
       };
     }),
   };
