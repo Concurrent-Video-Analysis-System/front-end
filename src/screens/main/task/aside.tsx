@@ -19,11 +19,11 @@ import {
   selectRecordfilterReducer,
 } from "../recordfilter.slice";
 import { TaskProps } from "./task.slice";
-import { useFetchLocation } from "../../../utils/fetcher/location";
 import { useFetchReason } from "../../../utils/fetcher/reason";
 import { selectLocationReducer } from "../device/location.slice";
 import { selectReasonReducer } from "../device/reason.slice";
 import { selectDeviceReducer } from "../device/device.slice";
+import { useFetchDevice } from "../../../utils/fetcher/device";
 
 const { SubMenu } = Menu;
 
@@ -72,7 +72,7 @@ export const TaskAsidePanel = ({
 }: {
   setPartialProps: (props: any) => void;
 }) => {
-  useFetchLocation();
+  useFetchDevice();
   useFetchReason();
   const deviceSelector = useSelector(selectDeviceReducer);
   const reasonSelector = useSelector(selectReasonReducer);
@@ -104,7 +104,7 @@ export const TaskAsidePanel = ({
               wrapperCol={{ span: "1rem" }}
               layout="horizontal"
             >
-              <Form.Item label={"网点"}>
+              <Form.Item label={"设备名称"}>
                 <FormSelector
                   optionList={deviceSelector.deviceList.map((item) => ({
                     id: item.id,
