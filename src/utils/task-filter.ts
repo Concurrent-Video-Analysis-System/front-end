@@ -10,16 +10,14 @@ export const useExactFilter = <K extends string>(
     const cleanedFilterParams = cleanObject(filterParams);
     return originList.filter((item) =>
       Object.entries(cleanedFilterParams).every(([key, value]) => {
-        if (strict) {
-          return item[key as K] === value;
-        } else {
+        if (!strict) {
           if (Array.isArray(item[key as K])) {
             return (item[key as K] as { id: number; name: string }[]).find(
               (i) => value != null && +i.id === Number(value)
             );
           }
-          return false;
         }
+        return item[key as K] === value;
       })
     );
   }, [originList, filterParams]);

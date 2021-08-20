@@ -83,16 +83,13 @@ export const TaskAsidePanel = ({
       defaultSelectedKeys={["pending"]}
       defaultOpenKeys={["list", "filter"]}
       mode="inline"
-      onClick={(event) => setPartialProps({ type: event.key })}
+      onClick={(event) => setPartialProps({ state: event.key })}
     >
       <SubMenu key="list" icon={<UnorderedListOutlined />} title="任务类型">
-        <Menu.Item key="processing" icon={<CheckCircleOutlined />}>
+        <Menu.Item key="start" icon={<CheckCircleOutlined />}>
           正在进行
         </Menu.Item>
-        <Menu.Item key="pending" icon={<ClockCircleOutlined />}>
-          等待中
-        </Menu.Item>
-        <Menu.Item key="paused" icon={<PauseCircleOutlined />}>
+        <Menu.Item key="pause" icon={<PauseCircleOutlined />}>
           已暂停
         </Menu.Item>
       </SubMenu>
