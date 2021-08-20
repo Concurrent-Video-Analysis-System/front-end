@@ -26,6 +26,7 @@ export interface CreateTaskProps {
   name: string;
   from: string;
   to: string;
+  deviceIdList: number[];
   reasonIdList: number[];
   state: string;
 }
@@ -82,6 +83,15 @@ export const CreateTaskFragment = ({
   const deviceSelector = useSelector(selectDeviceReducer);
   const { newTask } = useTask();
 
+  const [taskFormProps, setTaskFormProps] = usePartialState<CreateTaskProps>({
+    name: "",
+    from: "",
+    to: "",
+    state: "",
+    deviceIdList: [],
+    reasonIdList: [],
+  });
+
   const deviceList = useMemo(() => {
     const newDeviceList = deviceIdList
       .map((item) =>
@@ -93,6 +103,7 @@ export const CreateTaskFragment = ({
     if (newDeviceList.length === 0) {
       navigate(`/device`);
     }
+    setTaskFormProps({ deviceIdList: deviceIdList.map((item) => +item) });
     return newDeviceList;
   }, [deviceSelector.deviceList, deviceIdList]);
 
@@ -100,14 +111,6 @@ export const CreateTaskFragment = ({
   const formItemStyle: React.CSSProperties = {
     width: "75%",
   };
-
-  const [taskFormProps, setTaskFormProps] = usePartialState<CreateTaskProps>({
-    name: "",
-    from: "",
-    to: "",
-    state: "",
-    reasonIdList: [],
-  });
   const [isLoading, setIsLoading] = useState(false);
 
   return (

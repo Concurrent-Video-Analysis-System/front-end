@@ -20,10 +20,9 @@ export const useTask = () => {
       name: taskProps.name,
       from: taskProps.from,
       to: taskProps.to,
-      device: deviceSelector.deviceList.map((device) => ({
-        id: device.id,
-        name: device.name,
-      })),
+      device: deviceSelector.deviceList.filter((device) =>
+        taskProps.deviceIdList.includes(device.id)
+      ),
       reason: reasonSelector.reasonList.filter((reason) =>
         taskProps.reasonIdList.includes(reason.id)
       ),
