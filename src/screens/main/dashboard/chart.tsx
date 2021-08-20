@@ -21,8 +21,8 @@ export const RecordTypeChart = ({
       formatter: "{a} <br/>{b} : <b>{c} ({d}%)</b>",
     },
     legend: {
-      top: "20%",
-      left: "5%",
+      top: "15%",
+      left: "0%",
       orient: "vertical",
       data: Object.keys(recordFilter),
     },

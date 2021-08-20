@@ -43,7 +43,7 @@ const FormSelector = ({
       filterOption={(input, option) =>
         option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }
-      onChange={(value) => onChange(value)}
+      onChange={onChange}
     >
       {optionList?.map((option) => (
         <Select.Option value={option.id}>{option.name}</Select.Option>
@@ -112,7 +112,7 @@ export const TaskAsidePanel = ({
                   }))}
                   onChange={(value) =>
                     setPartialProps({
-                      device: value ? String(value) : undefined,
+                      device: value,
                     })
                   }
                 />
@@ -126,7 +126,7 @@ export const TaskAsidePanel = ({
                   }))}
                   onChange={(value) => {
                     setPartialProps({
-                      reason: value ? String(value) : undefined,
+                      reason: value,
                     });
                   }}
                 />

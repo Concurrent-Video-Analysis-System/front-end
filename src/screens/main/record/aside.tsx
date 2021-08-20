@@ -43,7 +43,7 @@ const FormSelector = ({
       onChange={(value) => onChange(value)}
     >
       {optionList?.map((option) => (
-        <Select.Option value={option.id}>{option.name}</Select.Option>
+        <Select.Option value={option.name}>{option.name}</Select.Option>
       ))}
     </Select>
   );
@@ -122,7 +122,7 @@ export const AsidePanel = ({
                   }))}
                   onChange={(value) =>
                     setPartialProps({
-                      location: value ? String(value) : undefined,
+                      location: value,
                     })
                   }
                 />
@@ -136,7 +136,7 @@ export const AsidePanel = ({
                   }))}
                   onChange={(value) => {
                     setPartialProps({
-                      reason: value ? String(value) : undefined,
+                      reason: value,
                     });
                   }}
                 />
