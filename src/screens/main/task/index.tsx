@@ -2,21 +2,24 @@ import styled from "@emotion/styled";
 import { TaskAsidePanel } from "./aside";
 import { useForm } from "utils/form";
 import { useDispatch, useSelector } from "react-redux";
-import { selectTaskReducer, taskSlice } from "./task.slice";
+import { selectTaskReducer, TaskProps, taskSlice } from "./task.slice";
 import { useDebugTask } from "./__debug__/useDebugTask";
 import { TaskCard } from "./task-card";
 import { Divider } from "antd";
 import { updateCurrentTime, useCurrentTime } from "utils/time";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useExactFilter } from "../../../utils/task-filter";
+import { useFetchTask } from "../../../utils/fetcher/task";
 
 export const TaskIndexFragment = () => {
+  useFetchTask();
   const dispatch = useDispatch();
   const taskSelector = useSelector(selectTaskReducer);
 
   const currentTime = useCurrentTime();
   useEffect(() => updateCurrentTime, []);
 
-  const { setPartialProps, reload } = useForm(
+  /*const { setPartialProps, reload } = useForm(
     {
       type: undefined,
       device: undefined,
@@ -28,20 +31,29 @@ export const TaskIndexFragment = () => {
     (data) => {
       dispatch(taskSlice.actions.set(data));
     }
-  );
+  );*/
+
+  const [taskFilter, setTaskFilter] = useState<Partial<TaskProps>>({});
+
+  const filteredTask = useExactFilter(taskSelector.taskList, taskFilter);
+  console.log("filtered: ", filteredTask);
 
   return (
     <Container>
       <Aside>
-        <TaskAsidePanel setPartialProps={setPartialProps} />
+        <TaskAsidePanel
+          setPartialProps={(filterProps) => {
+            setTaskFilter({ ...taskFilter, ...filterProps });
+          }}
+        />
       </Aside>
       <Header>
         <Title>任务列表</Title>
         <SmallDivider />
       </Header>
       <Content>
-        {taskSelector.taskList.map((item) => (
-          <TaskCard taskProps={item} currentTime={currentTime} />
+        {filteredTask.map((item) => (
+          <TaskCard taskProps={item as TaskProps} currentTime={currentTime} />
         ))}
       </Content>
     </Container>

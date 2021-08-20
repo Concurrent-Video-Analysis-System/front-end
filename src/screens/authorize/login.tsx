@@ -68,7 +68,7 @@ export const LoginFragment = ({
           loading={isLoading}
           block
         >
-          登录
+          登 录
         </Button>
       </Form.Item>
 
