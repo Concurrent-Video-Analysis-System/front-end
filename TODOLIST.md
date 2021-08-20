@@ -17,4 +17,4 @@
 - [ ] /device/edit 接口的实现
 - [x] 图表只有一列时 柱状图太宽了
 - [x] 当没有数据时图表应该显示为空
-- [ ] 加 Document.Title
+- [x] 加 Document.Title

@@ -15,6 +15,7 @@ import { useForm } from "../../../utils/form";
 import { recordlistSlice } from "../recordlist.slice";
 import { exportRecordList } from "./export";
 import { AsidePanel } from "./aside";
+import { useDocumentTitle } from "../../../utils/document-title";
 
 const TypeSwitcher = <K extends string>({
   types,
@@ -44,6 +45,7 @@ const TypeSwitcher = <K extends string>({
 };
 
 export const RecordListFragment = () => {
+  useDocumentTitle("违规记录列表");
   const dispatch = useDispatch();
   const navigateSelector = useSelector(selectNavigateReducer);
 

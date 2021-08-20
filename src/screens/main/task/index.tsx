@@ -10,8 +10,10 @@ import { updateCurrentTime, useCurrentTime } from "utils/time";
 import { useEffect, useState } from "react";
 import { useExactFilter } from "../../../utils/task-filter";
 import { useFetchTask } from "../../../utils/fetcher/task";
+import { useDocumentTitle } from "../../../utils/document-title";
 
 export const TaskIndexFragment = () => {
+  useDocumentTitle("任务列表");
   useFetchTask();
   const dispatch = useDispatch();
   const taskSelector = useSelector(selectTaskReducer);

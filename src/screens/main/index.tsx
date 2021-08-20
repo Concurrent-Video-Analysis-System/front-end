@@ -10,7 +10,7 @@ import { TaskIndexFragment } from "./task";
 import { DashBoard } from "./dashboard";
 
 export const MainFragment = () => {
-  useDocumentTitle("违规行为列表");
+  useDocumentTitle("海量数据智能并发解析平台");
 
   return (
     <Container>
