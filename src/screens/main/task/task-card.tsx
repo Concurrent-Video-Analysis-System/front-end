@@ -222,7 +222,11 @@ export const TaskCard = ({
           ) : processState === "paused" ? (
             <Button
               type={"default"}
-              style={{ backgroundColor: "#4ae75a", marginRight: "1.2rem" }}
+              style={{
+                border: "1px solid #00c42d",
+                color: "#00c42d",
+                marginRight: "1.2rem",
+              }}
               onClick={() => setTaskState({ id: taskProps.id, order: "start" })}
             >
               开始任务

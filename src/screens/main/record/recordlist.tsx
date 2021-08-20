@@ -6,8 +6,8 @@ import {
 } from "./recordlist-component/record-content";
 import { Navigate, Route, Routes } from "react-router";
 import { RecordHandlingFragment } from "./recordhandling";
-import { Breadcrumb, Button, Radio } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Divider, Radio } from "antd";
+import { ExportOutlined, HomeOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { navigateSlice, selectNavigateReducer } from "./navigate.slice";
 import { Link } from "react-router-dom";
@@ -112,7 +112,13 @@ export const RecordListFragment = () => {
                 initialType={displayType}
                 onChange={setDisplayType}
               />
-              <Button type={"primary"} onClick={exportRecordList}>
+              <Divider type={"vertical"} style={{ margin: "0 1rem" }} />
+              <Button
+                icon={<ExportOutlined />}
+                type={"primary"}
+                onClick={exportRecordList}
+                danger
+              >
                 导出数据
               </Button>
             </>
@@ -155,7 +161,7 @@ const Container = styled.div`
 
 const RecordHeader = styled.div`
   grid-area: header;
-  padding: 2rem 2rem 0 2rem;
+  padding: 1.5rem 0.5rem 0 2rem;
   width: 100%;
   height: 6rem;
 `;
@@ -173,6 +179,9 @@ const Content = styled.header`
 const Aside = styled.header`
   grid-area: aside;
   overflow: hidden auto;
+  position: fixed;
+  width: 26rem;
+  height: 100%;
 `;
 
 const FloatRight = styled.div`

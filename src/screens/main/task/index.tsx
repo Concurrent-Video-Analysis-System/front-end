@@ -34,9 +34,7 @@ export const TaskIndexFragment = () => {
   );*/
 
   const [taskFilter, setTaskFilter] = useState<Partial<TaskProps>>({});
-
   const filteredTask = useExactFilter(taskSelector.taskList, taskFilter);
-  console.log("filtered: ", filteredTask);
 
   return (
     <Container>
