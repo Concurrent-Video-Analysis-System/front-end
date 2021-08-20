@@ -6,7 +6,7 @@ export interface TaskProps {
   name: string;
   from: string;
   to: string;
-  isEverydayTask?: boolean;
+  // isEverydayTask?: boolean;
   device: {
     id: number;
     name: string;

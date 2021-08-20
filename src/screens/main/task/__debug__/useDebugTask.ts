@@ -8,7 +8,6 @@ export const taskTemplate: TaskProps[] = [
     name: "每日检查任务",
     from: "2021-08-14 10:00:00",
     to: "2021-08-16 12:00:00",
-    isEverydayTask: false,
     device: [
       {
         id: 1,
@@ -32,7 +31,6 @@ export const taskTemplate: TaskProps[] = [
     name: "日终封箱",
     from: "2021-08-15 17:00:00",
     to: "2021-08-18 18:00:00",
-    isEverydayTask: false,
     device: [
       {
         id: 1,
@@ -56,7 +54,6 @@ export const taskTemplate: TaskProps[] = [
     name: "手机拍屏违规检测",
     from: "2021-08-19 15:00:00",
     to: "2021-08-19 16:00:00",
-    isEverydayTask: false,
     device: [
       {
         id: 1,
@@ -80,7 +77,6 @@ export const taskTemplate: TaskProps[] = [
     name: "日终封箱",
     from: "2021-08-15 17:00:00",
     to: "2021-08-18 18:00:00",
-    isEverydayTask: false,
     device: [
       {
         id: 1,
