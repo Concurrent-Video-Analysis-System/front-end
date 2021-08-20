@@ -15,10 +15,8 @@ import { selectLocationReducer } from "../device/location.slice";
 import { pad } from "utils/time";
 import { useFetchRecordList } from "utils/fetcher/recordlist";
 import { useFetchLocation } from "utils/fetcher/location";
-import { useDebugDeviceLocation } from "../device/__debug__/__debug_add_device__";
-import { useDebugImageCard } from "../record/__debug__/__debug_image_card__";
-import { useFetchDevice } from "../../../utils/fetcher/device";
-import { useDocumentTitle } from "../../../utils/document-title";
+import { useFetchDevice } from "utils/fetcher/device";
+import { useDocumentTitle } from "utils/document-title";
 
 const usePastXDays = (x: number) => {
   return useMemo(() => {

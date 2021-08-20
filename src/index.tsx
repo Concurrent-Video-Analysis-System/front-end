@@ -7,7 +7,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AppProviders } from "./contexts";
 import "antd/dist/antd.less";
-import whyDidYouRender from "@welldone-software/why-did-you-render";
 
 ReactDOM.render(
   <React.StrictMode>

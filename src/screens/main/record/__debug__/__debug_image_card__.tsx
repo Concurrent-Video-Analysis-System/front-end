@@ -1,8 +1,6 @@
-import { recordDataTemplate } from "./data";
 import { useEffect, useMemo } from "react";
 import { recordlistSlice } from "screens/main/recordlist.slice";
 import { useDispatch } from "react-redux";
-import { type } from "os";
 import { RecordItemProps } from "../recordlist-component/record-content";
 
 const recordTemplate: RecordItemProps[] = [
@@ -147,5 +145,5 @@ export const useDebugImageCard = () => {
 
   useEffect(() => {
     dispatch(recordlistSlice.actions.set(data));
-  }, []);
+  }, [data, dispatch]);
 };

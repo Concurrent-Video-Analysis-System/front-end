@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { SurveillanceHeader } from "./header";
-import { AsidePanel } from "./record/aside";
 import { RecordListFragment } from "./record/recordlist";
 import { useDocumentTitle } from "../../utils/document-title";
 import { Route, Routes } from "react-router";

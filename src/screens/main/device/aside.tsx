@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Affix, Button, Checkbox, Divider, Layout, Menu, Tree } from "antd";
+import { Button, Tree } from "antd";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { selectDeviceReducer } from "./device.slice";
@@ -97,7 +97,7 @@ export const DeviceAside = ({
   };
 
   return (
-    <FixedSider>
+    <FixedAside>
       <TopContainer>
         <Button
           type={"default"}
@@ -126,11 +126,11 @@ export const DeviceAside = ({
           <TreeNodeItem>{nodeData.title}</TreeNodeItem>
         )}
       />
-    </FixedSider>
+    </FixedAside>
   );
 };
 
-const FixedSider = styled.div`
+const FixedAside = styled.div`
   overflow-y: auto;
   width: 30rem;
   height: 100%;

@@ -54,12 +54,6 @@ const type2typeLabel = (type?: string): RecordLabelProps | undefined => {
   }
 };
 
-export const base64ToImage = (code?: string) => {
-  if (code) {
-    return `data:image/png;base64,${code}`;
-  }
-};
-
 const RecordCard = ({
   props,
   onSelected,

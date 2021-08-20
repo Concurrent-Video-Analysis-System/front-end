@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const useRemovableState = <T>(
+/*export const useRemovableState = <T>(
   initialState: T[],
   isEqual?: (a: T, b: T) => boolean
 ) => {
@@ -13,7 +13,7 @@ export const useRemovableState = <T>(
     }
   };
   return [state, removeState, setState] as const;
-};
+};*/
 
 export const usePartialState = <T extends object>(initialState: T) => {
   const [state, setState] = useState<T>(initialState);

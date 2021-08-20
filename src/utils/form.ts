@@ -6,13 +6,10 @@ import { message } from "antd";
 export const useForm = <K extends string>(
   initialProps: { [key in K]: unknown },
   endpoint: string = "",
-  onSuccessCallback?: (data: any) => void,
-  debounce?: number
+  onSuccessCallback?: (data: any) => void
 ) => {
   const [props, setProps] = useState(initialProps);
-  const [urlParams, setUrlParams] = useUrlQueryParams(
-    Object.keys(initialProps)
-  );
+  const [, setUrlParams] = useUrlQueryParams(Object.keys(initialProps));
   const [isLoading, setIsLoading] = useState(false);
   const sendHttp = useHttp(endpoint);
 
@@ -29,10 +26,11 @@ export const useForm = <K extends string>(
       },
       (errorMessage) => {
         setIsLoading(false);
-        message.error(`更新列表时出错：${errorMessage}`);
+        message.error(`更新列表时出错：${errorMessage}`).then(null);
       }
     );
     setUrlParams(props);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props]);
 
   const setPartialProps = (partialProps: Partial<typeof props>) => {

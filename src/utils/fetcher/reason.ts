@@ -23,8 +23,9 @@ export const useFetchReason = () => {
         }
       },
       (errorMessage) => {
-        message.error(`更新列表时出错：${errorMessage}`);
+        message.error(`更新列表时出错：${errorMessage}`).then(null);
       }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

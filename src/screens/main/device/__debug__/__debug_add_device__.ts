@@ -196,5 +196,5 @@ export const useDebugDeviceLocation = () => {
     dispatch(deviceSlice.actions.set(deviceTemplate));
     dispatch(locationSlice.actions.set(locationTemplate));
     dispatch(reasonSlice.actions.set(reasonTemplate));
-  }, []);
+  }, [dispatch]);
 };

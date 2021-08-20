@@ -1,26 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
-import { useDispatch, useSelector } from "react-redux";
-import { Badge, DatePicker, Form, Menu, Select } from "antd";
-import { selectRecordlistReducer } from "../recordlist.slice";
+import { useSelector } from "react-redux";
+import { DatePicker, Form, Menu, Select } from "antd";
 import {
-  InfoCircleOutlined,
   UnorderedListOutlined,
   SearchOutlined,
   PauseCircleOutlined,
-  ClockCircleOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-import { FilterListItem, useFilters } from "utils/filter";
 import { Moment } from "moment";
 import { RangeValue } from "rc-picker/lib/interface";
-import {
-  recordfilterSlice,
-  selectRecordfilterReducer,
-} from "../recordfilter.slice";
-import { TaskProps } from "./task.slice";
 import { useFetchReason } from "../../../utils/fetcher/reason";
-import { selectLocationReducer } from "../device/location.slice";
 import { selectReasonReducer } from "../device/reason.slice";
 import { selectDeviceReducer } from "../device/device.slice";
 import { useFetchDevice } from "../../../utils/fetcher/device";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Badge, DatePicker, Form, Menu, Select } from "antd";
 import { selectRecordlistReducer } from "../recordlist.slice";
 import {
@@ -10,13 +10,8 @@ import {
   UnorderedListOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { FilterListItem, useFilters } from "utils/filter";
 import { Moment } from "moment";
 import { RangeValue } from "rc-picker/lib/interface";
-import {
-  recordfilterSlice,
-  selectRecordfilterReducer,
-} from "../recordfilter.slice";
 import { selectLocationReducer } from "../device/location.slice";
 import { selectReasonReducer } from "../device/reason.slice";
 import { useFetchLocation } from "../../../utils/fetcher/location";

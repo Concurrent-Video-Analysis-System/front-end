@@ -4,7 +4,7 @@ import {
   RecordContent,
   RecordItemProps,
 } from "./recordlist-component/record-content";
-import { Navigate, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import { RecordHandlingFragment } from "./recordhandling";
 import { Breadcrumb, Button, Divider, Radio } from "antd";
 import { ExportOutlined, HomeOutlined } from "@ant-design/icons";

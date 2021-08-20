@@ -18,7 +18,10 @@ export const OverviewFragment = () => {
       {locationSelector.locationList.map((location) => (
         <DeviceGroup>
           <Typography.Title level={4}>
-            <a onClick={() => navigate(`/device/location/${location.id}`)}>
+            <a
+              href={"/#"}
+              onClick={() => navigate(`/device/location/${location.id}`)}
+            >
               {location.name}
             </a>
           </Typography.Title>

@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
-import { selectLocationReducer } from "./location.slice";
 import { DeviceProps, selectDeviceReducer } from "./device.slice";
 import { useNavigate } from "react-router-dom";
 import {
@@ -53,7 +52,9 @@ export const TagList = ({
           <DeviceTag>
             {" "}
             {onClick ? (
-              <a onClick={() => onClick(item.id, item.name)}>{item?.name}</a>
+              <a href={"/#"} onClick={() => onClick(item.id, item.name)}>
+                {item?.name}
+              </a>
             ) : (
               item?.name
             )}{" "}
@@ -105,9 +106,10 @@ export const CreateTaskFragment = ({
     }
     setTaskFormProps({ deviceIdList: deviceIdList.map((item) => +item) });
     return newDeviceList;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceSelector.deviceList, deviceIdList]);
 
-  const [isEverydayTask, setIsEverydayTask] = useState(false);
+  const [isEverydayTask] = useState(false);
   const formItemStyle: React.CSSProperties = {
     width: "75%",
   };
@@ -229,12 +231,12 @@ export const CreateTaskFragment = ({
               newTask(taskFormProps)
                 .then(() => {
                   setIsLoading(false);
-                  message.success("任务创建成功！");
+                  message.success("任务创建成功！").then(null);
                   navigate("/task");
                 })
                 .catch((errorMessage) => {
                   setIsLoading(false);
-                  message.error("任务创建失败，" + errorMessage);
+                  message.error("任务创建失败，" + errorMessage).then(null);
                 });
             }}
           >

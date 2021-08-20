@@ -23,7 +23,7 @@ export const LoginFragment = ({
         }
       })
       .catch((error: Error) => {
-        message.error(`登录失败：${error.message}`, 3);
+        message.error(`登录失败：${error.message}`, 3).then(null);
         setIsLoading(false);
       });
   }

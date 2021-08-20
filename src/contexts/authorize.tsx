@@ -1,7 +1,7 @@
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { AuthForm, getToken, UserAttributes } from "utils/authorize";
 import * as authUtils from "utils/authorize";
-import { fetchHttp, useHttp } from "utils/http";
+import { fetchHttp } from "utils/http";
 import { message } from "antd";
 
 interface AuthProviderConfig {
@@ -52,9 +52,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     fetchHttp("me", { token: token || undefined })
       .then((data) => setUser(data.user))
       .catch((error) => {
-        message.error(`自动登录失败：${error}`);
+        message.error(`自动登录失败：${error}`).then(null);
       });
-  }, []);
+  }, [token]);
 
   return (
     <AuthContext.Provider

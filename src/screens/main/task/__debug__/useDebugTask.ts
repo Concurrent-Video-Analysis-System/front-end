@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { TaskProps, taskSlice } from "../task.slice";
 import { useEffect } from "react";
 

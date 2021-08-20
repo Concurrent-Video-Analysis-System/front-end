@@ -20,6 +20,7 @@ export const useExactFilter = <K extends string>(
         return item[key as K] === value;
       })
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [originList, filterParams]);
 };
 

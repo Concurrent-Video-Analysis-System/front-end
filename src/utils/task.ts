@@ -1,5 +1,5 @@
 import { useHttp } from "./http";
-import { TaskProps, taskSlice } from "../screens/main/task/task.slice";
+import { taskSlice } from "../screens/main/task/task.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { CreateTaskProps } from "../screens/main/device/create-task";
 import { selectDeviceReducer } from "../screens/main/device/device.slice";

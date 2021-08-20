@@ -6,13 +6,12 @@ import {
   PauseCircleTwoTone,
   PlayCircleTwoTone,
 } from "@ant-design/icons";
-import { Button, Divider } from "antd";
+import { Button, message } from "antd";
 import { TagList } from "../device/create-task";
 import { useMemo } from "react";
 import { useTask } from "../../../utils/task";
 import moment from "moment";
 
-type TaskState = "start" | "pause";
 type ProcessState = "processing" | "paused" | "pending" | "finished";
 
 const state2label = (state: ProcessState) => {
@@ -81,6 +80,7 @@ const StatefulProgressBar = ({
         { ...commonConfig, ...pendingConfig };
   }, [state, value]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(() => <ProgressBar config={config} />, [state, value]);
 };
 
@@ -236,7 +236,9 @@ export const TaskCard = ({
             type={"primary"}
             danger
             onClick={() => {
-              deleteTask({ id: taskProps.id });
+              deleteTask({ id: taskProps.id }).then(() => {
+                message.success("任务删除成功！").then(null);
+              });
             }}
           >
             删除任务

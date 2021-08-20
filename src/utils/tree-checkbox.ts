@@ -59,6 +59,7 @@ const findTreeCheckbox = (
   });
 };
 
+/** @deprecated */
 export const useTreeCheckbox = (tree: Array<TreeItem>) => {
   console.log(tree);
   console.log(tree2treeCheckbox(tree));

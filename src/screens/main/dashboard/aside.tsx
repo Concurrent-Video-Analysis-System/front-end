@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { selectRecordlistReducer } from "../recordlist.slice";
 import styled from "@emotion/styled";
-import { Button, Divider } from "antd";
+import { Divider } from "antd";
 import { selectDeviceReducer } from "../device/device.slice";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +23,7 @@ export const DashBoardAside = () => {
           .map((record) => (
             <RecordItem>
               <a
+                href={"/#"}
                 onClick={(e) => {
                   e.preventDefault();
                   navigate(`/recordlist/${record.id}`);
@@ -41,6 +42,7 @@ export const DashBoardAside = () => {
         {recordlistSelector.recordlist.length >= 10 ? (
           <RecordItem style={{ marginTop: "1.5rem", color: "#A0A0A0" }}>
             <a
+              href={"/#"}
               onClick={(e) => {
                 e.preventDefault();
                 navigate(`/recordlist`);
@@ -60,6 +62,7 @@ export const DashBoardAside = () => {
           .map((device) => (
             <RecordItem>
               <a
+                href={"/#"}
                 onClick={(e) => {
                   e.preventDefault();
                   navigate(`/device/${device.id}`);
@@ -72,6 +75,7 @@ export const DashBoardAside = () => {
         {deviceSelector.deviceList.length >= 5 ? (
           <RecordItem style={{ marginTop: "1.5rem", color: "#A0A0A0" }}>
             <a
+              href={"/#"}
               onClick={(e) => {
                 e.preventDefault();
                 navigate(`/device`);

@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactECharts from "echarts-for-react";
-import { selectRecordlistReducer } from "../recordlist.slice";
-import { useSelector } from "react-redux";
 
 export const RecordTypeChart = ({
   recordFilter,
@@ -128,7 +126,7 @@ export const RecordDateChart = ({
         areaStyle: { normal: {} },
         data: Object.entries(values)
           .sort(([a, _a], [b, _b]) => (a < b ? -1 : a > b ? 1 : 0))
-          .map(([key, value]) => value),
+          .map(([, value]) => value),
       };
     }),
   };
