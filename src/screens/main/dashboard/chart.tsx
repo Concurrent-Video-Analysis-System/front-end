@@ -11,11 +11,22 @@ export const RecordTypeChart = ({
   dateRange: [string, string];
 }) => {
   const option = {
-    title: {
-      text: "违规类别分析",
-      subtext: `${dateRange[0]} ~ ${dateRange[1]}`,
-      x: "center",
-    },
+    title: [
+      {
+        text: "违规类别分析",
+        subtext: `${dateRange[0]} ~ ${dateRange[1]}`,
+        x: "center",
+      },
+      {
+        show: Object.keys(recordFilter).length === 0,
+        text: "当前选择的时间段内无可用数据",
+        subtext: `请刷新或选择其它时间段`,
+        textStyle: { fontSize: "18", color: "#808080" },
+        subtextStyle: { fontSize: "16", color: "#A0A0A0" },
+        x: "center",
+        y: "center",
+      },
+    ],
     tooltip: {
       trigger: "item",
       formatter: "{a} <br/>{b} : <b>{c} ({d}%)</b>",
@@ -65,11 +76,22 @@ export const RecordDateChart = ({
   dateRange: [string, string];
 }) => {
   const option = {
-    title: {
-      text: "违规日期分析",
-      subtext: `${dateRange[0]} ~ ${dateRange[1]}`,
-      x: "center",
-    },
+    title: [
+      {
+        text: "违规日期分析",
+        subtext: `${dateRange[0]} ~ ${dateRange[1]}`,
+        x: "center",
+      },
+      {
+        show: Object.keys(recordFilter).length === 0,
+        text: "当前选择的时间段内无可用数据",
+        subtext: `请刷新或选择其它时间段`,
+        textStyle: { fontSize: "18", color: "#808080" },
+        subtextStyle: { fontSize: "16", color: "#A0A0A0" },
+        x: "center",
+        y: "center",
+      },
+    ],
     tooltip: {
       trigger: "axis",
     },
@@ -127,11 +149,22 @@ export const RecordLocationChart = ({
   dateRange: [string, string];
 }) => {
   const option = {
-    title: {
-      text: "违规地点分析",
-      subtext: `${dateRange[0]} ~ ${dateRange[1]}`,
-      x: "center",
-    },
+    title: [
+      {
+        text: "违规地点分析",
+        subtext: `${dateRange[0]} ~ ${dateRange[1]}`,
+        x: "center",
+      },
+      {
+        show: Object.keys(recordFilter).length === 0,
+        text: "当前选择的时间段内无可用数据",
+        subtext: `请刷新或选择其它时间段`,
+        textStyle: { fontSize: "18", color: "#808080" },
+        subtextStyle: { fontSize: "16", color: "#A0A0A0" },
+        x: "center",
+        y: "center",
+      },
+    ],
     tooltip: {
       trigger: "axis",
     },
@@ -151,7 +184,7 @@ export const RecordLocationChart = ({
     xAxis: [
       {
         type: "category",
-        boundaryGap: true,
+        boundaryGap: false,
         data: Object.keys(Object.values(recordFilter)[0] || {}),
       },
     ],
@@ -165,6 +198,7 @@ export const RecordLocationChart = ({
         name: recordType,
         type: "bar",
         stack: "总量",
+        barMaxWidth: "25%",
         areaStyle: { normal: {} },
         data: Object.values(values),
       };
@@ -187,11 +221,22 @@ export const RecordTimeChart = ({
   dateRange: [string, string];
 }) => {
   const option = {
-    title: {
-      text: "违规时段分析",
-      subtext: `${dateRange[0]} ~ ${dateRange[1]}`,
-      x: "center",
-    },
+    title: [
+      {
+        text: "违规时段分析",
+        subtext: `${dateRange[0]} ~ ${dateRange[1]}`,
+        x: "center",
+      },
+      {
+        show: Object.keys(recordFilter).length === 0,
+        text: "当前选择的时间段内无可用数据",
+        subtext: `请刷新或选择其它时间段`,
+        textStyle: { fontSize: "18", color: "#808080" },
+        subtextStyle: { fontSize: "16", color: "#A0A0A0" },
+        x: "center",
+        y: "center",
+      },
+    ],
     tooltip: {
       trigger: "axis",
     },
