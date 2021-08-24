@@ -19,9 +19,10 @@ export const useFilters = <K extends string>(
         { data: { item: filter } },
         (data) => onFetched(filter, data.data),
         (errorMessage) => {
-          message.error(`更新筛选菜单时出错：${errorMessage}`);
+          message.error(`更新筛选菜单时出错：${errorMessage}`).then(null);
         }
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

@@ -8,7 +8,7 @@ import { store } from "store";
 export const AppProviders = ({ children }: { children: ReactNode }) => {
   return (
     <Provider store={store}>
-      <ConfigProvider>
+      <ConfigProvider autoInsertSpaceInButton={false}>
         <Router>
           <AuthProvider>{children}</AuthProvider>
         </Router>

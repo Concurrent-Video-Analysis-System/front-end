@@ -4,8 +4,11 @@ html {
 
 html body #root .App {
   min-height: 100vh;
+  min-width: 100vw;
 }
 
+/*
 ::-webkit-scrollbar {
   width: 0;
 }
+*/

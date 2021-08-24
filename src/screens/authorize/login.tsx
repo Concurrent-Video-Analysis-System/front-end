@@ -23,7 +23,7 @@ export const LoginFragment = ({
         }
       })
       .catch((error: Error) => {
-        message.error(`登录失败：${error.message}`, 3);
+        message.error(`登录失败：${error.message}`, 3).then(null);
         setIsLoading(false);
       });
   }
@@ -68,13 +68,13 @@ export const LoginFragment = ({
           loading={isLoading}
           block
         >
-          登录
+          登 录
         </Button>
       </Form.Item>
 
-      {/*<Form.Item>
+      <Form.Item>
         <DebugLogin />
-      </Form.Item>*/}
+      </Form.Item>
     </Form>
   );
 };

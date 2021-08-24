@@ -3,9 +3,11 @@ import { Card } from "antd";
 import styled from "@emotion/styled";
 import { LoginFragment } from "./login";
 import { useDocumentTitle } from "utils/document-title";
+import { useNavigate } from "react-router-dom";
 
 export const AuthorizeFragment = () => {
   useDocumentTitle("登录到监控系统");
+  const navigate = useNavigate();
   return (
     <Container>
       <ShadowCard style={{ width: 380 }}>
@@ -13,7 +15,11 @@ export const AuthorizeFragment = () => {
         <Title style={{ color: "#404040", paddingBottom: "2.5rem" }}>
           智能并发解析系统
         </Title>
-        <LoginFragment onLoginSuccess={() => {}} />
+        <LoginFragment
+          onLoginSuccess={() => {
+            navigate("/");
+          }}
+        />
       </ShadowCard>
     </Container>
   );

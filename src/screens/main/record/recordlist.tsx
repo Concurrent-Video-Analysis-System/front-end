@@ -4,16 +4,18 @@ import {
   RecordContent,
   RecordItemProps,
 } from "./recordlist-component/record-content";
-import { Navigate, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import { RecordHandlingFragment } from "./recordhandling";
-import { Breadcrumb, Radio } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Divider, Radio } from "antd";
+import { ExportOutlined, HomeOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { navigateSlice, selectNavigateReducer } from "./navigate.slice";
-import { useDebugImageCard } from "./__debug__/__debug_image_card__";
 import { Link } from "react-router-dom";
 import { useForm } from "../../../utils/form";
 import { recordlistSlice } from "../recordlist.slice";
+import { exportRecordList } from "./export";
+import { AsidePanel } from "./aside";
+import { useDocumentTitle } from "../../../utils/document-title";
 
 const TypeSwitcher = <K extends string>({
   types,
@@ -42,11 +44,8 @@ const TypeSwitcher = <K extends string>({
   );
 };
 
-export const RecordListFragment = ({
-  reloadList,
-}: {
-  reloadList: () => void;
-}) => {
+export const RecordListFragment = () => {
+  useDocumentTitle("违规记录列表");
   const dispatch = useDispatch();
   const navigateSelector = useSelector(selectNavigateReducer);
 
@@ -54,6 +53,36 @@ export const RecordListFragment = ({
     null
   );
   const [displayType, setDisplayType] = useState("card");
+
+  const { setPartialProps, reload } = useForm(
+    {
+      type: undefined,
+      location: undefined,
+      reason: undefined,
+      from: undefined,
+      to: undefined,
+    },
+    "recordlist",
+    (data) => {
+      dispatch(recordlistSlice.actions.set(data));
+    }
+  );
+
+  const onRecordItemSelected = (item: RecordItemProps) => {
+    setSelectedCard(item);
+    dispatch(
+      navigateSlice.actions.moveTo({
+        name: `${item.reason} #${item.id}`,
+        path: `recordlist/${item.id}`,
+      })
+    );
+  };
+
+  const onHandlingUnmount = () => {
+    setSelectedCard(null);
+    reload();
+    dispatch(navigateSlice.actions.back());
+  };
 
   return (
     <Container>
@@ -64,7 +93,7 @@ export const RecordListFragment = ({
               <HomeOutlined />
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <Link to={"recordlist"}>违规行为列表</Link>
+              <Link to={"/recordlist"}>违规行为列表</Link>
             </Breadcrumb.Item>
             {navigateSelector.navigateList.map((item) => (
               <Breadcrumb.Item>
@@ -85,54 +114,56 @@ export const RecordListFragment = ({
                 initialType={displayType}
                 onChange={setDisplayType}
               />
+              <Divider type={"vertical"} style={{ margin: "0 1rem" }} />
+              <Button
+                icon={<ExportOutlined />}
+                type={"primary"}
+                onClick={exportRecordList}
+                danger
+              >
+                导出数据
+              </Button>
             </>
           )}
         </FloatRight>
       </RecordHeader>
-      <Routes>
-        <Route
-          path={"recordlist"}
-          element={
-            <RecordContent
-              displayType={displayType}
-              onRecordItemSelected={(item) => {
-                setSelectedCard(item);
-                dispatch(
-                  navigateSlice.actions.moveTo({
-                    name: `${item.reason} #${item.id}`,
-                    path: `recordlist/${item.id}`,
-                  })
-                );
-              }}
-            />
-          }
-        />
-        <Route
-          path={"recordlist/:recordId/*"}
-          element={
-            <RecordHandlingFragment
-              recordItem={selectedCard}
-              onUnmount={() => {
-                setSelectedCard(null);
-                reloadList();
-                dispatch(navigateSlice.actions.back());
-              }}
-            />
-          }
-        />
-        <Navigate to={"recordlist"} />
-      </Routes>
+      <Content>
+        <Routes>
+          <Route
+            path={":recordId/*"}
+            element={<RecordHandlingFragment onUnmount={onHandlingUnmount} />}
+          />
+          <Route
+            path={"/"}
+            element={
+              <RecordContent
+                displayType={displayType}
+                onRecordItemSelected={onRecordItemSelected}
+              />
+            }
+          />
+        </Routes>
+      </Content>
+      <Aside>
+        <AsidePanel setPartialProps={setPartialProps} />
+      </Aside>
     </Container>
   );
 };
 
 const Container = styled.div`
   height: 100%;
-  padding: 0 2rem 0 2rem;
+  display: grid;
+  grid-template-rows: 5rem 1fr;
+  grid-template-columns: 26rem 1fr;
+  grid-template-areas:
+    "aside header"
+    "aside main";
 `;
 
 const RecordHeader = styled.div`
-  padding-top: 2rem;
+  grid-area: header;
+  padding: 1.5rem 0.5rem 0 2rem;
   width: 100%;
   height: 6rem;
 `;
@@ -140,6 +171,19 @@ const RecordHeader = styled.div`
 const FloatLeft = styled.div`
   float: left;
   padding-left: 0.5rem;
+`;
+
+const Content = styled.header`
+  grid-area: main;
+  padding: 0 2rem;
+`;
+
+const Aside = styled.header`
+  grid-area: aside;
+  overflow: hidden auto;
+  position: fixed;
+  width: 26rem;
+  height: 100%;
 `;
 
 const FloatRight = styled.div`

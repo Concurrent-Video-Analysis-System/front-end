@@ -1,30 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
-import { useDispatch, useSelector } from "react-redux";
-import { Badge, DatePicker, Form, Menu, Select } from "antd";
-import { selectRecordlistReducer } from "./recordlist.slice";
+import { useSelector } from "react-redux";
+import { DatePicker, Form, Menu, Select } from "antd";
 import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  InfoCircleOutlined,
   UnorderedListOutlined,
   SearchOutlined,
+  PauseCircleOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
-import { FilterListItem, useFilters } from "utils/filter";
 import { Moment } from "moment";
 import { RangeValue } from "rc-picker/lib/interface";
-import {
-  recordfilterSlice,
-  selectRecordfilterReducer,
-} from "./recordfilter.slice";
+import { useFetchReason } from "../../../utils/fetcher/reason";
+import { selectReasonReducer } from "../device/reason.slice";
+import { selectDeviceReducer } from "../device/device.slice";
+import { useFetchDevice } from "../../../utils/fetcher/device";
 
 const { SubMenu } = Menu;
 
 const FormSelector = ({
-  filterList,
+  optionList,
   onChange,
 }: {
-  filterList: FilterListItem[];
+  optionList: { id: number; name: string }[];
   onChange: (value: unknown) => void;
 }) => {
   return (
@@ -36,10 +33,10 @@ const FormSelector = ({
       filterOption={(input, option) =>
         option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }
-      onChange={(value) => onChange(value)}
+      onChange={onChange}
     >
-      {filterList?.map((filterName, index) => (
-        <Select.Option value={index}>{filterName}</Select.Option>
+      {optionList?.map((option) => (
+        <Select.Option value={option.id}>{option.name}</Select.Option>
       ))}
     </Select>
   );
@@ -60,30 +57,15 @@ const FormDateSelector = ({
   );
 };
 
-export const AsidePanel = ({
+export const TaskAsidePanel = ({
   setPartialProps,
 }: {
   setPartialProps: (props: any) => void;
 }) => {
-  const dispatch = useDispatch();
-  const filterSelector = useSelector(selectRecordfilterReducer);
-  const recordlistSelector = useSelector(selectRecordlistReducer);
-
-  useFilters(["location", "reason", "from", "to"], (filterName, itemList) => {
-    dispatch(
-      recordfilterSlice.actions.setFilter({ name: filterName, value: itemList })
-    );
-  });
-
-  // use for badge
-  const [pendingItemsCount, setPendingItemsCount] = useState(0);
-  useEffect(() => {
-    setPendingItemsCount(
-      recordlistSelector.recordlist.reduce((prev, item) => {
-        return prev + +(item.type === "pending");
-      }, 0)
-    );
-  }, [recordlistSelector.recordlist]);
+  useFetchDevice();
+  useFetchReason();
+  const deviceSelector = useSelector(selectDeviceReducer);
+  const reasonSelector = useSelector(selectReasonReducer);
 
   return (
     <Menu
@@ -91,19 +73,14 @@ export const AsidePanel = ({
       defaultSelectedKeys={["pending"]}
       defaultOpenKeys={["list", "filter"]}
       mode="inline"
-      onClick={(event) => setPartialProps({ type: event.key })}
+      onClick={(event) => setPartialProps({ state: event.key })}
     >
-      <SubMenu key="list" icon={<UnorderedListOutlined />} title="违规行为列表">
-        <Menu.Item key="pending" icon={<InfoCircleOutlined />}>
-          <Badge count={pendingItemsCount} offset={[20, 0]}>
-            待处理
-          </Badge>
+      <SubMenu key="list" icon={<UnorderedListOutlined />} title="任务类型">
+        <Menu.Item key="start" icon={<CheckCircleOutlined />}>
+          正在进行
         </Menu.Item>
-        <Menu.Item key="processed" icon={<CheckCircleOutlined />}>
-          已处理
-        </Menu.Item>
-        <Menu.Item key="deleted" icon={<CloseCircleOutlined />}>
-          已删除
+        <Menu.Item key="pause" icon={<PauseCircleOutlined />}>
+          已暂停
         </Menu.Item>
       </SubMenu>
       <SubMenu key="filter" icon={<SearchOutlined />} title="筛选列表">
@@ -114,12 +91,15 @@ export const AsidePanel = ({
               wrapperCol={{ span: "1rem" }}
               layout="horizontal"
             >
-              <Form.Item label={"营业网点"}>
+              <Form.Item label={"设备名称"}>
                 <FormSelector
-                  filterList={filterSelector.locationList}
+                  optionList={deviceSelector.deviceList.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                  }))}
                   onChange={(value) =>
                     setPartialProps({
-                      location: value ? String(value) : undefined,
+                      device: value,
                     })
                   }
                 />
@@ -127,10 +107,13 @@ export const AsidePanel = ({
 
               <Form.Item label={"违规类型"}>
                 <FormSelector
-                  filterList={filterSelector.reasonList}
+                  optionList={reasonSelector.reasonList.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                  }))}
                   onChange={(value) => {
                     setPartialProps({
-                      reason: value ? String(value) : undefined,
+                      reason: value,
                     });
                   }}
                 />

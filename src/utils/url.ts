@@ -5,7 +5,7 @@ import { useMemo } from "react";
  * Clear `null`, `undefined` and empty string (`''`) in the given object.
  * @param origin The object to be clear.
  */
-const cleanObject = (origin: { [key in string]: unknown }) => {
+export const cleanObject = (origin: { [key in string]?: unknown }) => {
   return Object.entries(origin).reduce((prev, [key, value]) => {
     return value == null || value === "" ? prev : { [key]: value, ...prev };
   }, {} as { [key in string]: unknown });
@@ -31,6 +31,7 @@ export const useUrlQueryParams = <K extends string>(keys: string[]) => {
       keys.reduce((prev, key) => {
         return { ...prev, [key]: searchParams.get(key) || "" };
       }, {} as { [key in K]: string }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams]
   );
 
