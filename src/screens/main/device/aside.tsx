@@ -135,7 +135,7 @@ const FixedAside = styled.div`
   width: 30rem;
   height: 100%;
   position: fixed;
-  left: 0;
+  left: 26rem;
   background-color: #f7f7f7;
   border-right: 1px solid #e7e7e7;
 `;

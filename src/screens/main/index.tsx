@@ -8,6 +8,7 @@ import { DeviceIndexFragment } from "./device";
 import { TaskIndexFragment } from "./task";
 import { DashBoard } from "./dashboard";
 import { MenuNavigator } from "./menu";
+import { BreadcrumbNavigator } from "./breadcrumb";
 
 export const MainFragment = () => {
   useDocumentTitle("海量数据智能并发解析平台");
@@ -17,39 +18,51 @@ export const MainFragment = () => {
       <HeaderContainer>
         <Header />
       </HeaderContainer>
+      <AsideContainer>
+        <MenuNavigator />
+      </AsideContainer>
       <ContentContainer>
+        <BreadcrumbNavigator icon={<></>} />
         <Routes>
           <Route path={"record/*"} element={<RecordIndexFragment />} />
           <Route path={"device/*"} element={<DeviceIndexFragment />} />
           <Route path={"task/*"} element={<TaskIndexFragment />} />
           <Route path={"dashboard/*"} element={<DashBoard />} />
-          <Navigate to={"dashboard"} />
+          <Navigate to={"/dashboard"} />
         </Routes>
       </ContentContainer>
-      <AsideContainer>
-        <MenuNavigator />
-      </AsideContainer>
     </Container>
   );
 };
 
 const Container = styled.div`
-  display: grid;
-  grid-template-rows: 5rem 1fr;
-  grid-template-columns: 26rem 1fr;
-  grid-template-areas:
-    "header header"
-    "aside main";
   height: 100vh;
 `;
 
 const HeaderContainer = styled.header`
-  grid-area: header;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 5.5rem;
+  z-index: 3;
 `;
-const ContentContainer = styled.header`
+
+const ContentContainer = styled.div`
   grid-area: main;
+  overflow: auto;
+  width: calc(100% - 26rem);
+  position: absolute;
+  left: 26rem;
+  top: 5.5rem;
 `;
 
 const AsideContainer = styled.div`
   grid-area: aside;
+  overflow: hidden auto;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 5.5rem;
+  width: 26rem;
+  height: 100%;
 `;

@@ -37,9 +37,7 @@ export const Header = () => {
 
 const HeaderContainer = styled.div`
   background-color: #001529;
-  position: fixed;
-  height: 5rem;
-  z-index: 3;
+  height: 100%;
   width: 100%;
   display: flex;
   justify-content: flex-start;

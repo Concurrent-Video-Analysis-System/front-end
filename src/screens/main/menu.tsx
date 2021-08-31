@@ -12,27 +12,41 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { MenuInfo } from "rc-menu/lib/interface";
+import { MenuProps } from "rc-menu/lib/Menu";
 
-export const MenuNavigator = () => {
+export interface MenuNavigatorProps extends MenuProps {
+  width?: string;
+  height?: string;
+}
+
+export const MenuNavigator = (props: MenuProps) => {
   const iconStyle = { fontSize: "1.8rem" };
   const location = useLocation();
   const navigate = useNavigate();
+  const [menuSelectedItem, setMenuSelectedItem] = useState("");
 
   useEffect(() => {
-    console.log(location.pathname);
+    setMenuSelectedItem(location.pathname);
   }, [location]);
+
+  const onMenuItemSelected = (item: MenuInfo) => {
+    setMenuSelectedItem(item.key);
+    navigate(item.key);
+  };
 
   return (
     <Menu
-      style={{ width: "26rem", height: "100%", position: "fixed" }}
+      style={{ width: "100%", height: "100%" }}
       defaultOpenKeys={["list", "filter"]}
       theme={"dark"}
-      selectedKeys={["dashboard"]}
+      selectedKeys={[menuSelectedItem]}
       mode={"inline"}
       inlineCollapsed={false}
-      onClick={(item) => navigate(item.key)}
+      onClick={onMenuItemSelected}
+      {...props}
     >
       <Menu.Item
         key={"/dashboard"}
