@@ -7,6 +7,7 @@ import { Route, Routes } from "react-router";
 import { DeviceIndexFragment } from "./device";
 import { TaskIndexFragment } from "./task";
 import { DashBoard } from "./dashboard";
+import { MenuNavigator } from "./menu";
 
 export const MainFragment = () => {
   useDocumentTitle("海量数据智能并发解析平台");
@@ -30,16 +31,21 @@ export const MainFragment = () => {
 
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 5.5rem 1fr;
+  grid-template-rows: 5rem 1fr;
+  grid-template-columns: 26rem 1fr;
   grid-template-areas:
-    "header"
-    "main";
+    "header header"
+    "aside main";
   height: 100vh;
 `;
 
-const Header = styled.header`
+const HeaderContainer = styled.header`
   grid-area: header;
 `;
-const Main = styled.header`
+const ContentContainer = styled.header`
   grid-area: main;
+`;
+
+const AsideContainer = styled.div`
+  grid-area: aside;
 `;
