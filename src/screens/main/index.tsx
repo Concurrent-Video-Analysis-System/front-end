@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { SurveillanceHeader } from "./header";
+import { Header } from "./header";
 import { RecordListFragment } from "./record/recordlist";
 import { useDocumentTitle } from "../../utils/document-title";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import { DeviceIndexFragment } from "./device";
 import { TaskIndexFragment } from "./task";
 import { DashBoard } from "./dashboard";
@@ -14,17 +14,21 @@ export const MainFragment = () => {
 
   return (
     <Container>
-      <Header>
-        <SurveillanceHeader />
-      </Header>
-      <Main>
+      <HeaderContainer>
+        <Header />
+      </HeaderContainer>
+      <ContentContainer>
         <Routes>
           <Route path={"recordlist/*"} element={<RecordListFragment />} />
           <Route path={"device/*"} element={<DeviceIndexFragment />} />
           <Route path={"task/*"} element={<TaskIndexFragment />} />
-          <Route path={"/"} element={<DashBoard />} />
+          <Route path={"dashboard/*"} element={<DashBoard />} />
+          <Navigate to={"dashboard"} />
         </Routes>
-      </Main>
+      </ContentContainer>
+      <AsideContainer>
+        <MenuNavigator />
+      </AsideContainer>
     </Container>
   );
 };

@@ -12,7 +12,7 @@ export const LogoutPopoverContent = ({ logout }: { logout: () => void }) => {
   );
 };
 
-export const SurveillanceHeader = () => {
+export const Header = () => {
   const { user, logout } = useAuthContext();
 
   return (
@@ -36,16 +36,16 @@ export const SurveillanceHeader = () => {
 };
 
 const HeaderContainer = styled.div`
-  background-color: #363636;
+  background-color: #001529;
   position: fixed;
-  height: 5.5rem;
+  height: 5rem;
   z-index: 3;
   width: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   color: #ffffff;
-  font-size: 1.9rem;
+  font-size: 1.6rem;
 `;
 
 const RightPanel = styled.div`
