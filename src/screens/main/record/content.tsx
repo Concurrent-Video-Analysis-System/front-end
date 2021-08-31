@@ -12,7 +12,7 @@ import {
 } from "antd";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectRecordlistReducer } from "../../recordlist.slice";
+import { selectRecordlistReducer } from "../recordlist.slice";
 
 export interface RecordItemProps {
   id: number;

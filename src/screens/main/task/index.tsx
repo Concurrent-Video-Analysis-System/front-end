@@ -92,9 +92,9 @@ const Content = styled.header`
 `;
 
 const Aside = styled.header`
-  position: fixed;
+  /*position: fixed;
   width: 26rem;
-  left: 0;
+  left: 0;*/
   grid-area: aside;
   overflow: hidden auto;
 `;

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { Button, Divider, Typography, Popconfirm } from "antd";
-import { useProcess } from "../../../utils/process";
+import { useProcess } from "utils/process";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
 import { selectRecordlistReducer } from "../recordlist.slice";

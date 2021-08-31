@@ -1,21 +1,18 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import {
-  RecordContent,
-  RecordItemProps,
-} from "./recordlist-component/record-content";
+import { RecordContent, RecordItemProps } from "./content";
 import { Route, Routes } from "react-router";
-import { RecordHandlingFragment } from "./recordhandling";
+import { RecordHandlingFragment } from "./handle";
 import { Breadcrumb, Button, Divider, Radio } from "antd";
 import { ExportOutlined, HomeOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { navigateSlice, selectNavigateReducer } from "./navigate.slice";
 import { Link } from "react-router-dom";
-import { useForm } from "../../../utils/form";
+import { useForm } from "utils/form";
 import { recordlistSlice } from "../recordlist.slice";
 import { exportRecordList } from "./export";
 import { AsidePanel } from "./aside";
-import { useDocumentTitle } from "../../../utils/document-title";
+import { useDocumentTitle } from "utils/document-title";
 
 const TypeSwitcher = <K extends string>({
   types,
@@ -44,7 +41,7 @@ const TypeSwitcher = <K extends string>({
   );
 };
 
-export const RecordListFragment = () => {
+export const RecordIndexFragment = () => {
   useDocumentTitle("违规记录列表");
   const dispatch = useDispatch();
   const navigateSelector = useSelector(selectNavigateReducer);

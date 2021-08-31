@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { recordlistSlice } from "screens/main/recordlist.slice";
 import { useDispatch } from "react-redux";
-import { RecordItemProps } from "../recordlist-component/record-content";
+import { RecordItemProps } from "../content";
 
 const recordTemplate: RecordItemProps[] = [
   {

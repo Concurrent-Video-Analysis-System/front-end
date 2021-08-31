@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Header } from "./header";
-import { RecordListFragment } from "./record/recordlist";
+import { RecordIndexFragment } from "./record";
 import { useDocumentTitle } from "../../utils/document-title";
 import { Navigate, Route, Routes } from "react-router";
 import { DeviceIndexFragment } from "./device";
@@ -19,7 +19,7 @@ export const MainFragment = () => {
       </HeaderContainer>
       <ContentContainer>
         <Routes>
-          <Route path={"recordlist/*"} element={<RecordListFragment />} />
+          <Route path={"record/*"} element={<RecordIndexFragment />} />
           <Route path={"device/*"} element={<DeviceIndexFragment />} />
           <Route path={"task/*"} element={<TaskIndexFragment />} />
           <Route path={"dashboard/*"} element={<DashBoard />} />

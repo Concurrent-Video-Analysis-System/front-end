@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "store";
-import { RecordItemProps } from "./record/recordlist-component/record-content";
+import { RecordItemProps } from "./record/content";
 
 interface State {
   recordlist: RecordItemProps[];
