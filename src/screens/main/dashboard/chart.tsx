@@ -61,7 +61,7 @@ export const RecordTypeChart = ({
   return (
     <ReactECharts
       option={option}
-      style={{ height: "40rem", minWidth: "55rem" }}
+      style={{ height: "100%", width: "85%", maxHeight: "40vh" }}
     />
   );
 };
@@ -134,7 +134,7 @@ export const RecordDateChart = ({
   return (
     <ReactECharts
       option={option}
-      style={{ height: "40rem", minWidth: "55rem" }}
+      style={{ height: "100%", width: "85%", maxHeight: "40vh" }}
     />
   );
 };
@@ -182,7 +182,7 @@ export const RecordLocationChart = ({
     xAxis: [
       {
         type: "category",
-        boundaryGap: false,
+        boundaryGap: true,
         data: Object.keys(Object.values(recordFilter)[0] || {}),
       },
     ],
@@ -196,7 +196,7 @@ export const RecordLocationChart = ({
         name: recordType,
         type: "bar",
         stack: "总量",
-        barMaxWidth: "25%",
+        barMaxWidth: "140",
         areaStyle: { normal: {} },
         data: Object.values(values),
       };
@@ -206,7 +206,7 @@ export const RecordLocationChart = ({
   return (
     <ReactECharts
       option={option}
-      style={{ height: "40rem", minWidth: "55rem" }}
+      style={{ height: "100%", width: "85%", maxHeight: "40vh" }}
     />
   );
 };
@@ -277,7 +277,7 @@ export const RecordTimeChart = ({
   return (
     <ReactECharts
       option={option}
-      style={{ height: "40rem", minWidth: "55rem" }}
+      style={{ height: "100%", width: "85%", maxHeight: "40vh" }}
     />
   );
 };
