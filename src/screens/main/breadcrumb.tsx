@@ -29,5 +29,7 @@ export const BreadcrumbNavigator = (props: BreadcrumbNavigatorProps) => {
 
 const Container = styled.div`
   width: 100%;
+  height: calc(100% - 1px); // 1px for border-bottom
   padding: 1rem 2rem;
+  border-bottom: 1px solid #e0e0e0;
 `;

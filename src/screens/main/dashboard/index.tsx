@@ -174,7 +174,6 @@ const Container = styled.div`
 
 const Aside = styled.div`
   grid-area: aside;
-  position: fixed;
   width: 34rem;
   height: 100%;
   overflow-y: auto;
@@ -194,7 +193,7 @@ const Header = styled.div`
 `;
 
 const ChartContainer = styled.div<{ id: string }>`
-  grid-area: chart${(props) => props.id};
+  grid-area: chart ${(props) => props.id};
   display: flex;
   justify-content: center;
   align-items: center;

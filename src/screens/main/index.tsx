@@ -21,8 +21,10 @@ export const MainFragment = () => {
       <AsideContainer>
         <MenuNavigator />
       </AsideContainer>
-      <ContentContainer>
+      <NavigatorContainer>
         <BreadcrumbNavigator icon={<></>} />
+      </NavigatorContainer>
+      <ContentContainer>
         <Routes>
           <Route path={"record/*"} element={<RecordIndexFragment />} />
           <Route path={"device/*"} element={<DeviceIndexFragment />} />
@@ -48,16 +50,15 @@ const HeaderContainer = styled.header`
 `;
 
 const ContentContainer = styled.div`
-  grid-area: main;
   overflow: auto;
   width: calc(100% - 26rem);
+  height: calc(100% - 10rem);
   position: absolute;
   left: 26rem;
-  top: 5.5rem;
+  top: 10rem;
 `;
 
 const AsideContainer = styled.div`
-  grid-area: aside;
   overflow: hidden auto;
   position: fixed;
   z-index: 1;
@@ -65,4 +66,12 @@ const AsideContainer = styled.div`
   top: 5.5rem;
   width: 26rem;
   height: 100%;
+`;
+
+const NavigatorContainer = styled.div`
+  position: absolute;
+  width: calc(100% - 26rem);
+  height: 4.5rem;
+  left: 26rem;
+  top: 5.5rem;
 `;
