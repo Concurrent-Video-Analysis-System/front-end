@@ -24,7 +24,7 @@ export const DashBoardAside = () => {
             maxItemCount={7}
             displayFormat={(record) =>
               record ? (
-                <div onClick={() => navigate(`/record/${record?.id}`)}>
+                <RecordItem onClick={() => navigate(`/record/${record?.id}`)}>
                   {record?.type === "pending" ? (
                     <EmphasisedText>[新] </EmphasisedText>
                   ) : null}
@@ -32,15 +32,16 @@ export const DashBoardAside = () => {
                     "M月D日 HH:mm:ss"
                   )}{" "}
                   {record?.reason}
-                </div>
+                </RecordItem>
               ) : (
-                <div
+                <RecordItem
+                  style={{ marginTop: "0.5rem", color: "#A0A0A0" }}
                   onClick={() => {
                     navigate(`/record`);
                   }}
                 >
                   查看更多记录……
-                </div>
+                </RecordItem>
               )
             }
           />
@@ -56,17 +57,18 @@ export const DashBoardAside = () => {
             maxItemCount={5}
             displayFormat={(device) =>
               device ? (
-                <div onClick={() => navigate(`/device/${device.id}`)}>
+                <RecordItem onClick={() => navigate(`/device/${device.id}`)}>
                   {device.location.name} - {device.name}
-                </div>
+                </RecordItem>
               ) : (
-                <div
+                <RecordItem
+                  style={{ marginTop: "0.5rem", color: "#A0A0A0" }}
                   onClick={() => {
                     navigate(`/device`);
                   }}
                 >
                   查看更多设备……
-                </div>
+                </RecordItem>
               )
             }
           />
@@ -87,18 +89,12 @@ const CollapsibleList = <K extends unknown>({
   maxItemCount?: number;
 }) => {
   return (
-    <>
+    <ul style={{ listStyleType: "none", padding: "0" }}>
       {list
         .filter((item, index) => index < maxItemCount)
-        .map((item) => (
-          <RecordItem>{displayFormat && displayFormat(item)}</RecordItem>
-        ))}
-      {list.length >= maxItemCount ? (
-        <RecordItem style={{ marginTop: "0.5rem", color: "#A0A0A0" }}>
-          {displayFormat && displayFormat()}
-        </RecordItem>
-      ) : null}
-    </>
+        .map((item) => displayFormat && displayFormat(item))}
+      {list.length >= maxItemCount ? displayFormat && displayFormat() : null}
+    </ul>
   );
 };
 
@@ -124,8 +120,9 @@ const ContentBlock = styled.div`
   margin: 1rem 0;
 `;
 
-const RecordItem = styled.div`
+const RecordItem = styled.li`
   margin-bottom: 1rem;
+  list-style: none;
   font-size: 1.7rem;
   width: 100%;
   white-space: nowrap;
