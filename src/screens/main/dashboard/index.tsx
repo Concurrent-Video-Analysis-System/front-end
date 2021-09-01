@@ -166,8 +166,8 @@ const Container = styled.div`
   height: 100%;
   grid-template-areas:
     "aside header header"
-    "aside chart1 chart2"
-    "aside chart3 chart4";
+    "aside chart-1 chart-2"
+    "aside chart-3 chart-4";
   grid-template-columns: 34rem 1fr 1fr;
   grid-template-rows: 6rem 1fr 1fr;
 `;
@@ -193,12 +193,10 @@ const Header = styled.div`
 `;
 
 const ChartContainer = styled.div<{ id: string }>`
-  grid-area: chart ${(props) => props.id};
+  grid-area: chart-${(props) => props.id};
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 3rem;
   color: #808080;
 `;
-
-// 违规记录类型 违规记录随时间的变化 违规记录随网点的变化
