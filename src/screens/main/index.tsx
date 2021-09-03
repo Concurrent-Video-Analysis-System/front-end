@@ -9,9 +9,11 @@ import { TaskIndexFragment } from "./task";
 import { DashBoard } from "./dashboard";
 import { MenuNavigator } from "./menu";
 import { BreadcrumbNavigator } from "./breadcrumb";
+import { useGeneralLists } from "utils/general-list";
 
 export const MainFragment = () => {
   useDocumentTitle("海量数据智能并发解析平台");
+  useGeneralLists(["device", "location", "reason"]);
 
   return (
     <Container>

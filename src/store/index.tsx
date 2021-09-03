@@ -6,6 +6,7 @@ import { deviceSlice } from "screens/main/device/device.slice";
 import { locationSlice } from "screens/main/device/location.slice";
 import { taskSlice } from "screens/main/task/task.slice";
 import { reasonSlice } from "../screens/main/device/reason.slice";
+import { generalListSlice } from "../screens/main/general-list.slice";
 
 export const rootReducer = {
   recordlistReducer: recordlistSlice.reducer,
@@ -15,6 +16,7 @@ export const rootReducer = {
   locationReducer: locationSlice.reducer,
   taskReducer: taskSlice.reducer,
   reasonReducer: reasonSlice.reducer,
+  generalListReducer: generalListSlice.reducer,
 };
 
 export const store = configureStore({
