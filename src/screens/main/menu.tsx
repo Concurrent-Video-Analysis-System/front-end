@@ -16,6 +16,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MenuInfo } from "rc-menu/lib/interface";
 import { MenuProps } from "rc-menu/lib/Menu";
+import { locationTree } from "../../components/navigate/titile";
 
 export interface MenuNavigatorProps extends MenuProps {
   width?: string;
@@ -36,6 +37,8 @@ export const MenuNavigator = (props: MenuProps) => {
     setMenuSelectedItem(item.key);
     navigate(item.key);
   };
+
+  const tree = { ...locationTree };
 
   return (
     <Menu
@@ -83,14 +86,14 @@ export const MenuNavigator = (props: MenuProps) => {
         icon={<ScheduleOutlined style={iconStyle} />}
       >
         <Menu.Item
-          key={"/task"}
+          key={"/task/realtime"}
           title={"实时监控分析"}
           icon={<VideoCameraOutlined style={iconStyle} />}
         >
           实时监控分析
         </Menu.Item>
         <Menu.Item
-          key={"/task1"}
+          key={"/task/history"}
           title={"历史录像分析"}
           icon={<SaveOutlined style={iconStyle} />}
         >

@@ -5,15 +5,16 @@ import { RecordIndexFragment } from "./record";
 import { useDocumentTitle } from "../../utils/document-title";
 import { Navigate, Route, Routes } from "react-router";
 import { DeviceIndexFragment } from "./device";
-import { TaskIndexFragment } from "./task";
+import { RealtimeTaskFragment } from "./task/realtime";
 import { DashBoard } from "./dashboard";
 import { MenuNavigator } from "./menu";
 import { BreadcrumbNavigator } from "./breadcrumb";
 import { useGeneralLists } from "utils/general-list";
+import { TaskIndexFragment } from "./task";
 
 export const MainFragment = () => {
   useDocumentTitle("海量数据智能并发解析平台");
-  useGeneralLists(["device", "location", "reason"]);
+  useGeneralLists(["device", "location", "reason", "task", "recordlist"]);
 
   return (
     <Container>

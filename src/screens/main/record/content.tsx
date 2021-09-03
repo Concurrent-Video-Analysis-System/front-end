@@ -13,13 +13,15 @@ import {
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectRecordlistReducer } from "../recordlist.slice";
+import { ItemProps } from "interfaces";
 
 export interface RecordItemProps {
   id: number;
   imageUrl?: string;
   type?: string;
-  reason?: string;
-  location?: string;
+  reason?: ItemProps;
+  device?: ItemProps;
+  location?: ItemProps;
   date?: string;
 }
 
@@ -79,9 +81,9 @@ const RecordCard = ({
           onClick={() => (onSelected ? onSelected(props) : null)}
         >
           <div style={{ fontWeight: "bold", fontSize: "2rem" }}>
-            {props.reason}
+            {props.reason?.name}
           </div>
-          <div style={{ float: "left" }}>{props.location}</div>
+          <div style={{ float: "left" }}>{props.location?.name}</div>
           <div style={{ float: "right" }}>{props.date}</div>
         </Card>
       </Badge.Ribbon>
@@ -128,7 +130,15 @@ const RecordTableList = ({
   // @ts-ignore
   return (
     <Content>
-      <Table dataSource={recordlist} size={"middle"} pagination={false}>
+      <Table
+        dataSource={recordlist.map((item) => ({
+          ...item,
+          location: item.location?.name,
+          reason: item.reason?.name,
+        }))}
+        size={"middle"}
+        pagination={false}
+      >
         <Table.Column title={"序号"} dataIndex={"id"} key={"id"} />
         <Table.Column title={"违规原因"} dataIndex={"reason"} key={"reason"} />
         <Table.Column

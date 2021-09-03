@@ -76,13 +76,13 @@ export const locationTree: LocationTreeNodeProps[] = [
     icon: <ScheduleOutlined />,
     children: [
       {
-        key: "/task",
+        key: "/task/realtime",
         title: "实时监控分析",
         icon: <VideoCameraOutlined />,
         children: [],
       },
       {
-        key: "/task1",
+        key: "/task/history",
         title: "历史录像分析",
         icon: <SaveOutlined />,
         children: [],
