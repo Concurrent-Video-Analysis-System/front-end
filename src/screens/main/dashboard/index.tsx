@@ -7,16 +7,19 @@ import {
   RecordTypeChart,
   RecordTimeChart,
 } from "./chart";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { selectRecordlistReducer } from "../recordlist.slice";
-import { selectLocationReducer } from "../device/location.slice";
+import { LocationProps, selectLocationReducer } from "../device/location.slice";
 import { pad } from "utils/time";
 import { useFetchRecordList } from "utils/fetcher/recordlist";
 import { useFetchLocation } from "utils/fetcher/location";
 import { useFetchDevice } from "utils/fetcher/device";
 import { useDocumentTitle } from "utils/document-title";
+import { useDebugImageCard } from "../record/__debug__/__debug_image_card__";
+import { selectGeneralListReducer } from "../general-list.slice";
+import { RecordItemProps } from "../record/content";
 
 const usePastXDays = (x: number) => {
   return useMemo(() => {
@@ -39,12 +42,19 @@ const useEveryHourInADay = () => {
 export const DashBoard = () => {
   useDocumentTitle("主页-数据展示中心");
 
-  useFetchRecordList({});
-  useFetchDevice();
-  useFetchLocation();
-  const recordlistSelector = useSelector(selectRecordlistReducer);
-  const locationSelector = useSelector(selectLocationReducer);
-  // useDebugImageCard();
+  const generalListSelector = useSelector(selectGeneralListReducer);
+  const locationList = useMemo(
+    () =>
+      generalListSelector.generalList.location as LocationProps[] | undefined,
+    [generalListSelector]
+  );
+  const recordList = useMemo(
+    () =>
+      generalListSelector.generalList.recordlist as
+        | RecordItemProps[]
+        | undefined,
+    [generalListSelector]
+  );
 
   const [pastDays, setPastDays] = useState(7);
   const pastDayList = usePastXDays(pastDays);
@@ -56,57 +66,64 @@ export const DashBoard = () => {
 
   const recordReasonDateFilter: {
     [type in string]: { [date in string]: number };
-  } = recordlistSelector.recordlist.reduce((prev, record) => {
-    const reason = record.reason;
-    const date = moment(record.date, "YYYY-MM-DD HH:mm:ss").format(
-      "YYYY-MM-DD"
-    );
-    if (reason && date) {
-      if (!prev[reason]) {
-        prev[reason] = Object.fromEntries(
-          pastDayList.map((dayString) => [dayString, 0])
-        );
+  } =
+    recordList?.reduce((prev, record) => {
+      const reason = record.reason;
+      const date = moment(record.date, "YYYY-MM-DD HH:mm:ss").format(
+        "YYYY-MM-DD"
+      );
+      if (reason && date) {
+        if (!prev[reason.name]) {
+          prev[reason.name] = Object.fromEntries(
+            pastDayList.map((dayString) => [dayString, 0])
+          );
+        }
+        if (pastDayList.includes(date)) {
+          prev[reason.name][date] = (prev[reason.name][date] || 0) + 1;
+        }
       }
-      if (pastDayList.includes(date)) {
-        prev[reason][date] = (prev[reason][date] || 0) + 1;
-      }
-    }
-    return prev;
-  }, {} as { [type in string]: { [date in string]: number } });
+      return prev;
+    }, {} as { [type in string]: { [date in string]: number } }) || {};
 
   const recordReasonLocationFilter: {
     [type in string]: { [location in string]: number };
-  } = recordlistSelector.recordlist.reduce((prev, record) => {
-    const reason = record.reason;
-    const location = record.location;
-    if (reason && location) {
-      if (!prev[reason]) {
-        prev[reason] = Object.fromEntries(
-          locationSelector.locationList.map((location) => [location.name, 0])
-        );
+  } =
+    recordList?.reduce((prev, record) => {
+      const reason = record.reason;
+      const location = record.location;
+      if (reason && location) {
+        if (!prev[reason.name]) {
+          prev[reason.name] = Object.fromEntries(
+            locationList?.map((location) => [
+              (location as LocationProps).name,
+              0,
+            ]) || []
+          );
+        }
+        prev[reason.name][location.name] =
+          (prev[reason.name][location.name] || 0) + 1;
       }
-      prev[reason][location] = (prev[reason][location] || 0) + 1;
-    }
-    return prev;
-  }, {} as { [type in string]: { [date in string]: number } });
+      return prev;
+    }, {} as { [type in string]: { [date in string]: number } }) || {};
 
   const recordReasonTimeFilter: {
     [type in string]: { [time in string]: number };
-  } = recordlistSelector.recordlist.reduce((prev, record) => {
-    const reason = record.reason;
-    const time = moment(record.date, "YYYY-MM-DD HH:mm:ss")
-      .startOf("hours")
-      .format("HH:mm:ss");
-    if (reason && time) {
-      if (!prev[reason]) {
-        prev[reason] = Object.fromEntries(
-          timeList.map((timeString) => [timeString, 0])
-        );
+  } =
+    recordList?.reduce((prev, record) => {
+      const reason = record.reason;
+      const time = moment(record.date, "YYYY-MM-DD HH:mm:ss")
+        .startOf("hours")
+        .format("HH:mm:ss");
+      if (reason && time) {
+        if (!prev[reason.name]) {
+          prev[reason.name] = Object.fromEntries(
+            timeList.map((timeString) => [timeString, 0])
+          );
+        }
+        prev[reason.name][time] = (prev[reason.name][time] || 0) + 1;
       }
-      prev[reason][time] = (prev[reason][time] || 0) + 1;
-    }
-    return prev;
-  }, {} as { [type in string]: { [time in string]: number } });
+      return prev;
+    }, {} as { [type in string]: { [time in string]: number } }) || {};
 
   return (
     <Container>
@@ -158,8 +175,6 @@ export const DashBoard = () => {
     </Container>
   );
 };
-
-DashBoard.whyDidYouRender = true;
 
 const Container = styled.div`
   display: grid;

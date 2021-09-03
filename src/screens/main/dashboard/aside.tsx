@@ -2,17 +2,31 @@ import { useSelector } from "react-redux";
 import { selectRecordlistReducer } from "../recordlist.slice";
 import styled from "@emotion/styled";
 import { Divider } from "antd";
-import { selectDeviceReducer } from "../device/device.slice";
+import { DeviceProps, selectDeviceReducer } from "../device/device.slice";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { useDebugImageCard } from "../record/__debug__/__debug_image_card__";
+import { selectGeneralListReducer } from "../general-list.slice";
+import { useMemo } from "react";
+import { LocationProps } from "../device/location.slice";
+import { RecordItemProps } from "../record/content";
 
 export const DashBoardAside = () => {
-  const deviceSelector = useSelector(selectDeviceReducer);
-  const recordlistSelector = useSelector(selectRecordlistReducer);
+  const generalListSelector = useSelector(selectGeneralListReducer);
+  const deviceList = useMemo(
+    () => generalListSelector.generalList.device as DeviceProps[] | undefined,
+    [generalListSelector]
+  );
+  const recordList = useMemo(
+    () =>
+      generalListSelector.generalList.recordlist as
+        | RecordItemProps[]
+        | undefined,
+    [generalListSelector]
+  );
   const navigate = useNavigate();
 
-  useDebugImageCard();
+  console.log(deviceList);
 
   return (
     <>
@@ -20,7 +34,7 @@ export const DashBoardAside = () => {
         <Title>近期违规记录</Title>
         <ContentBlock>
           <CollapsibleList
-            list={recordlistSelector.recordlist}
+            list={recordList || []}
             maxItemCount={7}
             displayFormat={(record) =>
               record ? (
@@ -31,7 +45,7 @@ export const DashBoardAside = () => {
                   {moment(record?.date, "YYYY-MM-DD HH:mm:ss").format(
                     "M月D日 HH:mm:ss"
                   )}{" "}
-                  {record?.reason}
+                  {record?.reason?.name}
                 </RecordItem>
               ) : (
                 <RecordItem
@@ -53,7 +67,7 @@ export const DashBoardAside = () => {
         <Title>设备列表</Title>
         <ContentBlock>
           <CollapsibleList
-            list={deviceSelector.deviceList}
+            list={deviceList || []}
             maxItemCount={5}
             displayFormat={(device) =>
               device ? (

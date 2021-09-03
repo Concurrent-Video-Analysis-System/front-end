@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "store";
 
 interface ListState {
-  generalList: { [key in string]: unknown[] };
+  generalList: { [key in string]: unknown[] | undefined };
 }
 
 export const generalListSlice = createSlice({

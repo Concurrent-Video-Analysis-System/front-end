@@ -2,6 +2,7 @@ import { useHttp } from "./http";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { generalListSlice } from "screens/main/general-list.slice";
+import { message } from "antd";
 
 export const useGeneralLists = (listItems: string[]) => {
   const sendHttp = useHttp();
@@ -10,10 +11,15 @@ export const useGeneralLists = (listItems: string[]) => {
     listItems.forEach((item) => {
       sendHttp(item, { method: "GET", data: {} })
         .then((response) =>
-          dispatch(generalListSlice.actions.set(response.data))
+          dispatch(
+            generalListSlice.actions.set({
+              key: item,
+              list: response.data,
+            })
+          )
         )
-        .catch((message) =>
-          message.error(`获取列表时出错：${message}`).then(null)
+        .catch((errorMessage) =>
+          message.error(`获取列表时出错：${errorMessage}`).then(null)
         );
     });
   }, [listItems]);

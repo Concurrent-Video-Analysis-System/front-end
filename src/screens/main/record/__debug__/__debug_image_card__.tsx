@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { recordlistSlice } from "screens/main/recordlist.slice";
 import { useDispatch } from "react-redux";
 import { RecordItemProps } from "../content";
+import { generalListSlice } from "../../general-list.slice";
 
 const recordTemplate: RecordItemProps[] = [
   {
@@ -9,17 +10,37 @@ const recordTemplate: RecordItemProps[] = [
     imageUrl: "__test__/template_image.png",
     type: "processed",
     date: "2021-08-16 08:00:00",
-    reason: "离岗未锁屏",
-    location: "山东路网点",
+    reason: {
+      id: 1,
+      name: "离岗未锁屏",
+    },
+    location: {
+      id: 1,
+      name: "山东路网点",
+    },
+    device: {
+      id: 1,
+      name: "3门口",
+    },
   },
   {
     id: 2,
     imageUrl: "__test__/template_image.png",
     type: "processed",
     date: "2021-08-16 07:00:00",
-    reason: "手机拍屏幕",
-    location: "山东路网点",
-  },
+    reason: {
+      id: 2,
+      name: "手机拍屏幕",
+    },
+    location: {
+      id: 1,
+      name: "山东路网点",
+    },
+    device: {
+      id: 2,
+      name: "5门口",
+    },
+  } /*,
   {
     id: 3,
     imageUrl: "__test__/template_image.png",
@@ -123,7 +144,7 @@ const recordTemplate: RecordItemProps[] = [
     date: "2021-08-12 12:00:00",
     reason: "离岗未锁屏",
     location: "山东路网点",
-  },
+  },*/,
 ];
 
 export const useDebugImageCard = () => {
@@ -144,6 +165,6 @@ export const useDebugImageCard = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(recordlistSlice.actions.set(data));
+    dispatch(generalListSlice.actions.set({ key: "record", list: data }));
   }, [data, dispatch]);
 };
