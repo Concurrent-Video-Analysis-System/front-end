@@ -3,55 +3,51 @@ import { TaskAsidePanel } from "./aside";
 import { useSelector } from "react-redux";
 import { selectTaskReducer, TaskProps } from "./task.slice";
 import { TaskCard } from "./task-card";
-import { Divider } from "antd";
+import { Divider, Menu } from "antd";
 import { updateCurrentTime, useCurrentTime } from "utils/time";
-import { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useExactFilter } from "../../../utils/task-filter";
 import { useFetchTask } from "../../../utils/fetcher/task";
 import { useDocumentTitle } from "../../../utils/document-title";
+import { FilterBar } from "../../../components/filter-bar/filter-bar";
+import {
+  CheckCircleFilled,
+  CloseCircleFilled,
+  InfoCircleFilled,
+} from "@ant-design/icons";
+import { selectGeneralListReducer } from "../general-list.slice";
+import { ReasonProps } from "../device/reason.slice";
+import { DeviceProps } from "../device/device.slice";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { RealtimeTaskFragment } from "./realtime";
+import { HistoryTaskFragment } from "./history";
 
 export const TaskIndexFragment = () => {
   useDocumentTitle("任务列表");
-  useFetchTask();
-  const taskSelector = useSelector(selectTaskReducer);
-
-  const currentTime = useCurrentTime();
-  useEffect(() => updateCurrentTime, []);
-
-  /*const { setPartialProps, reload } = useForm(
-    {
-      type: undefined,
-      device: undefined,
-      reason: undefined,
-      from: undefined,
-      to: undefined,
-    },
-    "task",
-    (data) => {
-      dispatch(taskSlice.actions.set(data));
-    }
-  );*/
-
-  const [taskFilter, setTaskFilter] = useState<Partial<TaskProps>>({});
-  const filteredTask = useExactFilter(taskSelector.taskList, taskFilter);
+  const navigate = useNavigate();
 
   return (
     <Container>
-      <Aside>
-        <TaskAsidePanel
-          setPartialProps={(filterProps) => {
-            setTaskFilter({ ...taskFilter, ...filterProps });
-          }}
-        />
-      </Aside>
       <Header>
-        <Title>任务列表</Title>
-        <SmallDivider />
+        <Menu
+          onClick={(item) => navigate(item.key)}
+          selectedKeys={["current"]}
+          mode="horizontal"
+        >
+          <Menu.Item key="realtime" icon={<></>}>
+            实时监控分析
+          </Menu.Item>
+          <Menu.Item key="history" icon={<></>}>
+            历史录像分析
+          </Menu.Item>
+        </Menu>
       </Header>
       <Content>
-        {filteredTask.map((item) => (
-          <TaskCard taskProps={item as TaskProps} currentTime={currentTime} />
-        ))}
+        <Routes>
+          <Route path={"realtime"} element={<RealtimeTaskFragment />} />
+          <Route path={"history"} element={<HistoryTaskFragment />} />
+          <Navigate to={"realtime"} />
+        </Routes>
       </Content>
     </Container>
   );
@@ -59,42 +55,20 @@ export const TaskIndexFragment = () => {
 
 const Container = styled.div`
   height: 100%;
-  display: grid;
-  grid-template-rows: 8rem 1fr;
-  grid-template-columns: 26rem 1fr;
-  grid-template-areas:
-    "aside header"
-    "aside content";
-`;
-
-const SmallDivider = styled(Divider)`
-  margin: 1rem 0;
 `;
 
 const Header = styled.div`
-  position: sticky;
-  top: 5.5rem;
-  z-index: 2;
-  grid-area: header;
-  padding: 2rem 2rem 0 2rem;
+  padding: 0 2rem;
   width: 100%;
-  background-color: #ffffff;
-`;
-
-const Title = styled.span`
-  font-size: 2.4rem;
-  font-weight: bold;
+  height: 6rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const Content = styled.header`
-  grid-area: content;
-  padding: 0 1rem;
-`;
-
-const Aside = styled.header`
-  /*position: fixed;
-  width: 26rem;
-  left: 0;*/
-  grid-area: aside;
-  overflow: hidden auto;
+  width: 100%;
+  height: calc(100% - 6rem);
+  padding: 0 2rem;
+  overflow: auto;
 `;
