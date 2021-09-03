@@ -8,24 +8,22 @@ import {
 } from "screens/main/recordlist.slice";
 
 export const useFetchRecordList = (filter: object) => {
-  const sendHttp = useHttp("recordlist");
+  const sendHttp = useHttp();
   const dispatch = useDispatch();
   const recordlistSelector = useSelector(selectRecordlistReducer);
   useEffect(() => {
-    sendHttp(
-      { method: "GET", data: filter },
-      (data) => {
+    sendHttp("recordlist", { method: "GET", data: filter })
+      .then((data) => {
         if (
           JSON.stringify(data.data) !==
           JSON.stringify(recordlistSelector.recordlist)
         ) {
           dispatch(recordlistSlice.actions.set(data.data));
         }
-      },
-      (errorMessage) => {
+      })
+      .catch((errorMessage) => {
         message.error(`更新列表时出错：${errorMessage}`).then(null);
-      }
-    );
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

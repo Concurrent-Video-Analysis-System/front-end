@@ -11,24 +11,22 @@ export const useForm = <K extends string>(
   const [props, setProps] = useState(initialProps);
   const [, setUrlParams] = useUrlQueryParams(Object.keys(initialProps));
   const [isLoading, setIsLoading] = useState(false);
-  const sendHttp = useHttp(endpoint);
+  const sendHttp = useHttp();
 
   useEffect(() => {
     setIsLoading(true);
-    sendHttp(
-      { method: "GET", data: props },
-      (data) => {
+    sendHttp(endpoint, { method: "GET", data: props })
+      .then((response) => {
         setIsLoading(false);
         if (onSuccessCallback) {
           // data includes code, message and real data
-          onSuccessCallback(data.data);
+          onSuccessCallback(response.data);
         }
-      },
-      (errorMessage) => {
+      })
+      .catch((errorMessage) => {
         setIsLoading(false);
         message.error(`更新列表时出错：${errorMessage}`).then(null);
-      }
-    );
+      });
     setUrlParams(props);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props]);

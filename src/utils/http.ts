@@ -105,38 +105,27 @@ export const fetchHttp = async (
     });
 };
 
-export const useHttp = (endpoint: string, config?: HttpConfig) => {
+export const useHttp = () => {
   const { user } = useAuthContext();
-  return (
-    configOverride?: HttpConfig,
-    onSuccess?: (data: any) => void,
-    onFailed?: (message: string) => void
-  ) => {
-    fetchHttp(endpoint, {
+  return async (endpoint: string, config: HttpConfig) => {
+    return fetchHttp(endpoint, {
       token: user?.token,
       ...config,
-      ...configOverride,
     })
       .then(async (data) => {
         // if data code is a string, convert it to number
         if (+data?.code === 0) {
           // Success
-          if (onSuccess) {
-            onSuccess(data);
-          }
+          return Promise.resolve(data);
         } else {
           // HTTP respond 200 (or OK code), but error code found
-          if (onFailed) {
-            onFailed(
-              `${data?.message || ""}${data?.code ? `(${data?.code})` : ""}`
-            );
-          }
+          return Promise.reject<string>(
+            `${data?.message || ""}${data?.code ? `(${data?.code})` : ""}`
+          );
         }
       })
       .catch(async (message) => {
-        if (onFailed) {
-          onFailed(message);
-        }
+        return Promise.reject(message);
       });
   };
 };

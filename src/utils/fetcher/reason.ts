@@ -8,24 +8,22 @@ import {
 } from "screens/main/device/reason.slice";
 
 export const useFetchReason = () => {
-  const sendHttp = useHttp("reason");
+  const sendHttp = useHttp();
   const dispatch = useDispatch();
   const reasonSelector = useSelector(selectReasonReducer);
   useEffect(() => {
-    sendHttp(
-      { method: "GET", data: {} },
-      (data) => {
+    sendHttp("reason", { method: "GET", data: {} })
+      .then((data) => {
         if (
           JSON.stringify(data.data) !==
           JSON.stringify(reasonSelector.reasonList)
         ) {
           dispatch(reasonSlice.actions.set(data.data));
         }
-      },
-      (errorMessage) => {
+      })
+      .catch((errorMessage) => {
         message.error(`更新列表时出错：${errorMessage}`).then(null);
-      }
-    );
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

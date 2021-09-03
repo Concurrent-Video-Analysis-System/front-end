@@ -6,10 +6,7 @@ import { selectDeviceReducer } from "../screens/main/device/device.slice";
 import { selectReasonReducer } from "../screens/main/device/reason.slice";
 
 export const useTask = () => {
-  const newTaskRequest = useHttp("task/new", { method: "POST" });
-  const getTaskRequest = useHttp("task", { method: "GET" });
-  const setTaskStateRequest = useHttp("task/state", { method: "POST" });
-  const deleteTaskRequest = useHttp("task/delete", { method: "POST" });
+  const taskRequest = useHttp();
 
   const dispatch = useDispatch();
   const deviceSelector = useSelector(selectDeviceReducer);
@@ -29,39 +26,41 @@ export const useTask = () => {
       state: taskProps.state,
     };
 
-    newTaskRequest(
-      { data: data },
-      async (response) => {
+    taskRequest("task/new", { method: "POST", data: data })
+      .then(async (response) => {
         console.log("SUCCESS", response);
         await getTask();
         return response;
-      },
-      (errorMessage) => {
+      })
+      .catch((errorMessage) => {
         console.log(errorMessage);
         return Promise.reject(errorMessage);
-      }
-    );
+      });
   };
 
   const getTask = async () => {
-    getTaskRequest({}, (data) => {
+    taskRequest("task", { method: "GET" }).then((data) => {
       dispatch(taskSlice.actions.set(data.data));
       return data.data;
     });
   };
 
   const setTaskState = async ({ id, order }: { id: number; order: string }) => {
-    setTaskStateRequest({ data: { id, order } }, async (data) => {
-      await getTask();
-      return data;
-    });
+    taskRequest("task/state", { method: "POST", data: { id, order } }).then(
+      async (data) => {
+        await getTask();
+        return data;
+      }
+    );
   };
 
   const deleteTask = async ({ id }: { id: number }) => {
-    deleteTaskRequest({ data: { id } }, async (data) => {
-      await getTask();
-      return data;
-    });
+    taskRequest("task/delete", { method: "POST", data: { id } }).then(
+      async (data) => {
+        await getTask();
+        return data;
+      }
+    );
   };
 
   return { newTask, getTask, setTaskState, deleteTask };
