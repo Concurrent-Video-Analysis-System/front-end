@@ -57,13 +57,11 @@ export const RecordIndexFragment = () => {
 
   const generalListSelector = useSelector(selectGeneralListReducer);
   const reasonList = useMemo(
-    () =>
-      generalListSelector.generalList.reasonList as ReasonProps[] | undefined,
+    () => generalListSelector.generalList.reason as ReasonProps[] | undefined,
     [generalListSelector]
   );
   const deviceList = useMemo(
-    () =>
-      generalListSelector.generalList.deviceList as DeviceProps[] | undefined,
+    () => generalListSelector.generalList.device as DeviceProps[] | undefined,
     [generalListSelector]
   );
 
