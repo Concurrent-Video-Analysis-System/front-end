@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
-import { RecordContent, RecordItemProps } from "./content";
+import { RecordContent, RecordDataProps, RecordItemProps } from "./content";
 import { Route, Routes } from "react-router";
 import { RecordHandlingFragment } from "./handle";
 import { Button, Divider, Radio } from "antd";
@@ -14,15 +14,14 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { navigateSlice } from "./navigate.slice";
-import { useForm } from "utils/form";
-import { recordlistSlice } from "../recordlist.slice";
 import { exportRecordList } from "./export";
 import { useDocumentTitle } from "utils/document-title";
-import { FilterBar } from "../../../components/filter-bar/filter-bar";
+import { FilterBar } from "components/filter-bar/filter-bar";
 import { selectGeneralListReducer } from "../general-list.slice";
 import { ReasonProps } from "../device/reason.slice";
 import { DeviceProps } from "../device/device.slice";
-import { useDebugImageCard } from "./__debug__/__debug_image_card__";
+import { PaginationBar } from "components/pagination/pagination";
+import { useFilter } from "utils/filter";
 
 const TypeSwitcher = <K extends string>({
   types,
@@ -72,18 +71,17 @@ export const RecordIndexFragment = () => {
   );
   const [displayType, setDisplayType] = useState("card");
 
-  const { setPartialProps, reload } = useForm(
-    {
-      type: undefined,
-      location: undefined,
-      reason: undefined,
-      from: undefined,
-      to: undefined,
-    },
-    "recordlist",
-    (data) => {
-      dispatch(recordlistSlice.actions.set(data));
-    }
+  const { setFilterProps, isLoading, responseData } = useFilter("recordlist", [
+    "type",
+    "location",
+    "device",
+    "reason",
+    "pageSize",
+    "pageNum",
+  ]);
+  const filteredRecords = useMemo(
+    () => responseData as RecordDataProps | undefined,
+    [responseData]
   );
 
   const onRecordItemSelected = (item: RecordItemProps) => {
@@ -146,7 +144,7 @@ export const RecordIndexFragment = () => {
 
   const onHandlingUnmount = () => {
     setSelectedCard(null);
-    reload();
+    // reload();
     dispatch(navigateSlice.actions.back());
   };
 
@@ -155,7 +153,9 @@ export const RecordIndexFragment = () => {
       <Header>
         <FilterBar<React.Key, React.Key>
           filters={recordFilters}
-          onFilterUpdate={(filter, option) => console.log(filter, option)}
+          onFilterUpdate={(filter, option) =>
+            setFilterProps(filter as any, option)
+          }
         />
         <FloatRight>
           <div style={{ minWidth: "8rem" }}>展示格式：</div>
@@ -199,7 +199,19 @@ export const RecordIndexFragment = () => {
       {/*<Aside>
         <AsidePanel setPartialProps={setPartialProps} />
       </Aside>*/}
-      <Footer></Footer>
+      <Footer>
+        <PaginationBar
+          enabled={!!filteredRecords}
+          totalNum={filteredRecords?.totalNum}
+          onPageChange={(page, pageSize) => {
+            setFilterProps("pageSize", pageSize);
+            setFilterProps("pageNum", page);
+          }}
+          onPageSizeChange={(pageSize) => {
+            setFilterProps("pageSize", pageSize);
+          }}
+        />
+      </Footer>
     </Container>
   );
 };
@@ -219,7 +231,7 @@ const Header = styled.div`
 
 const Content = styled.header`
   width: 100%;
-  height: calc(100% - 6rem - 10rem);
+  height: calc(100% - 6rem - 6rem);
   padding: 0 2rem;
   overflow: auto;
 `;
@@ -234,5 +246,9 @@ const FloatRight = styled.div`
 
 const Footer = styled.div`
   width: 100%;
-  height: 10rem;
+  height: 6rem;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
