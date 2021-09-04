@@ -13,9 +13,11 @@ export const useFilter = <K extends string>(
     )
   );
 
-  // FIXME: `setFilterProps` won't execute directly
   const setFilterProps = (name: K, value: unknown) => {
-    setFilterPropsRaw({ ...filterProps, [name]: value });
+    setFilterPropsRaw((prevFilterProps) => ({
+      ...prevFilterProps,
+      [name]: value,
+    }));
   };
 
   const [urlParams, setUrlParams] = useUrlQueryParams(filterPropsName);
