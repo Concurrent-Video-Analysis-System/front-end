@@ -1,4 +1,4 @@
-import { TaskProps } from "./task.slice";
+import { TaskItemProps } from "./task.slice";
 import styled from "@emotion/styled";
 import {
   CheckCircleTwoTone,
@@ -150,7 +150,7 @@ export const TaskCard = ({
   taskProps,
   currentTime,
 }: {
-  taskProps: TaskProps;
+  taskProps: TaskItemProps;
   currentTime: moment.Moment;
 }) => {
   const { setTaskState, deleteTask } = useTask();

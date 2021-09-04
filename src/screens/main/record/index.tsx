@@ -190,6 +190,7 @@ export const RecordIndexFragment = () => {
             path={"/"}
             element={
               <RecordContent
+                recordlist={filteredRecords?.records || []}
                 displayType={displayType}
                 onRecordItemSelected={onRecordItemSelected}
               />

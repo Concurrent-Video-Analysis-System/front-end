@@ -1,23 +1,7 @@
 import styled from "@emotion/styled";
-import { TaskAsidePanel } from "./aside";
-import { useSelector } from "react-redux";
-import { selectTaskReducer, TaskProps } from "./task.slice";
-import { TaskCard } from "./task-card";
-import { Divider, Menu } from "antd";
-import { updateCurrentTime, useCurrentTime } from "utils/time";
-import React, { useEffect, useMemo, useState } from "react";
-import { useExactFilter } from "../../../utils/task-filter";
-import { useFetchTask } from "../../../utils/fetcher/task";
-import { useDocumentTitle } from "../../../utils/document-title";
-import { FilterBar } from "../../../components/filter-bar/filter-bar";
-import {
-  CheckCircleFilled,
-  CloseCircleFilled,
-  InfoCircleFilled,
-} from "@ant-design/icons";
-import { selectGeneralListReducer } from "../general-list.slice";
-import { ReasonProps } from "../device/reason.slice";
-import { DeviceProps } from "../device/device.slice";
+import { Menu } from "antd";
+import React from "react";
+import { useDocumentTitle } from "utils/document-title";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { RealtimeTaskFragment } from "./realtime";
 import { HistoryTaskFragment } from "./history";

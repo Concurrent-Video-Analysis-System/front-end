@@ -1,19 +1,15 @@
 import React from "react";
 import styled from "@emotion/styled";
-import {
-  Card,
-  Badge,
-  Empty,
-  Pagination,
-  Table,
-  Tag,
-  Button,
-  Divider,
-} from "antd";
+import { Card, Badge, Empty, Table, Tag, Button, Divider } from "antd";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectRecordlistReducer } from "../recordlist.slice";
 import { ItemProps } from "interfaces";
+
+export interface RecordDataProps {
+  totalNum: number;
+  records: RecordItemProps[];
+}
 
 export interface RecordItemProps {
   id: number;
@@ -99,7 +95,7 @@ const RecordCardList = ({
   onRecordItemSelected?: (item: RecordItemProps) => void;
 }) => {
   return (
-    <Content>
+    <>
       {recordlist.length === 0 ? (
         <Empty
           description={<span style={{ color: "#A0A0A0" }}>无记录条目</span>}
@@ -111,7 +107,7 @@ const RecordCardList = ({
           ))}
         </RecordCardContainer>
       )}
-    </Content>
+    </>
   );
 };
 
@@ -129,103 +125,89 @@ const RecordTableList = ({
 }) => {
   // @ts-ignore
   return (
-    <Content>
-      <Table
-        dataSource={recordlist.map((item) => ({
-          ...item,
-          location: item.location?.name,
-          reason: item.reason?.name,
-        }))}
-        size={"middle"}
-        pagination={false}
-      >
-        <Table.Column title={"序号"} dataIndex={"id"} key={"id"} />
-        <Table.Column title={"违规原因"} dataIndex={"reason"} key={"reason"} />
-        <Table.Column
-          title={"营业网点"}
-          dataIndex={"location"}
-          key={"location"}
-        />
-        <Table.Column title={"时间"} dataIndex={"date"} key={"date"} />
-        <Table.Column
-          title={"处理情况"}
-          dataIndex={"type"}
-          key={"type"}
-          render={(type) => (
-            <Tag color={type2typeLabel(type)?.color}>
-              {type2typeLabel(type)?.label}
-            </Tag>
-          )}
-        />
-        <Table.Column
-          title={"操作"}
-          key={"action"}
-          render={(text, record) => (
-            <Link to={isRecordItemProps(record) ? `${record.id}` : ""}>
-              <Button
-                type={"link"}
-                size={"small"}
-                onClick={() => {
-                  if (isRecordItemProps(record) && onRecordItemSelected) {
-                    onRecordItemSelected(record);
-                  }
-                }}
-              >
-                查看详情
-              </Button>
-              <Divider type={"vertical"} />
-              <Button type={"link"} size={"small"} danger>
-                完成处理
-              </Button>
-            </Link>
-          )}
-        />
-      </Table>
-    </Content>
+    <Table
+      dataSource={recordlist.map((item) => ({
+        ...item,
+        location: item.location?.name,
+        reason: item.reason?.name,
+      }))}
+      size={"middle"}
+      pagination={false}
+    >
+      <Table.Column title={"序号"} dataIndex={"id"} key={"id"} />
+      <Table.Column title={"违规原因"} dataIndex={"reason"} key={"reason"} />
+      <Table.Column
+        title={"营业网点"}
+        dataIndex={"location"}
+        key={"location"}
+      />
+      <Table.Column title={"时间"} dataIndex={"date"} key={"date"} />
+      <Table.Column
+        title={"处理情况"}
+        dataIndex={"type"}
+        key={"type"}
+        render={(type) => (
+          <Tag color={type2typeLabel(type)?.color}>
+            {type2typeLabel(type)?.label}
+          </Tag>
+        )}
+      />
+      <Table.Column
+        title={"操作"}
+        key={"action"}
+        render={(text, record) => (
+          <Link to={isRecordItemProps(record) ? `${record.id}` : ""}>
+            <Button
+              type={"link"}
+              size={"small"}
+              onClick={() => {
+                if (isRecordItemProps(record) && onRecordItemSelected) {
+                  onRecordItemSelected(record);
+                }
+              }}
+            >
+              查看详情
+            </Button>
+            <Divider type={"vertical"} />
+            <Button type={"link"} size={"small"} danger>
+              完成处理
+            </Button>
+          </Link>
+        )}
+      />
+    </Table>
   );
 };
 
 export const RecordContent = ({
+  recordlist,
   displayType,
   onRecordItemSelected,
 }: {
+  recordlist: RecordItemProps[];
   displayType: string;
   onRecordItemSelected?: (item: RecordItemProps) => void;
 }) => {
-  const recordlistSelector = useSelector(selectRecordlistReducer);
-
   return (
     <Container>
       {displayType === "card" ? (
         <RecordCardList
-          recordlist={recordlistSelector.recordlist}
+          recordlist={recordlist}
           onRecordItemSelected={onRecordItemSelected}
         />
       ) : null}
       {displayType === "table" ? (
         <RecordTableList
-          recordlist={recordlistSelector.recordlist}
+          recordlist={recordlist}
           onRecordItemSelected={onRecordItemSelected}
         />
       ) : null}
-      <RecordFooter>
-        <Pagination
-          showQuickJumper
-          showSizeChanger={false}
-          defaultCurrent={1}
-          total={100}
-          style={{ textAlign: "center" }}
-        />
-      </RecordFooter>
     </Container>
   );
 };
 
 const Container = styled.div`
-  display: grid;
-  grid-template-rows: 1fr 8rem;
-  grid-template-areas: "content" "footer";
-  height: calc(100% - 6rem);
+  height: 100%;
 `;
 
 const RecordCardContainer = styled.div`
@@ -234,16 +216,4 @@ const RecordCardContainer = styled.div`
   grid-gap: 30px;
   padding-left: 0.8rem;
   padding-right: 0.8rem;
-`;
-
-const Content = styled.div`
-  padding: 1rem 0 0 0;
-  grid-area: content;
-`;
-
-const RecordFooter = styled.div`
-  padding: 2rem 0 2rem 0;
-  height: 6rem;
-  width: 100%;
-  grid-area: footer;
 `;

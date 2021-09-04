@@ -9,7 +9,7 @@ import { useDebugImageCard } from "../record/__debug__/__debug_image_card__";
 import { selectGeneralListReducer } from "../general-list.slice";
 import { useMemo } from "react";
 import { LocationProps } from "../device/location.slice";
-import { RecordItemProps } from "../record/content";
+import { RecordDataProps, RecordItemProps } from "../record/content";
 
 export const DashBoardAside = () => {
   const generalListSelector = useSelector(selectGeneralListReducer);
@@ -19,9 +19,7 @@ export const DashBoardAside = () => {
   );
   const recordList = useMemo(
     () =>
-      generalListSelector.generalList.recordlist as
-        | RecordItemProps[]
-        | undefined,
+      generalListSelector.generalList.recordlist as RecordDataProps | undefined,
     [generalListSelector]
   );
   const navigate = useNavigate();
@@ -34,7 +32,7 @@ export const DashBoardAside = () => {
         <Title>近期违规记录</Title>
         <ContentBlock>
           <CollapsibleList
-            list={recordList || []}
+            list={recordList?.records || []}
             maxItemCount={7}
             displayFormat={(record) =>
               record ? (

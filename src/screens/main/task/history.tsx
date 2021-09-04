@@ -1,19 +1,13 @@
 import styled from "@emotion/styled";
-import { TaskAsidePanel } from "./aside";
 import { useSelector } from "react-redux";
-import { selectTaskReducer, TaskProps } from "./task.slice";
+import { selectTaskReducer, TaskItemProps } from "./task.slice";
 import { TaskCard } from "./task-card";
-import { Divider } from "antd";
 import { updateCurrentTime, useCurrentTime } from "utils/time";
 import React, { useEffect, useMemo, useState } from "react";
-import { useExactFilter } from "../../../utils/task-filter";
-import { useFetchTask } from "../../../utils/fetcher/task";
-import { FilterBar } from "../../../components/filter-bar/filter-bar";
-import {
-  CheckCircleFilled,
-  CloseCircleFilled,
-  InfoCircleFilled,
-} from "@ant-design/icons";
+import { useExactFilter } from "utils/task-filter";
+import { useFetchTask } from "utils/fetcher/task";
+import { FilterBar } from "components/filter-bar/filter-bar";
+import { CheckCircleFilled, InfoCircleFilled } from "@ant-design/icons";
 import { selectGeneralListReducer } from "../general-list.slice";
 import { ReasonProps } from "../device/reason.slice";
 import { DeviceProps } from "../device/device.slice";
@@ -90,7 +84,7 @@ export const HistoryTaskFragment = () => {
     ];
   }, [reasonList, deviceList]);
 
-  const [taskFilter, setTaskFilter] = useState<Partial<TaskProps>>({});
+  const [taskFilter, setTaskFilter] = useState<Partial<TaskItemProps>>({});
   const filteredTask = useExactFilter(taskSelector.taskList, taskFilter);
 
   return (
@@ -103,7 +97,10 @@ export const HistoryTaskFragment = () => {
       </Header>
       <Content>
         {filteredTask.map((item) => (
-          <TaskCard taskProps={item as TaskProps} currentTime={currentTime} />
+          <TaskCard
+            taskProps={item as TaskItemProps}
+            currentTime={currentTime}
+          />
         ))}
       </Content>
       <Footer />

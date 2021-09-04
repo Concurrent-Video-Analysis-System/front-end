@@ -1,7 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "store";
 
-export interface TaskProps {
+export interface TaskDataProps {
+  totalNum: number;
+  tasks: TaskItemProps[];
+}
+
+export interface TaskItemProps {
   id: number;
   name: string;
   from: string;
@@ -19,7 +24,7 @@ export interface TaskProps {
 }
 
 interface State {
-  taskList: TaskProps[];
+  taskList: TaskItemProps[];
   isLoading: boolean;
 }
 

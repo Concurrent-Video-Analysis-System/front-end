@@ -7,19 +7,14 @@ import {
   RecordTypeChart,
   RecordTimeChart,
 } from "./chart";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import { selectRecordlistReducer } from "../recordlist.slice";
-import { LocationProps, selectLocationReducer } from "../device/location.slice";
+import { LocationProps } from "../device/location.slice";
 import { pad } from "utils/time";
-import { useFetchRecordList } from "utils/fetcher/recordlist";
-import { useFetchLocation } from "utils/fetcher/location";
-import { useFetchDevice } from "utils/fetcher/device";
 import { useDocumentTitle } from "utils/document-title";
-import { useDebugImageCard } from "../record/__debug__/__debug_image_card__";
 import { selectGeneralListReducer } from "../general-list.slice";
-import { RecordItemProps } from "../record/content";
+import { RecordDataProps } from "../record/content";
 
 const usePastXDays = (x: number) => {
   return useMemo(() => {
@@ -50,9 +45,7 @@ export const DashBoard = () => {
   );
   const recordList = useMemo(
     () =>
-      generalListSelector.generalList.recordlist as
-        | RecordItemProps[]
-        | undefined,
+      generalListSelector.generalList.recordlist as RecordDataProps | undefined,
     [generalListSelector]
   );
 
@@ -67,7 +60,7 @@ export const DashBoard = () => {
   const recordReasonDateFilter: {
     [type in string]: { [date in string]: number };
   } =
-    recordList?.reduce((prev, record) => {
+    recordList?.records.reduce((prev, record) => {
       const reason = record.reason;
       const date = moment(record.date, "YYYY-MM-DD HH:mm:ss").format(
         "YYYY-MM-DD"
@@ -88,7 +81,7 @@ export const DashBoard = () => {
   const recordReasonLocationFilter: {
     [type in string]: { [location in string]: number };
   } =
-    recordList?.reduce((prev, record) => {
+    recordList?.records.reduce((prev, record) => {
       const reason = record.reason;
       const location = record.location;
       if (reason && location) {
@@ -109,7 +102,7 @@ export const DashBoard = () => {
   const recordReasonTimeFilter: {
     [type in string]: { [time in string]: number };
   } =
-    recordList?.reduce((prev, record) => {
+    recordList?.records.reduce((prev, record) => {
       const reason = record.reason;
       const time = moment(record.date, "YYYY-MM-DD HH:mm:ss")
         .startOf("hours")
