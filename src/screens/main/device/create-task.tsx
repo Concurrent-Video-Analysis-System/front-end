@@ -117,7 +117,7 @@ export const CreateTaskFragment = ({
 
   return (
     <Container>
-      <TagList propList={deviceList} preStr={"为"} afterStr={"创建监查任务"} />
+      <TagList propList={deviceList} afterStr={"创建监查任务："} />
       <Divider />
       <Form
         name="basic"

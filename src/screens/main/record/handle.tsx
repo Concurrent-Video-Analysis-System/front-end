@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
 import { selectRecordlistReducer } from "../recordlist.slice";
 import { useSelector } from "react-redux";
+import { RecordItemProps } from "./content";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -72,8 +73,10 @@ const HandlerOnOther = ({
 };
 
 export const RecordHandlingFragment = ({
+  recordItem,
   onUnmount,
 }: {
+  recordItem: RecordItemProps;
   onUnmount?: () => void;
 }) => {
   useEffect(() => {
@@ -85,19 +88,11 @@ export const RecordHandlingFragment = ({
   }, [onUnmount]);
 
   const navigate = useNavigate();
-  const { recordId } = useParams();
-
-  const recordlistSelector = useSelector(selectRecordlistReducer);
-  const recordItem = useMemo(() => {
-    return recordlistSelector.recordlist.find((record) => {
-      return +record.id === +recordId;
-    });
-  }, [recordId, recordlistSelector.recordlist]);
 
   const [processType, setProcessedType] = useState<string | null>(null);
   const { isLoading, setProcess } = useProcess(recordItem?.id, () => {
     setProcessedType(null);
-    navigate("/recordlist");
+    navigate("/record");
   });
 
   const onHandleButtonClick = (type: string) => {
@@ -107,6 +102,8 @@ export const RecordHandlingFragment = ({
     }
   };
 
+  console.log("handling", recordItem);
+
   return (
     <Container>
       <ImageDetail alt="Record Image" src={recordItem?.imageUrl} />
@@ -114,9 +111,9 @@ export const RecordHandlingFragment = ({
       <HandlingPanel>
         <Title level={5}>检测到：</Title>
         <Title level={3} style={{ marginTop: 0 }}>
-          「{recordItem?.reason}」
+          「{recordItem?.reason?.name}」
         </Title>
-        <Title level={5}>处理办法：</Title>
+        {/*<Title level={5}>处理办法：</Title>
         <Paragraph>
           <blockquote>
             根据《XX营业厅管理办法》：
@@ -124,17 +121,13 @@ export const RecordHandlingFragment = ({
             需要对违纪人员处<Text strong>警告</Text>一次；
             若多次违纪，则处以XX元至XX元的罚款，并暂停优秀资格评审
           </blockquote>
-        </Paragraph>
+        </Paragraph>*/}
 
         <Title level={5}>详细信息：</Title>
-        <Paragraph>
-          检测地点：{recordItem?.location}
-          <br />
-          检测时间：{recordItem?.date}
-          <br />
-          其它检测信息...
-          <br />
-        </Paragraph>
+        <ul>
+          <li>检测地点：{recordItem?.location?.name}</li>
+          <li>检测时间：{recordItem?.date}</li>
+        </ul>
 
         <BottomParagraph>
           {recordItem?.type === "pending" ? (
@@ -158,7 +151,7 @@ export const RecordHandlingFragment = ({
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1rem 30rem;
+  grid-template-columns: 1fr 1rem 34rem;
   grid-template-areas: "image-detail vertical-divider handling-panel";
   grid-gap: 1.5rem;
   width: 100%;

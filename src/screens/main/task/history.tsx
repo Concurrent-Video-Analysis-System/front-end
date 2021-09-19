@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
-import { selectTaskReducer, TaskItemProps } from "./task.slice";
+import { selectTaskReducer, TaskDataProps, TaskItemProps } from "./task.slice";
 import { TaskCard } from "./task-card";
 import { updateCurrentTime, useCurrentTime } from "utils/time";
 import React, { useEffect, useMemo, useState } from "react";
@@ -11,11 +11,10 @@ import { CheckCircleFilled, InfoCircleFilled } from "@ant-design/icons";
 import { selectGeneralListReducer } from "../general-list.slice";
 import { ReasonProps } from "../device/reason.slice";
 import { DeviceProps } from "../device/device.slice";
+import { useFilter } from "../../../utils/filter";
+import { PaginationBar } from "../../../components/pagination/pagination";
 
 export const HistoryTaskFragment = () => {
-  useFetchTask();
-  const taskSelector = useSelector(selectTaskReducer);
-
   const currentTime = useCurrentTime();
   useEffect(() => updateCurrentTime, []);
 
@@ -35,13 +34,11 @@ export const HistoryTaskFragment = () => {
 
   const generalListSelector = useSelector(selectGeneralListReducer);
   const reasonList = useMemo(
-    () =>
-      generalListSelector.generalList.reasonList as ReasonProps[] | undefined,
+    () => generalListSelector.generalList.reason as ReasonProps[] | undefined,
     [generalListSelector]
   );
   const deviceList = useMemo(
-    () =>
-      generalListSelector.generalList.deviceList as DeviceProps[] | undefined,
+    () => generalListSelector.generalList.device as DeviceProps[] | undefined,
     [generalListSelector]
   );
 
@@ -84,26 +81,46 @@ export const HistoryTaskFragment = () => {
     ];
   }, [reasonList, deviceList]);
 
-  const [taskFilter, setTaskFilter] = useState<Partial<TaskItemProps>>({});
-  const filteredTask = useExactFilter(taskSelector.taskList, taskFilter);
+  const { setFilterProps, isLoading, responseData } = useFilter(
+    "task/history",
+    ["reason", "device", "state", "pageSize", "page"]
+  );
+  const filteredTask = useMemo(
+    () => responseData as TaskDataProps | undefined,
+    [responseData]
+  );
 
   return (
     <Container>
       <Header>
         <FilterBar<React.Key, React.Key>
           filters={taskFilters}
-          onFilterUpdate={(filter, option) => console.log(filter, option)}
+          onFilterUpdate={(filter, option) =>
+            setFilterProps(filter as any, option)
+          }
         />
       </Header>
       <Content>
-        {filteredTask.map((item) => (
+        {filteredTask?.tasks?.map((item) => (
           <TaskCard
             taskProps={item as TaskItemProps}
             currentTime={currentTime}
           />
         ))}
       </Content>
-      <Footer />
+      <Footer>
+        <PaginationBar
+          enabled={!!filteredTask}
+          totalNum={filteredTask?.totalNum}
+          onPageChange={(page, pageSize) => {
+            setFilterProps("pageSize", pageSize);
+            setFilterProps("page", page);
+          }}
+          onPageSizeChange={(pageSize) => {
+            setFilterProps("pageSize", pageSize);
+          }}
+        />
+      </Footer>
     </Container>
   );
 };
@@ -138,5 +155,9 @@ const FloatRight = styled.div`
 
 const Footer = styled.div`
   width: 100%;
-  height: 10rem;
+  height: 6rem;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

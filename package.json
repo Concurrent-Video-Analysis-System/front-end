@@ -39,6 +39,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
+    "npm-build": "npm run build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "prepare": "husky install"

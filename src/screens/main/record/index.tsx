@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { RecordContent, RecordDataProps, RecordItemProps } from "./content";
 import { Route, Routes } from "react-router";
@@ -13,7 +13,6 @@ import {
   InfoCircleFilled,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { navigateSlice } from "./navigate.slice";
 import { exportRecordList } from "./export";
 import { useDocumentTitle } from "utils/document-title";
 import { FilterBar } from "components/filter-bar/filter-bar";
@@ -22,6 +21,7 @@ import { ReasonProps } from "../device/reason.slice";
 import { DeviceProps } from "../device/device.slice";
 import { PaginationBar } from "components/pagination/pagination";
 import { useFilter } from "utils/filter";
+import { TaskDataProps } from "../task/task.slice";
 
 const TypeSwitcher = <K extends string>({
   types,
@@ -45,7 +45,9 @@ const TypeSwitcher = <K extends string>({
       }}
     >
       {types.map((type) => (
-        <Radio.Button value={type.value}>{type.label}</Radio.Button>
+        <Radio.Button value={type.value} key={type.value}>
+          {type.label}
+        </Radio.Button>
       ))}
     </Radio.Group>
   );
@@ -63,36 +65,24 @@ export const RecordIndexFragment = () => {
     () => generalListSelector.generalList.device as DeviceProps[] | undefined,
     [generalListSelector]
   );
-
-  const dispatch = useDispatch();
+  const taskList = useMemo(
+    () => generalListSelector.generalList.task as TaskDataProps | undefined,
+    [generalListSelector]
+  );
 
   const [selectedCard, setSelectedCard] = useState<RecordItemProps | null>(
     null
   );
   const [displayType, setDisplayType] = useState("card");
 
-  const { setFilterProps, isLoading, responseData } = useFilter("recordlist", [
-    "type",
-    "location",
-    "device",
-    "reason",
-    "pageSize",
-    "pageNum",
-  ]);
+  const { filterProps, setFilterProps, responseData, reloadData } = useFilter(
+    "recordlist",
+    ["type", "location", "device", "reason", "task", "pageSize", "page"]
+  );
   const filteredRecords = useMemo(
     () => responseData as RecordDataProps | undefined,
     [responseData]
   );
-
-  const onRecordItemSelected = (item: RecordItemProps) => {
-    setSelectedCard(item);
-    dispatch(
-      navigateSlice.actions.moveTo({
-        name: `${item.reason} #${item.id}`,
-        path: `recordlist/${item.id}`,
-      })
-    );
-  };
 
   const recordFilters = useMemo(() => {
     return [
@@ -135,83 +125,97 @@ export const RecordIndexFragment = () => {
             title: device.name,
           })) || [],
       },
+      {
+        key: "task",
+        title: "监察任务",
+        options:
+          taskList?.tasks.map((task) => ({
+            key: task.id,
+            title: `${task.name} - #${task.id}`,
+          })) || [],
+        style: { minWidth: "18rem", maxWidth: "18rem" },
+      },
     ];
   }, [reasonList, deviceList]);
 
-  useEffect(() => {
-    console.log(recordFilters);
-  }, [recordFilters]);
-
   const onHandlingUnmount = () => {
     setSelectedCard(null);
-    // reload();
-    dispatch(navigateSlice.actions.back());
+    reloadData();
   };
 
   return (
     <Container>
-      <Header>
-        <FilterBar<React.Key, React.Key>
-          filters={recordFilters}
-          onFilterUpdate={(filter, option) =>
-            setFilterProps(filter as any, option)
+      <Routes>
+        <Route
+          path={":recordId/*"}
+          element={
+            <HandlingContent>
+              {selectedCard ? (
+                <RecordHandlingFragment
+                  recordItem={selectedCard}
+                  onUnmount={onHandlingUnmount}
+                />
+              ) : null}
+            </HandlingContent>
           }
         />
-        <FloatRight>
-          <div style={{ minWidth: "8rem" }}>展示格式：</div>
-          <TypeSwitcher
-            types={[
-              { label: <AppstoreOutlined />, value: "card" },
-              { label: <BarsOutlined />, value: "table" },
-            ]}
-            initialType={displayType}
-            onChange={setDisplayType}
-          />
-          <Divider type={"vertical"} style={{ margin: "0 1rem" }} />
-          <Button
-            icon={<ExportOutlined />}
-            type={"primary"}
-            onClick={exportRecordList}
-            danger
-          >
-            导出数据
-          </Button>
-        </FloatRight>
-      </Header>
-      <Content>
-        <Routes>
-          <Route
-            path={":recordId/*"}
-            element={<RecordHandlingFragment onUnmount={onHandlingUnmount} />}
-          />
-          <Route
-            path={"/"}
-            element={
-              <RecordContent
-                recordlist={filteredRecords?.records || []}
-                displayType={displayType}
-                onRecordItemSelected={onRecordItemSelected}
-              />
-            }
-          />
-        </Routes>
-      </Content>
-      {/*<Aside>
-        <AsidePanel setPartialProps={setPartialProps} />
-      </Aside>*/}
-      <Footer>
-        <PaginationBar
-          enabled={!!filteredRecords}
-          totalNum={filteredRecords?.totalNum}
-          onPageChange={(page, pageSize) => {
-            setFilterProps("pageSize", pageSize);
-            setFilterProps("pageNum", page);
-          }}
-          onPageSizeChange={(pageSize) => {
-            setFilterProps("pageSize", pageSize);
-          }}
+        <Route
+          path={"/"}
+          element={
+            <>
+              <Header>
+                <FilterBar<React.Key, React.Key>
+                  filters={recordFilters}
+                  filterState={filterProps}
+                  onFilterUpdate={(filter, option) =>
+                    setFilterProps(filter as any, option)
+                  }
+                />
+                <FloatRight>
+                  <div style={{ minWidth: "8rem" }}>展示格式：</div>
+                  <TypeSwitcher
+                    types={[
+                      { label: <AppstoreOutlined />, value: "card" },
+                      { label: <BarsOutlined />, value: "table" },
+                    ]}
+                    initialType={displayType}
+                    onChange={setDisplayType}
+                  />
+                  <Divider type={"vertical"} style={{ margin: "0 1rem" }} />
+                  <Button
+                    icon={<ExportOutlined />}
+                    type={"primary"}
+                    onClick={exportRecordList}
+                    danger
+                  >
+                    导出数据
+                  </Button>
+                </FloatRight>
+              </Header>
+              <Content>
+                <RecordContent
+                  recordlist={filteredRecords?.records || []}
+                  displayType={displayType}
+                  onRecordItemSelected={setSelectedCard}
+                />
+              </Content>
+              <Footer>
+                <PaginationBar
+                  enabled={!!filteredRecords}
+                  totalNum={filteredRecords?.totalNum}
+                  onPageChange={(page, pageSize) => {
+                    setFilterProps("pageSize", pageSize);
+                    setFilterProps("page", page);
+                  }}
+                  onPageSizeChange={(pageSize) => {
+                    setFilterProps("pageSize", pageSize);
+                  }}
+                />
+              </Footer>
+            </>
+          }
         />
-      </Footer>
+      </Routes>
     </Container>
   );
 };
@@ -220,7 +224,7 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const Header = styled.div`
+const Header = styled.header`
   padding: 0 2rem;
   width: 100%;
   height: 6rem;
@@ -229,9 +233,27 @@ const Header = styled.div`
   align-items: center;
 `;
 
-const Content = styled.header`
+const Content = styled.div`
+  position: absolute;
   width: 100%;
   height: calc(100% - 6rem - 6rem);
+  padding: 0 2rem;
+  overflow: auto;
+`;
+
+/*const LoadingContentShade = styled(Content)`
+  opacity: 0.4;
+  text-align: center;
+  display: flex;
+  height: calc(100% - 6rem - 6rem);
+  justify-content: center;
+  background-color: white;
+  
+  transition: opacity 1s;
+`*/
+
+const HandlingContent = styled.div`
+  width: 100%;
   padding: 0 2rem;
   overflow: auto;
 `;
@@ -245,6 +267,8 @@ const FloatRight = styled.div`
 `;
 
 const Footer = styled.div`
+  position: absolute;
+  bottom: 0;
   width: 100%;
   height: 6rem;
   padding-bottom: 1rem;

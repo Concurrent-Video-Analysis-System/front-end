@@ -15,7 +15,9 @@ export interface FilterBarProps<
       title: string;
       icon?: JSX.Element;
     }[];
+    style?: React.CSSProperties;
   }[];
+  filterState?: { [key in FilterKey]: OptionKey | undefined };
   onFilterUpdate: (filterKey: FilterKey, optionKey: OptionKey) => void;
 }
 
@@ -29,18 +31,21 @@ export const FilterBar = <
     <Container>
       <FilterOutlined style={{ fontSize: "2rem", color: "#A0A0A0" }} />
       {props.filters.map((filter) => (
-        <div style={{ width: "24rem" }}>
+        <div style={{ minWidth: "20rem", marginRight: "2rem" }}>
           {filter.title}：
           <Select
             placeholder={filter.title}
             allowClear
-            style={{ minWidth: "8rem", maxWidth: "14rem" }}
+            style={{ minWidth: "8rem", maxWidth: "14rem", ...filter.style }}
+            value={
+              props.filterState ? props.filterState[filter.key] : undefined
+            }
             onChange={(value) =>
               props.onFilterUpdate(filter.key, value as OptionKey)
             }
           >
             {filter.options.map((option) => (
-              <Select.Option value={option.key}>
+              <Select.Option value={option.key} key={option.key}>
                 {option.icon} {option.title}
               </Select.Option>
             ))}

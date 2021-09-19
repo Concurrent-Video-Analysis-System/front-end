@@ -28,10 +28,21 @@ export const location2title = (location: string) => {
     key: "",
     children: locationTree,
   };
-  const result = findNodeInTree(
-    tempRoot,
-    (node) => node.key === location || node.key === "/" + location
-  );
+  const result = findNodeInTree(tempRoot, (node) => {
+    let keyLastSlice = node.key;
+    if (typeof node.key === "string") {
+      const keySlice = node.key.split("/");
+      keyLastSlice = keySlice[keySlice.length - 1];
+    }
+    console.log(
+      keyLastSlice,
+      location,
+      keyLastSlice === location || keyLastSlice === "/" + location
+    );
+    return keyLastSlice === location || keyLastSlice === "/" + location;
+  });
+
+  console.log(location, result);
 
   if (!result || result === tempRoot) return undefined;
   return result.title;
@@ -52,7 +63,7 @@ export const locationTree: LocationTreeNodeProps[] = [
     children: [],
   },
   {
-    key: "device-menu",
+    key: "/device",
     title: "设备管理",
     icon: <GoldOutlined />,
     children: [
@@ -71,7 +82,7 @@ export const locationTree: LocationTreeNodeProps[] = [
     ],
   },
   {
-    key: "task-menu",
+    key: "/task",
     title: "监察任务管理",
     icon: <ScheduleOutlined />,
     children: [
@@ -96,7 +107,7 @@ export const locationTree: LocationTreeNodeProps[] = [
     children: [],
   },
   {
-    key: "system-menu",
+    key: "/system",
     title: "系统管理",
     icon: <SettingOutlined />,
     children: [

@@ -16,7 +16,7 @@ export const TaskIndexFragment = () => {
         <Menu
           onClick={(item) => navigate(item.key)}
           selectedKeys={["current"]}
-          mode="horizontal"
+          mode={"horizontal"}
         >
           <Menu.Item key="realtime" icon={<></>}>
             实时监控分析

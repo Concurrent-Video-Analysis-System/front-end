@@ -25,10 +25,22 @@
 
 #### 三期项目
 
-- [ ] record 加上多个筛选条件
-  - [ ] 按照设备筛选
-  - [ ] 按照任务筛选
-- [ ] task 也加上多种筛选
-- [ ] 现在在 url 中 reason 查询时传入的时 name，应该改成 id
-- [ ] 重命名：pageNum -> page; num -> pageSize
-- [ ] pageNum 和 num 的默认值应该分开算
+- [x] record 加上多个筛选条件
+  - [x] 按照设备筛选
+  - [x] 按照任务筛选
+- [x] task 也加上多种筛选
+- [x] 现在在 url 中 reason 查询时传入的时 name，应该改成 id
+- [x] 重命名：pageNum -> page; num -> pageSize
+- [x] pageNum 和 num 的默认值应该分开算
+
+- [ ] RecordHandlingFragment 的 bug
+- [ ] 任务跳转到对应的违规记录
+  - [ ] 违规记录的筛选
+  - [ ] 任务跳转按钮
+- [ ] isEveryDayTask
+- [ ] Breadcrumb 重写
+- [ ] 导出数据
+- [ ] Loading
+
+- [ ] 设置错误链接，如果出错就不跳转（现在 catch 好像 catch 不到，有个小 bug）
+- [ ] 前端画框

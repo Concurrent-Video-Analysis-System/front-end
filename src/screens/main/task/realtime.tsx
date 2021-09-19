@@ -9,24 +9,12 @@ import { CheckCircleFilled, InfoCircleFilled } from "@ant-design/icons";
 import { selectGeneralListReducer } from "../general-list.slice";
 import { ReasonProps } from "../device/reason.slice";
 import { DeviceProps } from "../device/device.slice";
+import { useFilter } from "utils/filter";
+import { PaginationBar } from "components/pagination/pagination";
 
 export const RealtimeTaskFragment = () => {
   const currentTime = useCurrentTime();
   useEffect(() => updateCurrentTime, []);
-
-  /*const { setPartialProps, reload } = useForm(
-    {
-      type: undefined,
-      device: undefined,
-      reason: undefined,
-      from: undefined,
-      to: undefined,
-    },
-    "task",
-    (data) => {
-      dispatch(taskSlice.actions.set(data));
-    }
-  );*/
 
   const generalListSelector = useSelector(selectGeneralListReducer);
   const reasonList = useMemo(
@@ -35,10 +23,6 @@ export const RealtimeTaskFragment = () => {
   );
   const deviceList = useMemo(
     () => generalListSelector.generalList.device as DeviceProps[] | undefined,
-    [generalListSelector]
-  );
-  const taskList = useMemo(
-    () => generalListSelector.generalList.task as TaskDataProps | undefined,
     [generalListSelector]
   );
 
@@ -81,23 +65,46 @@ export const RealtimeTaskFragment = () => {
     ];
   }, [reasonList, deviceList]);
 
+  const { setFilterProps, isLoading, responseData, errorMessage } = useFilter(
+    "task/realtime",
+    ["reason", "device", "state", "pageSize", "page"]
+  );
+  const filteredTask = useMemo(
+    () => responseData as TaskDataProps | undefined,
+    [responseData]
+  );
+
   return (
     <Container>
       <Header>
         <FilterBar<React.Key, React.Key>
           filters={taskFilters}
-          onFilterUpdate={(filter, option) => console.log(filter, option)}
+          onFilterUpdate={(filter, option) =>
+            setFilterProps(filter as any, option)
+          }
         />
       </Header>
       <Content>
-        {taskList?.tasks.map((item) => (
+        {filteredTask?.tasks?.map((item) => (
           <TaskCard
             taskProps={item as TaskItemProps}
             currentTime={currentTime}
           />
         ))}
       </Content>
-      <Footer />
+      <Footer>
+        <PaginationBar
+          enabled={!!filteredTask}
+          totalNum={filteredTask?.totalNum}
+          onPageChange={(page, pageSize) => {
+            setFilterProps("pageSize", pageSize);
+            setFilterProps("page", page);
+          }}
+          onPageSizeChange={(pageSize) => {
+            setFilterProps("pageSize", pageSize);
+          }}
+        />
+      </Footer>
     </Container>
   );
 };
@@ -132,5 +139,9 @@ const FloatRight = styled.div`
 
 const Footer = styled.div`
   width: 100%;
-  height: 10rem;
+  height: 6rem;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

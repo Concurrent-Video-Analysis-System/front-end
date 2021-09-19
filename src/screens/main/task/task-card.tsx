@@ -11,6 +11,7 @@ import { TagList } from "../device/create-task";
 import { useMemo } from "react";
 import { useTask } from "../../../utils/task";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 type ProcessState = "processing" | "paused" | "pending" | "finished";
 
@@ -155,6 +156,8 @@ export const TaskCard = ({
 }) => {
   const { setTaskState, deleteTask } = useTask();
 
+  const navigate = useNavigate();
+
   const fromMoment = moment(taskProps.from);
   const toMoment = moment(taskProps.to);
 
@@ -231,6 +234,14 @@ export const TaskCard = ({
             >
               开始任务
             </Button>
+          ) : processState === "finished" ? (
+            <Button
+              type={"primary"}
+              style={{ marginRight: "1.2rem" }}
+              onClick={() => navigate(`/record?task=${taskProps.id}`)}
+            >
+              查看结果
+            </Button>
           ) : null}
           <Button
             type={"primary"}
@@ -261,7 +272,7 @@ export const TaskCard = ({
 };
 
 const CardContainer = styled.div`
-  margin: 2rem 2rem;
+  margin: 2rem 0;
   padding: 1rem 1.5rem;
   background-color: #fcfcfc;
   border: 1px solid #e6e6e6;
