@@ -18,10 +18,7 @@ export const OverviewFragment = () => {
       {locationSelector.locationList.map((location) => (
         <DeviceGroup>
           <Typography.Title level={4}>
-            <a
-              href={"/#"}
-              onClick={() => navigate(`/device/location/${location.id}`)}
-            >
+            <a onClick={() => navigate(`location/${location.id}`)}>
               {location.name}
             </a>
           </Typography.Title>
@@ -29,7 +26,7 @@ export const OverviewFragment = () => {
             propList={deviceSelector.deviceList.filter(
               (device) => device.location.id === location.id
             )}
-            onClick={(id) => navigate(`/device/${id}`)}
+            onClick={(id) => navigate(`${id}`)}
           />
         </DeviceGroup>
       ))}

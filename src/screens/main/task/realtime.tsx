@@ -38,7 +38,7 @@ export const RealtimeTaskFragment = () => {
             icon: <CheckCircleFilled style={{ color: "#2cbd00" }} />,
           },
           {
-            key: "paused",
+            key: "pause",
             title: "暂停中",
             icon: <InfoCircleFilled style={{ color: "#f65353" }} />,
           },
@@ -65,10 +65,14 @@ export const RealtimeTaskFragment = () => {
     ];
   }, [reasonList, deviceList]);
 
-  const { setFilterProps, isLoading, responseData, errorMessage } = useFilter(
-    "task/realtime",
-    ["reason", "device", "state", "pageSize", "page"]
-  );
+  const { setFilterProps, isLoading, responseData, reloadData, errorMessage } =
+    useFilter("task/realtime", [
+      "reason",
+      "device",
+      "state",
+      "pageSize",
+      "page",
+    ]);
   const filteredTask = useMemo(
     () => responseData as TaskDataProps | undefined,
     [responseData]
@@ -89,6 +93,7 @@ export const RealtimeTaskFragment = () => {
           <TaskCard
             taskProps={item as TaskItemProps}
             currentTime={currentTime}
+            onCardUpdated={reloadData}
           />
         ))}
       </Content>

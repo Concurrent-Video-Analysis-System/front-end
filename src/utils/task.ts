@@ -17,6 +17,7 @@ export const useTask = () => {
       name: taskProps.name,
       from: taskProps.from,
       to: taskProps.to,
+      is_everyday_task: taskProps.isEverydayTask,
       device: deviceSelector.deviceList.filter((device) =>
         taskProps.deviceIdList.includes(device.id)
       ),

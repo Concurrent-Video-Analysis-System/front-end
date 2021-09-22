@@ -54,7 +54,7 @@ export const HistoryTaskFragment = () => {
             icon: <CheckCircleFilled style={{ color: "#2cbd00" }} />,
           },
           {
-            key: "paused",
+            key: "pause",
             title: "暂停中",
             icon: <InfoCircleFilled style={{ color: "#f65353" }} />,
           },
@@ -81,7 +81,7 @@ export const HistoryTaskFragment = () => {
     ];
   }, [reasonList, deviceList]);
 
-  const { setFilterProps, isLoading, responseData } = useFilter(
+  const { setFilterProps, isLoading, responseData, reloadData } = useFilter(
     "task/history",
     ["reason", "device", "state", "pageSize", "page"]
   );
@@ -105,6 +105,7 @@ export const HistoryTaskFragment = () => {
           <TaskCard
             taskProps={item as TaskItemProps}
             currentTime={currentTime}
+            onCardUpdated={reloadData}
           />
         ))}
       </Content>

@@ -33,10 +33,10 @@
 - [x] 重命名：pageNum -> page; num -> pageSize
 - [x] pageNum 和 num 的默认值应该分开算
 
-- [ ] RecordHandlingFragment 的 bug
+- [x] RecordHandlingFragment 的 bug
 - [ ] 任务跳转到对应的违规记录
-  - [ ] 违规记录的筛选
-  - [ ] 任务跳转按钮
+  - [x] 违规记录的筛选
+  - [x] 任务跳转按钮
 - [ ] isEveryDayTask
 - [ ] Breadcrumb 重写
 - [ ] 导出数据
@@ -44,3 +44,4 @@
 
 - [ ] 设置错误链接，如果出错就不跳转（现在 catch 好像 catch 不到，有个小 bug）
 - [ ] 前端画框
+- [ ] 删除任务应该先删除再发回请求

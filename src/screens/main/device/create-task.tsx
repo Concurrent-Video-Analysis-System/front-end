@@ -25,6 +25,7 @@ export interface CreateTaskProps {
   name: string;
   from: string;
   to: string;
+  isEverydayTask: boolean;
   deviceIdList: number[];
   reasonIdList: number[];
   state: string;
@@ -52,9 +53,7 @@ export const TagList = ({
           <DeviceTag>
             {" "}
             {onClick ? (
-              <a href={"/#"} onClick={() => onClick(item.id, item.name)}>
-                {item?.name}
-              </a>
+              <a onClick={() => onClick(item.id, item.name)}>{item?.name}</a>
             ) : (
               item?.name
             )}{" "}
@@ -88,6 +87,7 @@ export const CreateTaskFragment = ({
     name: "",
     from: "",
     to: "",
+    isEverydayTask: false,
     state: "",
     deviceIdList: [],
     reasonIdList: [],
@@ -109,7 +109,7 @@ export const CreateTaskFragment = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceSelector.deviceList, deviceIdList]);
 
-  const [isEverydayTask] = useState(false);
+  const [isEverydayTask, setIsEverydayTask] = useState(false);
   const formItemStyle: React.CSSProperties = {
     width: "75%",
   };
@@ -124,8 +124,6 @@ export const CreateTaskFragment = ({
         labelCol={{ span: 4 }}
         requiredMark={false}
         initialValues={{ remember: true }}
-        onFinish={() => {}}
-        onFinishFailed={() => {}}
       >
         <Form.Item
           label="任务名称"
@@ -175,14 +173,19 @@ export const CreateTaskFragment = ({
           )}
         </Form.Item>
 
-        {/*<Form.Item label="每日任务" name="everyday_task">
+        <Form.Item label="每日任务" name="everyday_task">
           <Checkbox
             checked={isEverydayTask}
-            onChange={(e) => setIsEverydayTask(e.target.checked)}
+            onChange={(e) => {
+              setIsEverydayTask(e.target.checked);
+              setTaskFormProps({
+                isEverydayTask: e.target.checked,
+              });
+            }}
           >
             （勾选后会在每天的固定时段自动进行）
           </Checkbox>
-        </Form.Item>*/}
+        </Form.Item>
 
         <Form.Item
           label="检测的违规类型"

@@ -13,7 +13,7 @@ import { useTask } from "../../../utils/task";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
-type ProcessState = "processing" | "paused" | "pending" | "finished";
+type ProcessState = "processing" | "pause" | "pending" | "finished";
 
 const state2label = (state: ProcessState) => {
   switch (state) {
@@ -35,7 +35,7 @@ const state2label = (state: ProcessState) => {
         label: "已完成",
         icon: <CheckCircleTwoTone twoToneColor={"#00b3ee"} />,
       };
-    case "paused":
+    case "pause":
       return {
         color: "#C0C0C0",
         label: "已停止",
@@ -75,7 +75,7 @@ const StatefulProgressBar = ({
       ? { ...commonConfig, ...processingConfig, value }
       : state === "finished"
       ? { ...commonConfig, ...finishedConfig }
-      : state === "paused"
+      : state === "pause"
       ? { ...commonConfig, ...pausedConfig }
       : // else: "pending"
         { ...commonConfig, ...pendingConfig };
@@ -150,9 +150,11 @@ const ProgressBar = ({ config }: { config: any }) => {
 export const TaskCard = ({
   taskProps,
   currentTime,
+  onCardUpdated,
 }: {
   taskProps: TaskItemProps;
   currentTime: moment.Moment;
+  onCardUpdated: () => void;
 }) => {
   const { setTaskState, deleteTask } = useTask();
 
@@ -164,7 +166,7 @@ export const TaskCard = ({
   const processState = useMemo(
     () =>
       taskProps.state === "pause"
-        ? "paused"
+        ? "pause"
         : currentTime.diff(toMoment, "seconds") > 0
         ? "finished"
         : currentTime.diff(fromMoment, "seconds") > 0
@@ -210,7 +212,7 @@ export const TaskCard = ({
         <Title>
           <span style={{ color: processStatusLabel.color }}>
             {processStatusLabel.label}&nbsp;&nbsp;
-            {processState !== ("paused" && "finished") ? processLabel : null}
+            {processState !== ("pause" && "finished") ? processLabel : null}
           </span>
         </Title>
         <FloatRight>
@@ -218,11 +220,15 @@ export const TaskCard = ({
             <Button
               type={"default"}
               style={{ marginRight: "1.2rem" }}
-              onClick={() => setTaskState({ id: taskProps.id, order: "pause" })}
+              onClick={() => {
+                setTaskState({ id: taskProps.id, order: "pause" }).then(
+                  onCardUpdated
+                );
+              }}
             >
               暂停任务
             </Button>
-          ) : processState === "paused" ? (
+          ) : processState === "pause" ? (
             <Button
               type={"default"}
               style={{
@@ -230,7 +236,11 @@ export const TaskCard = ({
                 color: "#00c42d",
                 marginRight: "1.2rem",
               }}
-              onClick={() => setTaskState({ id: taskProps.id, order: "start" })}
+              onClick={() => {
+                setTaskState({ id: taskProps.id, order: "start" }).then(
+                  onCardUpdated
+                );
+              }}
             >
               开始任务
             </Button>
@@ -249,6 +259,7 @@ export const TaskCard = ({
             onClick={() => {
               deleteTask({ id: taskProps.id }).then(() => {
                 message.success("任务删除成功！").then(null);
+                onCardUpdated();
               });
             }}
           >
