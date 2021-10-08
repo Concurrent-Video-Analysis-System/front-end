@@ -18,7 +18,9 @@ import { useState } from "react";
 export const usePartialState = <T extends object>(initialState: T) => {
   const [state, setState] = useState<T>(initialState);
   const setPartialState = (partialState: Partial<T>) => {
-    setState({ ...state, ...partialState });
+    if (partialState) {
+      setState({ ...state, ...partialState });
+    }
   };
   return [state, setPartialState] as const;
 };

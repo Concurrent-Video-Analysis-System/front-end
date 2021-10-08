@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "@emotion/styled";
 import { Header } from "./header";
 import { RecordIndexFragment } from "./record";
 import { useDocumentTitle } from "../../utils/document-title";
 import { Navigate, Route, Routes } from "react-router";
 import { DeviceIndexFragment } from "./device";
-import { RealtimeTaskFragment } from "./task/realtime";
 import { DashBoard } from "./dashboard";
 import { MenuNavigator } from "./menu";
 import { BreadcrumbNavigator } from "./breadcrumb";
@@ -14,7 +13,16 @@ import { TaskIndexFragment } from "./task";
 
 export const MainFragment = () => {
   useDocumentTitle("海量数据智能并发解析平台");
-  useGeneralLists(["device", "location", "reason", "task", "recordlist"]);
+  const update = useGeneralLists([
+    "device",
+    "location",
+    "reason",
+    "task",
+    "recordlist",
+  ]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(update, []);
 
   return (
     <Container>

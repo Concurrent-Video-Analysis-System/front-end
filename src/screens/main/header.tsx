@@ -17,7 +17,11 @@ export const Header = () => {
 
   return (
     <HeaderContainer>
-      <HomeNavigation>
+      <HomeNavigation
+        onClick={() => {
+          window.location.href = "http://www.ccb.com/";
+        }}
+      >
         <CCBLogo />
       </HomeNavigation>
       <div style={{ paddingLeft: "2rem", borderLeft: "2px solid #808080" }}>
@@ -59,9 +63,12 @@ const HomeNavigation = styled.div`
   padding: 0 2rem;
   width: 24rem;
   height: 100%;
+  cursor: pointer;
+
   &:hover {
     color: #ffffff;
-    background-color: #606060;
+    // background-color: #001529;
+    background-color: #162b40;
     transition: 0.3s ease-out;
   }
 `;

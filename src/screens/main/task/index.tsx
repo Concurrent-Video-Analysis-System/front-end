@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
 import { Menu } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDocumentTitle } from "utils/document-title";
+import { useGeneralLists } from "utils/general-list";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { RealtimeTaskFragment } from "./realtime";
 import { HistoryTaskFragment } from "./history";
@@ -9,6 +10,15 @@ import { HistoryTaskFragment } from "./history";
 export const TaskIndexFragment = () => {
   useDocumentTitle("任务列表");
   const navigate = useNavigate();
+
+  const update = useGeneralLists([
+    "device",
+    "location",
+    "reason",
+    "task",
+    "recordlist",
+  ]);
+  useEffect(update);
 
   return (
     <Container>

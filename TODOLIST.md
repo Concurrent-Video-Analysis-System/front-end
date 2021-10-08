@@ -32,16 +32,19 @@
 - [x] 现在在 url 中 reason 查询时传入的时 name，应该改成 id
 - [x] 重命名：pageNum -> page; num -> pageSize
 - [x] pageNum 和 num 的默认值应该分开算
-
 - [x] RecordHandlingFragment 的 bug
 - [ ] 任务跳转到对应的违规记录
   - [x] 违规记录的筛选
   - [x] 任务跳转按钮
-- [ ] isEveryDayTask
+- [x] isEveryDayTask
 - [ ] Breadcrumb 重写
-- [ ] 导出数据
+- [x] 导出数据
 - [ ] Loading
-
 - [ ] 设置错误链接，如果出错就不跳转（现在 catch 好像 catch 不到，有个小 bug）
 - [ ] 前端画框
-- [ ] 删除任务应该先删除再发回请求
+- [x] 删除任务应该先删除再发回请求
+- [ ] 跳转到带有 querystring 的路由会出问题
+- [x] task 筛选列表为空（解决方法：把 useGeneralLists 移动到单独的页面）
+- [ ] 轮询更新违规记录
+- [ ] 列表视图下完成处理和查看详情
+- [ ] 自动登录的优化

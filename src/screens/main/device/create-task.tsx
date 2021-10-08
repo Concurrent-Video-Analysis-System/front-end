@@ -88,7 +88,7 @@ export const CreateTaskFragment = ({
     from: "",
     to: "",
     isEverydayTask: false,
-    state: "",
+    state: "pause",
     deviceIdList: [],
     reasonIdList: [],
   });
@@ -117,7 +117,11 @@ export const CreateTaskFragment = ({
 
   return (
     <Container>
-      <TagList propList={deviceList} afterStr={"创建监查任务："} />
+      <TagList
+        propList={deviceList}
+        preStr={"为设备"}
+        afterStr={"创建监查任务："}
+      />
       <Divider />
       <Form
         name="basic"

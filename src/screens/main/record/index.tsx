@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { RecordContent, RecordDataProps, RecordItemProps } from "./content";
 import { Route, Routes } from "react-router";
@@ -12,15 +12,16 @@ import {
   ExportOutlined,
   InfoCircleFilled,
 } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { exportRecordList } from "./export";
+import { useFilter } from "utils/filter";
 import { useDocumentTitle } from "utils/document-title";
+import { useGeneralLists } from "utils/general-list";
 import { FilterBar } from "components/filter-bar/filter-bar";
 import { selectGeneralListReducer } from "../general-list.slice";
 import { ReasonProps } from "../device/reason.slice";
 import { DeviceProps } from "../device/device.slice";
 import { PaginationBar } from "components/pagination/pagination";
-import { useFilter } from "utils/filter";
 import { TaskDataProps } from "../task/task.slice";
 
 const TypeSwitcher = <K extends string>({
@@ -56,6 +57,16 @@ const TypeSwitcher = <K extends string>({
 export const RecordIndexFragment = () => {
   useDocumentTitle("违规记录列表");
 
+  const update = useGeneralLists([
+    "device",
+    "location",
+    "reason",
+    "task",
+    "recordlist",
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(update, []);
+
   const generalListSelector = useSelector(selectGeneralListReducer);
   const reasonList = useMemo(
     () => generalListSelector.generalList.reason as ReasonProps[] | undefined,
@@ -70,9 +81,6 @@ export const RecordIndexFragment = () => {
     [generalListSelector]
   );
 
-  const [selectedCard, setSelectedCard] = useState<RecordItemProps | null>(
-    null
-  );
   const [displayType, setDisplayType] = useState("card");
 
   const { filterProps, setFilterProps, responseData, reloadData } = useFilter(
@@ -138,11 +146,6 @@ export const RecordIndexFragment = () => {
     ];
   }, [reasonList, deviceList]);
 
-  const onHandlingUnmount = () => {
-    setSelectedCard(null);
-    reloadData();
-  };
-
   return (
     <Container>
       <Routes>
@@ -150,12 +153,7 @@ export const RecordIndexFragment = () => {
           path={":recordId/*"}
           element={
             <HandlingContent>
-              {selectedCard ? (
-                <RecordHandlingFragment
-                  recordItem={selectedCard}
-                  onUnmount={onHandlingUnmount}
-                />
-              ) : null}
+              <RecordHandlingFragment onUnmount={reloadData} />
             </HandlingContent>
           }
         />
@@ -196,7 +194,7 @@ export const RecordIndexFragment = () => {
                 <RecordContent
                   recordlist={filteredRecords?.records || []}
                   displayType={displayType}
-                  onRecordItemSelected={setSelectedCard}
+                  onUnmount={reloadData}
                 />
               </Content>
               <Footer>

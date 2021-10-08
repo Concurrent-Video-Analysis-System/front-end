@@ -112,7 +112,7 @@ export const useHttp = () => {
       token: user?.token,
       ...config,
     })
-      .then(async (data) => {
+      .then((data) => {
         // if data code is a string, convert it to number
         if (+data?.code === 0) {
           // Success
@@ -124,7 +124,7 @@ export const useHttp = () => {
           );
         }
       })
-      .catch(async (message) => {
+      .catch((message) => {
         return Promise.reject(message);
       });
   };

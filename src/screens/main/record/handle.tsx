@@ -1,82 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
-import { Button, Divider, Typography, Popconfirm } from "antd";
+import { Button, Divider, Typography, Popconfirm, message } from "antd";
 import { useProcess } from "utils/process";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router";
-import { selectRecordlistReducer } from "../recordlist.slice";
-import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { RecordItemProps } from "./content";
+import { useRecord } from "../../../utils/record";
+import { LeftOutlined } from "@ant-design/icons";
 
-const { Title, Paragraph, Text } = Typography;
-
-const HandlerOnPending = ({
-  isLoading,
-  processType,
-  onClick,
-}: {
-  isLoading: boolean;
-  processType: string | null;
-  onClick: (type: string) => void;
-}) => {
-  return (
-    <>
-      <Button
-        type={"primary"}
-        size={"large"}
-        loading={processType === "processed" && isLoading}
-        onClick={() => onClick("processed")}
-      >
-        完成处理
-      </Button>
-      <Popconfirm
-        title={"确定要删除这条记录吗？"}
-        okText={"删除"}
-        cancelText={"取消"}
-        onConfirm={() => onClick("deleted")}
-      >
-        <Button
-          type={"primary"}
-          danger
-          size={"large"}
-          style={{ marginLeft: "2rem" }}
-          loading={processType === "deleted" && isLoading}
-        >
-          反馈误报并删除
-        </Button>
-      </Popconfirm>
-    </>
-  );
-};
-
-const HandlerOnOther = ({
-  isLoading,
-  processType,
-  onClick,
-}: {
-  isLoading: boolean;
-  processType: string | null;
-  onClick: (type: string) => void;
-}) => {
-  return (
-    <>
-      <Button
-        type={"primary"}
-        size={"large"}
-        loading={processType === "pending" && isLoading}
-        onClick={() => onClick("pending")}
-      >
-        撤销处理状态
-      </Button>
-    </>
-  );
-};
+const { Title, Paragraph } = Typography;
 
 export const RecordHandlingFragment = ({
-  recordItem,
   onUnmount,
 }: {
-  recordItem: RecordItemProps;
   onUnmount?: () => void;
 }) => {
   useEffect(() => {
@@ -87,25 +22,43 @@ export const RecordHandlingFragment = ({
     };
   }, [onUnmount]);
 
+  const { recordId } = useParams();
+  const [recordItem, setRecordItem] = useState<RecordItemProps | null>(null);
+  const sendRecord = useRecord();
+  useEffect(() => {
+    sendRecord(+recordId)
+      .then(setRecordItem)
+      .catch((errorMessage) => message.error(errorMessage));
+  }, [recordId, sendRecord]);
+
   const navigate = useNavigate();
 
   const [processType, setProcessedType] = useState<string | null>(null);
-  const { isLoading, setProcess } = useProcess(recordItem?.id, () => {
-    setProcessedType(null);
-    navigate("/record");
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const sendProcess = useProcess();
 
   const onHandleButtonClick = (type: string) => {
-    if (!isLoading) {
-      setProcessedType(type);
-      setProcess(type);
-    }
+    setIsLoading(true);
+    sendProcess(recordItem?.id || 0, type).then(() => {
+      setProcessedType(null);
+      setIsLoading(false);
+      navigate("/record");
+    });
   };
-
-  console.log("handling", recordItem);
 
   return (
     <Container>
+      <Header>
+        <Button
+          type={"dashed"}
+          icon={<LeftOutlined />}
+          onClick={() => {
+            navigate("/record");
+          }}
+        >
+          返回违规记录列表
+        </Button>
+      </Header>
       <ImageDetail alt="Record Image" src={recordItem?.imageUrl} />
       <VerticalDivider type={"vertical"} />
       <HandlingPanel>
@@ -131,17 +84,41 @@ export const RecordHandlingFragment = ({
 
         <BottomParagraph>
           {recordItem?.type === "pending" ? (
-            <HandlerOnPending
-              isLoading={isLoading}
-              processType={processType}
-              onClick={onHandleButtonClick}
-            />
+            <>
+              <Button
+                type={"primary"}
+                size={"large"}
+                loading={processType === "processed" && isLoading}
+                onClick={() => onHandleButtonClick("processed")}
+              >
+                完成处理
+              </Button>
+              <Popconfirm
+                title={"确定要删除这条记录吗？"}
+                okText={"删除"}
+                cancelText={"取消"}
+                onConfirm={() => onHandleButtonClick("deleted")}
+              >
+                <Button
+                  type={"primary"}
+                  danger
+                  size={"large"}
+                  style={{ marginLeft: "2rem" }}
+                  loading={processType === "deleted" && isLoading}
+                >
+                  反馈误报并删除
+                </Button>
+              </Popconfirm>
+            </>
           ) : (
-            <HandlerOnOther
-              isLoading={isLoading}
-              processType={processType}
-              onClick={onHandleButtonClick}
-            />
+            <Button
+              type={"primary"}
+              size={"large"}
+              loading={processType === "pending" && isLoading}
+              onClick={() => onHandleButtonClick("pending")}
+            >
+              撤销处理状态
+            </Button>
           )}
         </BottomParagraph>
       </HandlingPanel>
@@ -152,16 +129,25 @@ export const RecordHandlingFragment = ({
 const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr 1rem 34rem;
-  grid-template-areas: "image-detail vertical-divider handling-panel";
+  grid-template-rows: 3.5rem 1fr;
+  grid-template-areas:
+    "header vertical-divider handling-panel"
+    "image-detail vertical-divider handling-panel";
   grid-gap: 1.5rem;
   width: 100%;
   height: calc(100% - 6rem);
-  padding: 3rem 0 3rem 0;
+  padding: 2rem 0;
+`;
+
+const Header = styled.div`
+  grid-area: header;
+  padding-left: 1.2rem;
 `;
 
 const ImageDetail = styled.img`
   grid-area: image-detail;
   width: 100%;
+  padding-left: 1.2rem;
 `;
 
 const VerticalDivider = styled(Divider)`
@@ -171,6 +157,7 @@ const VerticalDivider = styled(Divider)`
 
 const HandlingPanel = styled.div`
   grid-area: handling-panel;
+  padding: 3rem 0;
 `;
 
 const BottomParagraph = styled(Paragraph)`

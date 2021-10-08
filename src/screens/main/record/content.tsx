@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Card, Badge, Empty, Table, Tag, Button, Divider } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectRecordlistReducer } from "../recordlist.slice";
 import { ItemProps } from "interfaces";
+import { useProcess } from "../../../utils/process";
 
 export interface RecordDataProps {
   totalNum: number;
@@ -111,18 +112,18 @@ const RecordCardList = ({
   );
 };
 
-const isRecordItemProps = (x: any): x is RecordItemProps => {
-  console.log(x);
-  return "id" in x;
-};
-
 const RecordTableList = ({
   recordlist,
   onRecordItemSelected,
+  onUnmount,
 }: {
   recordlist: RecordItemProps[];
   onRecordItemSelected?: (item: RecordItemProps) => void;
+  onUnmount?: () => void;
 }) => {
+  const sendProcess = useProcess();
+  const navigate = useNavigate();
+
   // @ts-ignore
   return (
     <Table
@@ -155,24 +156,48 @@ const RecordTableList = ({
       <Table.Column
         title={"操作"}
         key={"action"}
-        render={(text, record) => (
-          <Link to={isRecordItemProps(record) ? `${record.id}` : ""}>
+        render={(record) => (
+          <>
             <Button
               type={"link"}
               size={"small"}
               onClick={() => {
-                if (isRecordItemProps(record) && onRecordItemSelected) {
-                  onRecordItemSelected(record);
+                if (record && onRecordItemSelected) {
+                  onRecordItemSelected(record as RecordItemProps);
+                  navigate(`record/${record.id}`);
                 }
               }}
             >
               查看详情
             </Button>
             <Divider type={"vertical"} />
-            <Button type={"link"} size={"small"} danger>
-              完成处理
-            </Button>
-          </Link>
+            {record.type === "processed" ? (
+              <RevertButton
+                type={"link"}
+                size={"small"}
+                onClick={() => {
+                  sendProcess(record.id, "pending").then(() => {
+                    onUnmount && onUnmount();
+                  });
+                }}
+              >
+                撤销处理
+              </RevertButton>
+            ) : (
+              <Button
+                type={"link"}
+                size={"small"}
+                danger
+                onClick={() => {
+                  sendProcess(record.id, "processed").then(() => {
+                    onUnmount && onUnmount();
+                  });
+                }}
+              >
+                完成处理
+              </Button>
+            )}
+          </>
         )}
       />
     </Table>
@@ -183,10 +208,12 @@ export const RecordContent = ({
   recordlist,
   displayType,
   onRecordItemSelected,
+  onUnmount,
 }: {
   recordlist: RecordItemProps[];
   displayType: string;
   onRecordItemSelected?: (item: RecordItemProps) => void;
+  onUnmount?: () => void;
 }) => {
   return (
     <Container>
@@ -200,6 +227,7 @@ export const RecordContent = ({
         <RecordTableList
           recordlist={recordlist}
           onRecordItemSelected={onRecordItemSelected}
+          onUnmount={onUnmount}
         />
       ) : null}
     </Container>
@@ -216,4 +244,8 @@ const RecordCardContainer = styled.div`
   grid-gap: 30px;
   padding-left: 0.8rem;
   padding-right: 0.8rem;
+`;
+
+const RevertButton = styled(Button)`
+  color: #a0a0a0;
 `;
