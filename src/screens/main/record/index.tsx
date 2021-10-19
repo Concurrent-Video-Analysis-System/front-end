@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
-import { RecordContent, RecordDataProps, RecordItemProps } from "./content";
+import { RecordContent, RecordDataProps } from "./content";
 import { Route, Routes } from "react-router";
 import { RecordHandlingFragment } from "./handle";
 import { Button, Divider, Radio } from "antd";

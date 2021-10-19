@@ -16,10 +16,10 @@ import {
   TimePicker,
 } from "antd";
 import { useDocumentTitle } from "utils/document-title";
-import { useTask } from "../../../utils/task";
+import { useTask } from "utils/task";
 import { selectReasonReducer } from "./reason.slice";
-import { useFetchReason } from "../../../utils/fetcher/reason";
-import { usePartialState } from "../../../utils/state-pro";
+import { useFetchReason } from "utils/fetcher/reason";
+import { usePartialState } from "utils/state-pro";
 
 export interface CreateTaskProps {
   name: string;
@@ -121,6 +121,7 @@ export const CreateTaskFragment = ({
         propList={deviceList}
         preStr={"为设备"}
         afterStr={"创建监查任务："}
+        maxTagCount={5}
       />
       <Divider />
       <Form
@@ -257,7 +258,7 @@ export const CreateTaskFragment = ({
 
 const Container = styled.div`
   height: 100%;
-  max-width: 100%;
+  width: 100%;
 `;
 
 const TitleContainer = styled.div`

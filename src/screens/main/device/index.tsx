@@ -7,8 +7,8 @@ import { CreateTaskFragment } from "./create-task";
 import { OverviewFragment } from "./overview";
 import { useDocumentTitle } from "utils/document-title";
 import { useState } from "react";
-import { useFetchDevice } from "../../../utils/fetcher/device";
-import { useFetchLocation } from "../../../utils/fetcher/location";
+import { useFetchDevice } from "utils/fetcher/device";
+import { useFetchLocation } from "utils/fetcher/location";
 
 export const DeviceIndexFragment = () => {
   useDocumentTitle("设备列表");
@@ -54,17 +54,21 @@ export const DeviceIndexFragment = () => {
 };
 
 const Container = styled.div`
-  display: grid;
-  grid-template-areas: "aside content";
-  grid-template-columns: 30rem calc(100vw - 30rem);
+  width: 100%;
   height: 100%;
 `;
 
 const Aside = styled.div`
-  grid-area: aside;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30rem;
 `;
 
 const Content = styled.div`
-  grid-area: content;
+  position: absolute;
+  width: calc(100% - 30rem);
+  left: 30rem;
+  top: 0;
   padding: 2rem 4rem;
 `;
