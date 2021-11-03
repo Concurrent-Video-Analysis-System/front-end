@@ -15,11 +15,12 @@ import { useState } from "react";
   return [state, removeState, setState] as const;
 };*/
 
+// FIXME
 export const usePartialState = <T extends object>(initialState: T) => {
   const [state, setState] = useState<T>(initialState);
   const setPartialState = (partialState: Partial<T>) => {
     if (partialState) {
-      setState({ ...state, ...partialState });
+      setState((state) => ({ ...state, ...partialState }));
     }
   };
   return [state, setPartialState] as const;

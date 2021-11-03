@@ -36,7 +36,7 @@ export const BreadcrumbNavigator = (props: BreadcrumbNavigatorProps) => {
       );
   }, [location]);
 
-  console.log(locationCascade);
+  // console.log(locationCascade);
 
   return (
     <Container>

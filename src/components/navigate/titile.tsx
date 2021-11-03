@@ -34,15 +34,8 @@ export const location2title = (location: string) => {
       const keySlice = node.key.split("/");
       keyLastSlice = keySlice[keySlice.length - 1];
     }
-    console.log(
-      keyLastSlice,
-      location,
-      keyLastSlice === location || keyLastSlice === "/" + location
-    );
     return keyLastSlice === location || keyLastSlice === "/" + location;
   });
-
-  console.log(location, result);
 
   if (!result || result === tempRoot) return undefined;
   return result.title;

@@ -1,36 +1,27 @@
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
-import { selectTaskReducer, TaskDataProps, TaskItemProps } from "./task.slice";
-import { TaskCard } from "./task-card";
+import { TaskDataProps, TaskItemProps } from "./task.slice";
+import { RealtimeTaskCard, HistoryTaskCard } from "./task-card";
 import { updateCurrentTime, useCurrentTime } from "utils/time";
-import React, { useEffect, useMemo, useState } from "react";
-import { useExactFilter } from "utils/task-filter";
-import { useFetchTask } from "utils/fetcher/task";
+import React, { useEffect, useMemo } from "react";
 import { FilterBar } from "components/filter-bar/filter-bar";
-import { CheckCircleFilled, InfoCircleFilled } from "@ant-design/icons";
+import {
+  CheckCircleFilled,
+  InfoCircleFilled,
+  SaveOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
 import { selectGeneralListReducer } from "../general-list.slice";
 import { ReasonProps } from "../device/reason.slice";
 import { DeviceProps } from "../device/device.slice";
-import { useFilter } from "../../../utils/filter";
-import { PaginationBar } from "../../../components/pagination/pagination";
+import { useFilter } from "utils/filter";
+import { PaginationBar } from "components/pagination/pagination";
+import { TaskType } from "./index";
+import { TypeSwitcher } from "components/type-switcher/type-switcher";
 
-export const HistoryTaskFragment = () => {
+export const TaskFragment = ({ type }: { type: TaskType }) => {
   const currentTime = useCurrentTime();
   useEffect(() => updateCurrentTime, []);
-
-  /*const { setPartialProps, reload } = useForm(
-    {
-      type: undefined,
-      device: undefined,
-      reason: undefined,
-      from: undefined,
-      to: undefined,
-    },
-    "task",
-    (data) => {
-      dispatch(taskSlice.actions.set(data));
-    }
-  );*/
 
   const generalListSelector = useSelector(selectGeneralListReducer);
   const reasonList = useMemo(
@@ -81,10 +72,15 @@ export const HistoryTaskFragment = () => {
     ];
   }, [reasonList, deviceList]);
 
-  const { setFilterProps, isLoading, responseData, reloadData } = useFilter(
-    "task/history",
-    ["reason", "device", "state", "pageSize", "page"]
-  );
+  const { setFilterProps, isLoading, responseData, reloadData, errorMessage } =
+    useFilter(`task`, [
+      "reason",
+      "device",
+      "state",
+      "is_history_task",
+      "pageSize",
+      "page",
+    ]);
   const filteredTask = useMemo(
     () => responseData as TaskDataProps | undefined,
     [responseData]
@@ -99,15 +95,47 @@ export const HistoryTaskFragment = () => {
             setFilterProps(filter as any, option)
           }
         />
+        任务类型：
+        <TypeSwitcher
+          types={[
+            {
+              label: (
+                <>
+                  <VideoCameraOutlined /> 实时任务
+                </>
+              ),
+              value: "realtime",
+            },
+            {
+              label: (
+                <>
+                  <SaveOutlined /> 历史录像
+                </>
+              ),
+              value: "history",
+            },
+          ]}
+          initialType={"realtime"}
+          onChange={(type) =>
+            setFilterProps("is_history_task", +!(type === "realtime"))
+          }
+        />
       </Header>
       <Content>
-        {filteredTask?.tasks?.map((item) => (
-          <TaskCard
-            taskProps={item as TaskItemProps}
-            currentTime={currentTime}
-            onCardUpdated={reloadData}
-          />
-        ))}
+        {filteredTask?.tasks?.map((item) =>
+          !item.is_history_task ? (
+            <RealtimeTaskCard
+              taskProps={item as TaskItemProps}
+              currentTime={currentTime}
+              onCardUpdated={reloadData}
+            />
+          ) : (
+            <HistoryTaskCard
+              taskProps={item as TaskItemProps}
+              onCardUpdated={reloadData}
+            />
+          )
+        )}
       </Content>
       <Footer>
         <PaginationBar
@@ -144,14 +172,6 @@ const Content = styled.header`
   height: calc(100% - 6rem - 10rem);
   padding: 0 2rem;
   overflow: auto;
-`;
-
-const FloatRight = styled.div`
-  margin-left: auto;
-  padding-right: 2rem;
-  display: flex;
-  align-items: center;
-  flex-direction: row;
 `;
 
 const Footer = styled.div`

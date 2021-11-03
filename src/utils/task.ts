@@ -15,9 +15,10 @@ export const useTask = () => {
   const newTask = async (taskProps: CreateTaskProps) => {
     const data = {
       name: taskProps.name,
-      from: taskProps.from,
-      to: taskProps.to,
+      from: taskProps.from?.format("YYYY-MM-DD HH:mm:ss"),
+      to: taskProps.to?.format("YYYY-MM-DD HH:mm:ss"),
       is_everyday_task: taskProps.isEverydayTask,
+      is_history_task: taskProps.isHistoryTask,
       device: deviceSelector.deviceList.filter((device) =>
         taskProps.deviceIdList.includes(device.id)
       ),
@@ -29,12 +30,10 @@ export const useTask = () => {
 
     taskRequest("task/new", { method: "POST", data: data })
       .then(async (response) => {
-        console.log("SUCCESS", response);
         await getTask();
         return response;
       })
       .catch((errorMessage) => {
-        console.log(errorMessage);
         return Promise.reject(errorMessage);
       });
   };

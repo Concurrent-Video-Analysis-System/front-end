@@ -12,10 +12,9 @@ import { useMemo } from "react";
 import { useTask } from "../../../utils/task";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { useProgress } from "../../../utils/progress";
 
-type ProcessState = "processing" | "pause" | "pending" | "finished";
-
-const state2label = (state: ProcessState) => {
+const state2label = (state: string) => {
   switch (state) {
     case "processing":
       return {
@@ -35,10 +34,10 @@ const state2label = (state: ProcessState) => {
         label: "已完成",
         icon: <CheckCircleTwoTone twoToneColor={"#00b3ee"} />,
       };
-    case "pause":
+    default:
       return {
         color: "#C0C0C0",
-        label: "已停止",
+        label: "",
         icon: <PauseCircleTwoTone twoToneColor={"#C0C0C0"} />,
       };
   }
@@ -48,7 +47,7 @@ const StatefulProgressBar = ({
   state,
   value,
 }: {
-  state: ProcessState;
+  state: string;
   value?: number;
 }) => {
   const config = useMemo(() => {
@@ -147,7 +146,7 @@ const ProgressBar = ({ config }: { config: any }) => {
   );
 };
 
-export const TaskCard = ({
+export const RealtimeTaskCard = ({
   taskProps,
   currentTime,
   onCardUpdated,
@@ -268,6 +267,106 @@ export const TaskCard = ({
         </FloatRight>
       </TitleContainer>
       <StatefulProgressBar state={processState} value={processPercentage} />
+      <ContentContainer>
+        <Content>
+          调用的设备：
+          <TagList propList={taskProps.device} maxTagCount={3} />
+        </Content>
+        <Content>
+          检测违规类型：
+          <TagList propList={taskProps.reason} maxTagCount={3} />
+        </Content>
+      </ContentContainer>
+    </CardContainer>
+  );
+};
+
+export const HistoryTaskCard = ({
+  taskProps,
+  onCardUpdated,
+}: {
+  taskProps: TaskItemProps;
+  onCardUpdated: () => void;
+}) => {
+  const { setTaskState, deleteTask } = useTask();
+
+  const navigate = useNavigate();
+  const progress = useProgress("task/history/progress", taskProps.id, 1000);
+
+  const processValue = useMemo(
+    () => parseInt(progress?.split("%")[0] || "0") / 100,
+    [progress]
+  );
+
+  const processState = useMemo(
+    () =>
+      processValue === 1
+        ? "finished"
+        : processValue !== undefined
+        ? "processing"
+        : progress || "",
+    [processValue, progress]
+  );
+
+  const processStatusLabel = useMemo(
+    () => state2label(processState),
+    [processState]
+  );
+
+  return (
+    <CardContainer style={{ maxWidth: "calc(100vw - 35rem)" }}>
+      <TitleContainer>
+        <Title style={{ minWidth: "24rem" }}>
+          {processStatusLabel.icon} {taskProps.name + " - #" + taskProps.id}
+        </Title>
+        <Title>
+          <span
+            style={{ color: processStatusLabel.color, paddingLeft: "2rem" }}
+          >
+            {processStatusLabel.label}
+            {progress && ` - ${progress}`}
+          </span>
+        </Title>
+        <FloatRight>
+          {processState === "processing" ? (
+            <Button
+              type={"default"}
+              style={{ marginRight: "1.2rem" }}
+              onClick={() => {
+                setTaskState({ id: taskProps.id, order: "pause" }).then(
+                  onCardUpdated
+                );
+              }}
+            >
+              暂停任务
+            </Button>
+          ) : processState === "finished" ? (
+            <Button
+              type={"primary"}
+              style={{ marginRight: "1.2rem" }}
+              onClick={() => navigate(`/record?task=${taskProps.id}`)}
+            >
+              查看结果
+            </Button>
+          ) : null}
+          <Button
+            type={"primary"}
+            danger
+            onClick={() => {
+              deleteTask({ id: taskProps.id }).then(() => {
+                message.success("任务删除成功！").then(null);
+                onCardUpdated();
+              });
+            }}
+          >
+            删除任务
+          </Button>
+        </FloatRight>
+      </TitleContainer>
+      <StatefulProgressBar
+        state={processState}
+        value={parseInt(progress?.split("%")[0] || "0") / 100}
+      />
       <ContentContainer>
         <Content>
           调用的设备：

@@ -23,36 +23,7 @@ import { ReasonProps } from "../device/reason.slice";
 import { DeviceProps } from "../device/device.slice";
 import { PaginationBar } from "components/pagination/pagination";
 import { TaskDataProps } from "../task/task.slice";
-
-const TypeSwitcher = <K extends string>({
-  types,
-  initialType,
-  onChange,
-}: {
-  types: { label: JSX.Element; value: K }[];
-  initialType?: K;
-  onChange?: (type: K) => void;
-}) => {
-  return (
-    <Radio.Group
-      defaultValue={initialType}
-      optionType="button"
-      buttonStyle="solid"
-      style={{ minWidth: "9.5rem" }}
-      onChange={(event) => {
-        if (onChange) {
-          onChange(event.target.value);
-        }
-      }}
-    >
-      {types.map((type) => (
-        <Radio.Button value={type.value} key={type.value}>
-          {type.label}
-        </Radio.Button>
-      ))}
-    </Radio.Group>
-  );
-};
+import { TypeSwitcher } from "../../../components/type-switcher/type-switcher";
 
 export const RecordIndexFragment = () => {
   useDocumentTitle("违规记录列表");

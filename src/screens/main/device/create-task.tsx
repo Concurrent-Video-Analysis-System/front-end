@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import moment from "moment";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { DeviceProps, selectDeviceReducer } from "./device.slice";
@@ -20,12 +21,15 @@ import { useTask } from "utils/task";
 import { selectReasonReducer } from "./reason.slice";
 import { useFetchReason } from "utils/fetcher/reason";
 import { usePartialState } from "utils/state-pro";
+import { RangeValue } from "rc-picker/lib/interface";
+import { InfoCircleOutlined, InfoOutlined } from "@ant-design/icons";
 
 export interface CreateTaskProps {
   name: string;
-  from: string;
-  to: string;
+  from: moment.Moment | undefined;
+  to: moment.Moment | undefined;
   isEverydayTask: boolean;
+  isHistoryTask: boolean;
   deviceIdList: number[];
   reasonIdList: number[];
   state: string;
@@ -84,14 +88,19 @@ export const CreateTaskFragment = ({
   const { newTask } = useTask();
 
   const [taskFormProps, setTaskFormProps] = usePartialState<CreateTaskProps>({
-    name: "",
-    from: "",
-    to: "",
+    name: `${moment().format("MM月DD日")}创建的任务`,
+    from: undefined,
+    to: undefined,
     isEverydayTask: false,
+    isHistoryTask: false,
     state: "pause",
     deviceIdList: [],
     reasonIdList: [],
   });
+
+  const [taskType, setTaskType] = useState<
+    undefined | "realtime" | "history"
+  >();
 
   const deviceList = useMemo(() => {
     const newDeviceList = deviceIdList
@@ -108,6 +117,28 @@ export const CreateTaskFragment = ({
     return newDeviceList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceSelector.deviceList, deviceIdList]);
+
+  const onDatePickerChanged = (dates: RangeValue<moment.Moment>) => {
+    if (dates) {
+      let [fromDate, toDate] = dates;
+
+      if (fromDate && toDate) {
+        if (toDate > moment()) {
+          // the start time of realtime task cannot be the past
+          fromDate = moment.max(fromDate, moment());
+          setTaskType("realtime");
+          setTaskFormProps({ isHistoryTask: false });
+        } else {
+          setTaskType("history");
+          setTaskFormProps({ isHistoryTask: true });
+        }
+        setTaskFormProps({ from: fromDate, to: toDate });
+        return;
+      }
+    }
+    setTaskType(undefined);
+    setTaskFormProps({ from: undefined, to: undefined });
+  };
 
   const [isEverydayTask, setIsEverydayTask] = useState(false);
   const formItemStyle: React.CSSProperties = {
@@ -138,6 +169,7 @@ export const CreateTaskFragment = ({
           <Input
             style={formItemStyle}
             disabled={isLoading}
+            defaultValue={`${moment().format("MM月DD日")}创建的任务`}
             onChange={(value) =>
               setTaskFormProps({
                 name: value.target.value,
@@ -160,27 +192,34 @@ export const CreateTaskFragment = ({
           ) : (
             <DatePicker.RangePicker
               showTime
+              // value={[taskFormProps.from || moment(), taskFormProps.to || moment()]}
               style={formItemStyle}
               disabled={isLoading}
               placeholder={["开始日期", "结束日期"]}
-              onChange={(dates) => {
-                if (dates === null) {
-                  setTaskFormProps({ from: undefined, to: undefined });
-                } else {
-                  const [fromDate, toDate] = dates;
-                  setTaskFormProps({
-                    from: fromDate?.format("YYYY-MM-DD HH:mm:ss"),
-                    to: toDate?.format("YYYY-MM-DD HH:mm:ss"),
-                  });
-                }
-              }}
+              onChange={onDatePickerChanged}
             />
           )}
+          {taskType ? (
+            <InfoText>
+              {taskType === "realtime" ? (
+                <>
+                  <InfoCircleOutlined />{" "}
+                  将创建实时任务：通过调阅实时监控视频分析违规行为
+                </>
+              ) : (
+                <>
+                  <InfoCircleOutlined />{" "}
+                  将创建历史分析任务：通过下载监控录像分析违规行为
+                </>
+              )}
+            </InfoText>
+          ) : null}
         </Form.Item>
 
         <Form.Item label="每日任务" name="everyday_task">
           <Checkbox
-            checked={isEverydayTask}
+            checked={taskType === "history" ? false : isEverydayTask}
+            disabled={taskType === "history"}
             onChange={(e) => {
               setIsEverydayTask(e.target.checked);
               setTaskFormProps({
@@ -281,4 +320,8 @@ const DeviceTag = styled(Tag)`
 
 const Unselectable = styled.div`
   color: #b0b0b0;
+`;
+
+const InfoText = styled.div`
+  color: #c0c0c0;
 `;
