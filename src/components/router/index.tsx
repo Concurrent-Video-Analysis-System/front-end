@@ -5,13 +5,13 @@ const BaseElement = ({
   path,
   element,
 }: {
-  path: string;
-  element: JSX.Element;
+  path?: string;
+  element?: JSX.Element;
 }) => {
   const location = useLocation();
   return [...location.pathname.split("/")].pop() ===
-    [...path.split("/")].pop() ? (
-    element
+    [...(path?.split("/") || [])].pop() ? (
+    element || <></>
   ) : (
     <Outlet />
   );
@@ -22,9 +22,9 @@ export const BaseRoute = ({
   element,
   children,
 }: {
-  path: string;
-  element: JSX.Element;
-  children: React.ReactNode;
+  path?: string;
+  element?: JSX.Element;
+  children?: React.ReactNode;
 }) => {
   return (
     <Route path={path} element={<BaseElement path={path} element={element} />}>
