@@ -57,19 +57,25 @@ export const locationTree: LocationTreeNodeProps[] = [
   },
   {
     key: "/device",
-    title: "设备管理",
+    title: "资源管理",
     icon: <GoldOutlined />,
     children: [
+      {
+        key: "/location",
+        title: "网点管理",
+        icon: <EnvironmentOutlined />,
+        children: [],
+      },
+      {
+        key: "/nvr",
+        title: "NVR 管理",
+        icon: <EnvironmentOutlined />,
+        children: [],
+      },
       {
         key: "/device",
         title: "摄像头管理",
         icon: <CameraOutlined />,
-        children: [],
-      },
-      {
-        key: "/device/location",
-        title: "网点管理",
-        icon: <EnvironmentOutlined />,
         children: [],
       },
     ],
@@ -78,20 +84,7 @@ export const locationTree: LocationTreeNodeProps[] = [
     key: "/task",
     title: "监察任务管理",
     icon: <ScheduleOutlined />,
-    children: [
-      {
-        key: "/task/realtime",
-        title: "实时监控分析",
-        icon: <VideoCameraOutlined />,
-        children: [],
-      },
-      {
-        key: "/task/history",
-        title: "历史录像分析",
-        icon: <SaveOutlined />,
-        children: [],
-      },
-    ],
+    children: [],
   },
   {
     key: "/record",

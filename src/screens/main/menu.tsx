@@ -5,6 +5,7 @@ import {
   EnvironmentOutlined,
   ExceptionOutlined,
   GoldOutlined,
+  HddOutlined,
   LineChartOutlined,
   SaveOutlined,
   ScheduleOutlined,
@@ -61,9 +62,23 @@ export const MenuNavigator = (props: MenuProps) => {
 
       <Menu.SubMenu
         key={"device-menu"}
-        title={"设备管理"}
+        title={"资源管理"}
         icon={<GoldOutlined style={iconStyle} />}
       >
+        <Menu.Item
+          key={"/location"}
+          title={"网点管理"}
+          icon={<EnvironmentOutlined style={iconStyle} />}
+        >
+          网点管理
+        </Menu.Item>
+        <Menu.Item
+          key={"/nvr"}
+          title={"NVR 管理"}
+          icon={<HddOutlined style={iconStyle} />}
+        >
+          NVR 管理
+        </Menu.Item>
         <Menu.Item
           key={"/device"}
           title={"摄像头管理"}
@@ -71,35 +86,15 @@ export const MenuNavigator = (props: MenuProps) => {
         >
           摄像头管理
         </Menu.Item>
-        <Menu.Item
-          key={"/device/location"}
-          title={"网点管理"}
-          icon={<EnvironmentOutlined style={iconStyle} />}
-        >
-          网点管理
-        </Menu.Item>
       </Menu.SubMenu>
 
-      <Menu.SubMenu
-        key={"task-menu"}
+      <Menu.Item
+        key={"/task"}
         title={"监察任务管理"}
         icon={<ScheduleOutlined style={iconStyle} />}
       >
-        <Menu.Item
-          key={"/task/realtime"}
-          title={"实时监控分析"}
-          icon={<VideoCameraOutlined style={iconStyle} />}
-        >
-          实时监控分析
-        </Menu.Item>
-        <Menu.Item
-          key={"/task/history"}
-          title={"历史录像分析"}
-          icon={<SaveOutlined style={iconStyle} />}
-        >
-          历史录像分析
-        </Menu.Item>
-      </Menu.SubMenu>
+        监察任务管理
+      </Menu.Item>
 
       <Menu.Item
         key={"/record"}

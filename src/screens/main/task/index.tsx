@@ -5,12 +5,12 @@ import { useDocumentTitle } from "utils/document-title";
 import { useGeneralLists } from "utils/general-list";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { TaskFragment } from "./task";
+import { TaskDetailFragment } from "./task-detail";
 
 export type TaskType = "realtime" | "history";
 
 export const TaskIndexFragment = () => {
   useDocumentTitle("任务列表");
-  const navigate = useNavigate();
 
   const update = useGeneralLists([
     "device",
@@ -19,13 +19,16 @@ export const TaskIndexFragment = () => {
     "task",
     "recordlist",
   ]);
-  useEffect(update);
+  useEffect(update, [update]);
 
   return (
     <Container>
       {/*<Header />*/}
       <Content>
-        <TaskFragment type={"realtime"} />
+        <Routes>
+          <Route path={":taskId/*"} element={<TaskDetailFragment />} />
+          <Route path={"/"} element={<TaskFragment />} />
+        </Routes>
       </Content>
     </Container>
   );
@@ -35,7 +38,7 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const Header = styled.div`
+const Header = styled.header`
   padding: 0 2rem;
   width: 100%;
   height: 6rem;
@@ -44,7 +47,7 @@ const Header = styled.div`
   align-items: center;
 `;
 
-const Content = styled.header`
+const Content = styled.div`
   width: 100%;
   // height: calc(100% - 6rem);
   height: 100%;
