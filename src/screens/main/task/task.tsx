@@ -16,10 +16,32 @@ import { ReasonProps } from "../device/reason.slice";
 import { DeviceProps } from "../device/device.slice";
 import { useFilter } from "utils/filter";
 import { PaginationBar } from "components/pagination/pagination";
-import { TaskType } from "./index";
 import { TypeSwitcher } from "components/type-switcher/type-switcher";
 
-export const TaskFragment = ({ type }: { type: TaskType }) => {
+export const Test = () => {
+  return (
+    <div
+      onClick={(e) => {
+        console.log("parent");
+        e.preventDefault();
+      }}
+      style={{ width: "5rem", height: "5rem", backgroundColor: "#F0C0C0" }}
+    >
+      <div
+        onClick={(e) => {
+          console.log("child");
+          e.stopPropagation();
+        }}
+        style={{ width: "2rem", height: "2rem", backgroundColor: "#C0C0F0" }}
+      >
+        123123
+      </div>
+      ;
+    </div>
+  );
+};
+
+export const TaskFragment = () => {
   const currentTime = useCurrentTime();
   useEffect(() => updateCurrentTime, []);
 
@@ -115,7 +137,7 @@ export const TaskFragment = ({ type }: { type: TaskType }) => {
               value: "history",
             },
           ]}
-          initialType={"realtime"}
+          initialType={"history"}
           onChange={(type) =>
             setFilterProps("is_history_task", +!(type === "realtime"))
           }
@@ -128,11 +150,13 @@ export const TaskFragment = ({ type }: { type: TaskType }) => {
               taskProps={item as TaskItemProps}
               currentTime={currentTime}
               onCardUpdated={reloadData}
+              clickable
             />
           ) : (
             <HistoryTaskCard
               taskProps={item as TaskItemProps}
               onCardUpdated={reloadData}
+              clickable
             />
           )
         )}
@@ -158,7 +182,7 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const Header = styled.div`
+const Header = styled.header`
   padding: 0 2rem;
   width: 100%;
   height: 6rem;
@@ -167,11 +191,11 @@ const Header = styled.div`
   align-items: center;
 `;
 
-const Content = styled.header`
+const Content = styled.div`
   width: 100%;
   height: calc(100% - 6rem - 10rem);
   padding: 0 2rem;
-  overflow: auto;
+  overflow: hidden auto;
 `;
 
 const Footer = styled.div`
