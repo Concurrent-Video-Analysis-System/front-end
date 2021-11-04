@@ -133,7 +133,7 @@ export const DeviceAside = ({
 const FixedAside = styled.div`
   overflow-y: auto;
   width: 30rem;
-  height: 100%;
+  height: calc(100% - 10rem);
   position: fixed;
   left: 26rem;
   background-color: #f7f7f7;
@@ -153,5 +153,5 @@ const TopContainer = styled.div`
 `;
 
 const TreeNodeItem = styled.div`
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.5rem 0;
 `;
