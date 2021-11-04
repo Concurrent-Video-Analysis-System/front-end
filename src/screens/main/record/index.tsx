@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { RecordContent, RecordDataProps } from "./content";
-import { Route, Routes } from "react-router";
-import { RecordHandlingFragment } from "./handle";
-import { Button, Divider, Radio } from "antd";
+import { Button, Divider } from "antd";
 import {
   AppstoreOutlined,
   BarsOutlined,
@@ -23,7 +21,7 @@ import { ReasonProps } from "../device/reason.slice";
 import { DeviceProps } from "../device/device.slice";
 import { PaginationBar } from "components/pagination/pagination";
 import { TaskDataProps } from "../task/task.slice";
-import { TypeSwitcher } from "../../../components/type-switcher/type-switcher";
+import { TypeSwitcher } from "components/type-switcher/type-switcher";
 
 export const RecordIndexFragment = () => {
   useDocumentTitle("违规记录列表");
@@ -119,72 +117,55 @@ export const RecordIndexFragment = () => {
 
   return (
     <Container>
-      <Routes>
-        <Route
-          path={":recordId/*"}
-          element={
-            <HandlingContent>
-              <RecordHandlingFragment onUnmount={reloadData} />
-            </HandlingContent>
+      <Header>
+        <FilterBar<React.Key, React.Key>
+          filters={recordFilters}
+          filterState={filterProps}
+          onFilterUpdate={(filter, option) =>
+            setFilterProps(filter as any, option)
           }
         />
-        <Route
-          path={"/"}
-          element={
-            <>
-              <Header>
-                <FilterBar<React.Key, React.Key>
-                  filters={recordFilters}
-                  filterState={filterProps}
-                  onFilterUpdate={(filter, option) =>
-                    setFilterProps(filter as any, option)
-                  }
-                />
-                <FloatRight>
-                  <div style={{ minWidth: "8rem" }}>展示格式：</div>
-                  <TypeSwitcher
-                    types={[
-                      { label: <AppstoreOutlined />, value: "card" },
-                      { label: <BarsOutlined />, value: "table" },
-                    ]}
-                    initialType={displayType}
-                    onChange={setDisplayType}
-                  />
-                  <Divider type={"vertical"} style={{ margin: "0 1rem" }} />
-                  <Button
-                    icon={<ExportOutlined />}
-                    type={"primary"}
-                    onClick={exportRecordList}
-                    danger
-                  >
-                    导出数据
-                  </Button>
-                </FloatRight>
-              </Header>
-              <Content>
-                <RecordContent
-                  recordlist={filteredRecords?.records || []}
-                  displayType={displayType}
-                  onUnmount={reloadData}
-                />
-              </Content>
-              <Footer>
-                <PaginationBar
-                  enabled={!!filteredRecords}
-                  totalNum={filteredRecords?.totalNum}
-                  onPageChange={(page, pageSize) => {
-                    setFilterProps("pageSize", pageSize);
-                    setFilterProps("page", page);
-                  }}
-                  onPageSizeChange={(pageSize) => {
-                    setFilterProps("pageSize", pageSize);
-                  }}
-                />
-              </Footer>
-            </>
-          }
+        <FloatRight>
+          <div style={{ minWidth: "8rem" }}>展示格式：</div>
+          <TypeSwitcher
+            types={[
+              { label: <AppstoreOutlined />, value: "card" },
+              { label: <BarsOutlined />, value: "table" },
+            ]}
+            initialType={displayType}
+            onChange={setDisplayType}
+          />
+          <Divider type={"vertical"} style={{ margin: "0 1rem" }} />
+          <Button
+            icon={<ExportOutlined />}
+            type={"primary"}
+            onClick={exportRecordList}
+            danger
+          >
+            导出数据
+          </Button>
+        </FloatRight>
+      </Header>
+      <Content>
+        <RecordContent
+          recordlist={filteredRecords?.records || []}
+          displayType={displayType}
+          onUnmount={reloadData}
         />
-      </Routes>
+      </Content>
+      <Footer>
+        <PaginationBar
+          enabled={!!filteredRecords}
+          totalNum={filteredRecords?.totalNum}
+          onPageChange={(page, pageSize) => {
+            setFilterProps("pageSize", pageSize);
+            setFilterProps("page", page);
+          }}
+          onPageSizeChange={(pageSize) => {
+            setFilterProps("pageSize", pageSize);
+          }}
+        />
+      </Footer>
     </Container>
   );
 };

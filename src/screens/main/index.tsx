@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { Header } from "./header";
 import { RecordIndexFragment } from "./record";
 import { useDocumentTitle } from "../../utils/document-title";
-import { Navigate, Route, Routes } from "react-router";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { DeviceIndexFragment } from "./device";
 import { DashBoard } from "./dashboard";
 import { MenuNavigator } from "./menu";
@@ -36,13 +36,7 @@ export const MainFragment = () => {
         <BreadcrumbNavigator icon={<></>} />
       </NavigatorContainer>
       <ContentContainer>
-        <Routes>
-          <Route path={"record/*"} element={<RecordIndexFragment />} />
-          <Route path={"device/*"} element={<DeviceIndexFragment />} />
-          <Route path={"task/*"} element={<TaskIndexFragment />} />
-          <Route path={"dashboard/*"} element={<DashBoard />} />
-          <Navigate to={"/dashboard"} />
-        </Routes>
+        <Outlet />
       </ContentContainer>
     </Container>
   );

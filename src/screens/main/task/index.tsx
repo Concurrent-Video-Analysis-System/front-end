@@ -3,7 +3,7 @@ import { Menu } from "antd";
 import React, { useEffect } from "react";
 import { useDocumentTitle } from "utils/document-title";
 import { useGeneralLists } from "utils/general-list";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { TaskFragment } from "./task";
 import { TaskDetailFragment } from "./task-detail";
 
@@ -25,10 +25,7 @@ export const TaskIndexFragment = () => {
     <Container>
       {/*<Header />*/}
       <Content>
-        <Routes>
-          <Route path={":taskId/*"} element={<TaskDetailFragment />} />
-          <Route path={"/"} element={<TaskFragment />} />
-        </Routes>
+        <TaskFragment />
       </Content>
     </Container>
   );
