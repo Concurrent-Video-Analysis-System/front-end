@@ -4,10 +4,30 @@ import { Divider } from "antd";
 
 export const AssetTemplate = <T extends unknown>({
   title,
+  children,
+}: {
+  title?: string | React.ReactNode;
+  children?: React.ReactNode;
+}) => {
+  return (
+    <Container>
+      {title ? (
+        <>
+          <TitleContainer>{title}</TitleContainer>
+          <TitleDivider />
+        </>
+      ) : null}
+      {children}
+    </Container>
+  );
+};
+
+export const AssetListTemplate = <T extends unknown>({
+  title,
   assetList,
   renderer,
 }: {
-  title?: string;
+  title?: string | React.ReactNode;
   assetList?: T[];
   renderer?: (asset: T) => React.ReactNode;
 }) => {

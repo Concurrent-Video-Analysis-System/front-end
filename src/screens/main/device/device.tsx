@@ -18,7 +18,7 @@ export const DevicePage = () => {
 
   useEffect(() => {
     if (!device) {
-      navigate(`/device`);
+      navigate(`/asset/device`);
     }
   }, [device, navigate]);
 

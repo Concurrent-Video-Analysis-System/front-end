@@ -14,6 +14,8 @@ import { RecordHandlingPage } from "./screens/main/record/handle";
 import { AssetOverviewPage } from "./screens/main/device/overview";
 import { LocationPage } from "./screens/main/device/location";
 import { DevicePage } from "./screens/main/device/device";
+import { NewDevicePage } from "./screens/main/device/new-device";
+import { NewLocationPage } from "./screens/main/device/new-location";
 
 function App() {
   const { user } = useAuthContext();
@@ -31,12 +33,14 @@ function App() {
               <BaseRoute path={"asset"} element={<>123123123</>}>
                 <BaseRoute path={"location"} element={<AssetOverviewPage />}>
                   <Route path={":locationId"} element={<LocationPage />} />
+                  <Route path={"new"} element={<NewLocationPage />} />
                 </BaseRoute>
                 <BaseRoute path={"nvr"} element={<AssetOverviewPage />}>
                   <Route path={":nvrId"} element={<DevicePage />} />
                 </BaseRoute>
                 <BaseRoute path={"device"} element={<AssetOverviewPage />}>
                   <Route path={":deviceId"} element={<DevicePage />} />
+                  <Route path={"new"} element={<NewDevicePage />} />
                 </BaseRoute>
               </BaseRoute>
             </AssetPageFrame>

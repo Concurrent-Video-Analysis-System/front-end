@@ -4,7 +4,7 @@ import { LocationProps } from "./location.slice";
 import { DeviceProps } from "./device.slice";
 import styled from "@emotion/styled";
 import { TagList } from "./create-task";
-import { AssetTemplate } from "./asset-template";
+import { AssetListTemplate } from "./asset-template";
 import { selectGeneralListReducer } from "../general-list.slice";
 import { useMemo } from "react";
 
@@ -22,7 +22,7 @@ export const AssetOverviewPage = () => {
   );
 
   return (
-    <AssetTemplate
+    <AssetListTemplate
       title={"网点设备概览"}
       assetList={locationList}
       renderer={(location) => (
