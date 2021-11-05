@@ -7,17 +7,14 @@ import {
   GoldOutlined,
   HddOutlined,
   LineChartOutlined,
-  SaveOutlined,
   ScheduleOutlined,
   SettingOutlined,
   UserOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MenuInfo } from "rc-menu/lib/interface";
 import { MenuProps } from "rc-menu/lib/Menu";
-import { locationTree } from "../../components/navigate/titile";
 
 export interface MenuNavigatorProps extends MenuProps {
   width?: string;
@@ -31,15 +28,14 @@ export const MenuNavigator = (props: MenuProps) => {
   const [menuSelectedItem, setMenuSelectedItem] = useState("");
 
   useEffect(() => {
-    setMenuSelectedItem(location.pathname);
+    const primaryPathname = location.pathname.split("/").slice(0, 3).join("/");
+    setMenuSelectedItem(primaryPathname);
   }, [location]);
 
   const onMenuItemSelected = (item: MenuInfo) => {
     setMenuSelectedItem(item.key);
     navigate(item.key);
   };
-
-  const tree = { ...locationTree };
 
   return (
     <Menu
@@ -66,21 +62,21 @@ export const MenuNavigator = (props: MenuProps) => {
         icon={<GoldOutlined style={iconStyle} />}
       >
         <Menu.Item
-          key={"/location"}
+          key={"/asset/location"}
           title={"网点管理"}
           icon={<EnvironmentOutlined style={iconStyle} />}
         >
           网点管理
         </Menu.Item>
         <Menu.Item
-          key={"/nvr"}
+          key={"/asset/nvr"}
           title={"NVR 管理"}
           icon={<HddOutlined style={iconStyle} />}
         >
           NVR 管理
         </Menu.Item>
         <Menu.Item
-          key={"/device"}
+          key={"/asset/device"}
           title={"摄像头管理"}
           icon={<CameraOutlined style={iconStyle} />}
         >
