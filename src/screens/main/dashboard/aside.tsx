@@ -36,7 +36,10 @@ export const DashBoardAside = () => {
             maxItemCount={7}
             displayFormat={(record) =>
               record ? (
-                <RecordItem onClick={() => navigate(`/record/${record?.id}`)}>
+                <RecordItem
+                  key={record?.id}
+                  onClick={() => navigate(`/record/${record?.id}`)}
+                >
                   {record?.type === "pending" ? (
                     <EmphasisedText>[新] </EmphasisedText>
                   ) : null}
@@ -47,6 +50,7 @@ export const DashBoardAside = () => {
                 </RecordItem>
               ) : (
                 <RecordItem
+                  key={"more"}
                   style={{ marginTop: "0.5rem", color: "#A0A0A0" }}
                   onClick={() => {
                     navigate(`/record`);
@@ -69,11 +73,15 @@ export const DashBoardAside = () => {
             maxItemCount={5}
             displayFormat={(device) =>
               device ? (
-                <RecordItem onClick={() => navigate(`/device/${device.id}`)}>
+                <RecordItem
+                  key={device.id}
+                  onClick={() => navigate(`/device/${device.id}`)}
+                >
                   {device.location.name} - {device.name}
                 </RecordItem>
               ) : (
                 <RecordItem
+                  key={"more"}
                   style={{ marginTop: "0.5rem", color: "#A0A0A0" }}
                   onClick={() => {
                     navigate(`/device`);
