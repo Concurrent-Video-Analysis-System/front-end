@@ -23,7 +23,7 @@ import { PaginationBar } from "components/pagination/pagination";
 import { TaskDataProps } from "../task/task.slice";
 import { TypeSwitcher } from "components/type-switcher/type-switcher";
 
-export const RecordIndexFragment = () => {
+export const RecordIndexPage = () => {
   useDocumentTitle("违规记录列表");
 
   const update = useGeneralLists([
@@ -200,13 +200,13 @@ const Content = styled.div`
   background-color: white;
   
   transition: opacity 1s;
-`*/
+`
 
 const HandlingContent = styled.div`
   width: 100%;
   padding: 0 2rem;
   overflow: auto;
-`;
+`;*/
 
 const FloatRight = styled.div`
   margin-left: auto;

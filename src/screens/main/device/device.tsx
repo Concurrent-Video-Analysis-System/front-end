@@ -7,7 +7,7 @@ import { Typography } from "antd";
 import styled from "@emotion/styled";
 import { EditTwoTone } from "@ant-design/icons";
 
-export const DeviceFragment = () => {
+export const DevicePage = () => {
   const navigate = useNavigate();
   const { deviceId } = useParams();
   const deviceSelector = useSelector(selectDeviceReducer);

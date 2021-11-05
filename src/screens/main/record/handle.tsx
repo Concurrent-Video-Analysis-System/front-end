@@ -9,7 +9,7 @@ import { LeftOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
 
-export const RecordHandlingFragment = ({
+export const RecordHandlingPage = ({
   onUnmount,
 }: {
   onUnmount?: () => void;

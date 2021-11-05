@@ -34,7 +34,7 @@ const useEveryHourInADay = () => {
   }, []);
 };
 
-export const DashBoard = () => {
+export const DashBoardPage = () => {
   useDocumentTitle("主页-数据展示中心");
 
   const generalListSelector = useSelector(selectGeneralListReducer);

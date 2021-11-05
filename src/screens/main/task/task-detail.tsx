@@ -8,9 +8,8 @@ import { useCurrentTime } from "utils/time";
 import styled from "@emotion/styled";
 import { useFilter } from "utils/filter";
 import { RecordContent, RecordDataProps } from "../record/content";
-import { Button } from "antd";
 
-export const TaskDetailFragment = () => {
+export const TaskDetailPage = () => {
   const generalListSelector = useSelector(selectGeneralListReducer);
   const currentTime = useCurrentTime();
   const { taskId } = useParams();

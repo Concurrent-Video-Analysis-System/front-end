@@ -1,17 +1,13 @@
 import React, { useEffect } from "react";
 import styled from "@emotion/styled";
 import { Header } from "./header";
-import { RecordIndexFragment } from "./record";
 import { useDocumentTitle } from "../../utils/document-title";
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
-import { DeviceIndexFragment } from "./device";
-import { DashBoard } from "./dashboard";
+import { Outlet } from "react-router-dom";
 import { MenuNavigator } from "./menu";
 import { BreadcrumbNavigator } from "./breadcrumb";
 import { useGeneralLists } from "utils/general-list";
-import { TaskIndexFragment } from "./task";
 
-export const MainFragment = () => {
+export const MainPageFrame = () => {
   useDocumentTitle("海量数据智能并发解析平台");
   const update = useGeneralLists([
     "device",

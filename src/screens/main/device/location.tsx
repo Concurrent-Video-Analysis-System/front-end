@@ -9,7 +9,7 @@ import { selectLocationReducer } from "./location.slice";
 import { DeviceProps, selectDeviceReducer } from "./device.slice";
 import { TagList } from "./create-task";
 
-export const LocationFragment = () => {
+export const LocationPage = () => {
   const navigate = useNavigate();
   const { locationId } = useParams();
   const locationSelector = useSelector(selectLocationReducer);
