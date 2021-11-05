@@ -22,7 +22,7 @@ import { selectReasonReducer } from "./reason.slice";
 import { useFetchReason } from "utils/fetcher/reason";
 import { usePartialState } from "utils/state-pro";
 import { RangeValue } from "rc-picker/lib/interface";
-import { InfoCircleOutlined, InfoOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined } from "@ant-design/icons";
 
 export interface CreateTaskProps {
   name: string;
@@ -49,27 +49,27 @@ export const TagList = ({
   maxTagCount?: number;
 }) => {
   return (
-    <TitleContainer>
+    <TagContainer>
       {preStr}
       {propList
         .filter((value, index) => !maxTagCount || index < maxTagCount)
         .map((item) => (
-          <DeviceTag>
+          <TagContent>
             {" "}
             {onClick ? (
               <a onClick={() => onClick(item.id, item.name)}>{item?.name}</a>
             ) : (
               item?.name
             )}{" "}
-          </DeviceTag>
+          </TagContent>
         ))}
       {maxTagCount && propList.length > maxTagCount ? (
-        <DeviceTag>
+        <TagContent>
           <Unselectable>以及其它{propList.length - maxTagCount}个</Unselectable>
-        </DeviceTag>
+        </TagContent>
       ) : null}
       {afterStr}
-    </TitleContainer>
+    </TagContainer>
   );
 };
 
@@ -300,21 +300,21 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const TitleContainer = styled.div`
+const TagContainer = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
   align-content: flex-start;
   flex-wrap: wrap;
-  gap: 2rem 1.2rem;
+  gap: 1.2rem 1rem;
   font-size: 2.2rem;
   font-weight: bold;
 `;
 
-const DeviceTag = styled(Tag)`
-  padding: 0.6rem 1rem;
+const TagContent = styled(Tag)`
+  padding: 0.4rem 0.6rem;
   margin-right: 0;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: normal;
 `;
 
