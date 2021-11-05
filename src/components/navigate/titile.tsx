@@ -6,21 +6,21 @@ import {
   ExceptionOutlined,
   GoldOutlined,
   LineChartOutlined,
-  SaveOutlined,
   ScheduleOutlined,
   SettingOutlined,
   UserOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 
 const findNodeInTree = (
-  treeRootNode: LocationTreeNodeProps,
+  treeNode: LocationTreeNodeProps,
   predicate: (node: LocationTreeNodeProps) => unknown
 ): LocationTreeNodeProps | undefined => {
-  if (predicate(treeRootNode)) {
-    return treeRootNode;
+  if (predicate(treeNode)) {
+    return treeNode;
   }
-  return treeRootNode.children.find((node) => findNodeInTree(node, predicate));
+  return treeNode.children.reduce((prev, node) => {
+    return prev ? prev : findNodeInTree(node, predicate);
+  }, undefined as LocationTreeNodeProps | undefined);
 };
 
 export const location2title = (location: string) => {
@@ -56,7 +56,7 @@ export const locationTree: LocationTreeNodeProps[] = [
     children: [],
   },
   {
-    key: "/device",
+    key: "/asset",
     title: "资源管理",
     icon: <GoldOutlined />,
     children: [
