@@ -37,14 +37,16 @@ export interface CreateTaskProps {
 
 export const TagList = ({
   propList,
+  showEmpty,
   preStr,
   afterStr,
   onClick,
   maxTagCount,
 }: {
   propList: { id: number; name: string }[];
-  preStr?: string;
-  afterStr?: string;
+  showEmpty?: boolean;
+  preStr?: string | React.ReactNode;
+  afterStr?: string | React.ReactNode;
   onClick?: (id: number, name: string) => void;
   maxTagCount?: number;
 }) => {
@@ -63,6 +65,11 @@ export const TagList = ({
             )}{" "}
           </TagContent>
         ))}
+      {showEmpty && propList.length === 0 ? (
+        <TagContent>
+          <Unselectable>无</Unselectable>
+        </TagContent>
+      ) : null}
       {maxTagCount && propList.length > maxTagCount ? (
         <TagContent>
           <Unselectable>以及其它{propList.length - maxTagCount}个</Unselectable>
@@ -89,10 +96,6 @@ export const CreateTaskFragment = ({
 
   const [taskFormProps, setTaskFormProps] = usePartialState<CreateTaskProps>({
     name: `${moment().format("MM月DD日")}创建的任务`,
-    from: undefined,
-    to: undefined,
-    isEverydayTask: false,
-    isHistoryTask: false,
     state: "pause",
     deviceIdList: [],
     reasonIdList: [],
@@ -113,7 +116,10 @@ export const CreateTaskFragment = ({
     if (newDeviceList.length === 0) {
       navigate(`/device`);
     }
-    setTaskFormProps({ deviceIdList: deviceIdList.map((item) => +item) });
+    setTaskFormProps(
+      "deviceIdList",
+      deviceIdList.map((item) => +item)
+    );
     return newDeviceList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceSelector.deviceList, deviceIdList]);
@@ -127,17 +133,19 @@ export const CreateTaskFragment = ({
           // the start time of realtime task cannot be the past
           fromDate = moment.max(fromDate, moment());
           setTaskType("realtime");
-          setTaskFormProps({ isHistoryTask: false });
+          setTaskFormProps("isHistoryTask", false);
         } else {
           setTaskType("history");
-          setTaskFormProps({ isHistoryTask: true });
+          setTaskFormProps("isHistoryTask", true);
         }
-        setTaskFormProps({ from: fromDate, to: toDate });
+        setTaskFormProps("from", fromDate);
+        setTaskFormProps("to", toDate);
         return;
       }
     }
     setTaskType(undefined);
-    setTaskFormProps({ from: undefined, to: undefined });
+    setTaskFormProps("from", undefined);
+    setTaskFormProps("to", undefined);
   };
 
   const [isEverydayTask, setIsEverydayTask] = useState(false);
@@ -170,11 +178,7 @@ export const CreateTaskFragment = ({
             style={formItemStyle}
             disabled={isLoading}
             defaultValue={`${moment().format("MM月DD日")}创建的任务`}
-            onChange={(value) =>
-              setTaskFormProps({
-                name: value.target.value,
-              })
-            }
+            onChange={(value) => setTaskFormProps("name", value.target.value)}
           />
         </Form.Item>
 
@@ -222,9 +226,7 @@ export const CreateTaskFragment = ({
             disabled={taskType === "history"}
             onChange={(e) => {
               setIsEverydayTask(e.target.checked);
-              setTaskFormProps({
-                isEverydayTask: e.target.checked,
-              });
+              setTaskFormProps("isEverydayTask", e.target.checked);
             }}
           >
             （勾选后会在每天的固定时段自动进行）
@@ -242,9 +244,7 @@ export const CreateTaskFragment = ({
             disabled={isLoading}
             allowClear
             onChange={(value) =>
-              setTaskFormProps({
-                reasonIdList: Object.values(value || {}),
-              })
+              setTaskFormProps("reasonIdList", Object.values(value || {}))
             }
           >
             {reasonSelector.reasonList.map((reason) => (
@@ -259,9 +259,7 @@ export const CreateTaskFragment = ({
           <Checkbox
             disabled={isLoading}
             onChange={(e) =>
-              setTaskFormProps({
-                state: e.target.checked ? "start" : "pause",
-              })
+              setTaskFormProps("state", e.target.checked ? "start" : "pause")
             }
           >
             创建后将自动启动任务
@@ -275,7 +273,7 @@ export const CreateTaskFragment = ({
             loading={isLoading}
             onClick={() => {
               setIsLoading(true);
-              newTask(taskFormProps)
+              newTask(taskFormProps as CreateTaskProps)
                 .then(() => {
                   setIsLoading(false);
                   message.success("任务创建成功！").then(null);
@@ -307,8 +305,6 @@ const TagContainer = styled.div`
   align-content: flex-start;
   flex-wrap: wrap;
   gap: 1.2rem 1rem;
-  font-size: 2.2rem;
-  font-weight: bold;
 `;
 
 const TagContent = styled(Tag)`

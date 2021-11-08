@@ -1,44 +1,56 @@
-import React, { ReactNode, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectLocationReducer } from "./location.slice";
-import { DeviceProps, selectDeviceReducer } from "./device.slice";
 import { AssetTemplate } from "./asset-template";
 import { Button, Form, Input, InputNumber, message } from "antd";
 import styled from "@emotion/styled";
+import { EmphasizedText } from "components/title/emphasized";
+import { useGeneralQuery } from "utils/new-fetcher/general";
+import { usePartialState } from "utils/state-pro";
+import { CreateDeviceProps, useDevice } from "utils/crud/device";
+import { useUpdateGeneralLists } from "../../../utils/general-list";
 
 export const NewDevicePage = () => {
   const [searchParams] = useSearchParams();
-  const locationId = useMemo(() => {
-    return searchParams.get("location");
+  const nvrId = useMemo(() => {
+    return searchParams.get("nvr");
   }, [searchParams]);
 
   const navigate = useNavigate();
-
-  const locationSelector = useSelector(selectLocationReducer);
-  const deviceSelector = useSelector(selectDeviceReducer);
+  const { locationList, nvrList } = useGeneralQuery();
+  const nvr = useMemo(() => {
+    return nvrList?.find((nvr) => nvr.id === +(nvrId || ""));
+  }, [nvrId, nvrList]);
 
   const location = useMemo(() => {
-    return locationSelector.locationList.find(
-      (item) => item.id === +(locationId || "")
+    return locationList?.find(
+      (location) => location.id === +(nvr?.location.id || "")
     );
-  }, [locationId, locationSelector.locationList]);
+  }, [locationList, nvr]);
 
   useEffect(() => {
-    if (!location) {
-      message.error(`找不到编号为 ${locationId} 的网点`, 2).then(null);
-      navigate(`/asset/device`);
+    if (!nvr) {
+      message.error(`找不到编号为 ${nvrId} 的 NVR`, 2).then(null);
+      navigate(`/asset/nvr`);
     }
-  }, [location]);
+    setDeviceForm("nvrId", nvr?.id);
+    setDeviceForm("netId", location?.id);
+  }, [navigate, nvr, nvrId, location]);
 
-  const deviceAtLocation = useMemo(() => {
-    if (!location) {
-      return [] as DeviceProps[];
-    }
-    return deviceSelector.deviceList.filter(
-      (device) => device.location.id === location.id
-    );
-  }, [location, deviceSelector.deviceList]);
+  const [deviceForm, setDeviceForm] = usePartialState<CreateDeviceProps>();
+  const { newDevice } = useDevice();
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = () => {
+    setIsLoading(true);
+    newDevice(deviceForm as CreateDeviceProps)
+      .then(() => {
+        setIsLoading(false);
+        return message.success(`设备新建成功！`);
+      })
+      .catch((errorMessage) => {
+        setIsLoading(false);
+        return message.error(`新建设备时出错：${errorMessage}`);
+      });
+  };
 
   const formItemStyle: React.CSSProperties = {
     width: "75%",
@@ -49,10 +61,10 @@ export const NewDevicePage = () => {
 
   return (
     <AssetTemplate
-      title={emphasizedText(
-        `在网点${location?.name}下添加新设备`,
-        location?.name || "",
-        "#1890ff"
+      title={EmphasizedText(
+        `在 NVR ${nvr?.name} 下添加新设备`,
+        `${nvr?.name}`,
+        "#f88700"
       )}
     >
       <FormContainer>
@@ -67,7 +79,10 @@ export const NewDevicePage = () => {
             name="device_name"
             rules={[{ required: true, message: "请填写设备名称" }]}
           >
-            <Input style={formItemStyle} />
+            <Input
+              style={formItemStyle}
+              onChange={(e) => setDeviceForm("name", e.target.value)}
+            />
           </Form.Item>
 
           <Form.Item
@@ -75,7 +90,10 @@ export const NewDevicePage = () => {
             name="device_username"
             rules={[{ required: true, message: "请填写用户名" }]}
           >
-            <Input style={formItemStyle} />
+            <Input
+              style={formItemStyle}
+              onChange={(e) => setDeviceForm("deviceUserName", e.target.value)}
+            />
           </Form.Item>
 
           <Form.Item
@@ -83,7 +101,10 @@ export const NewDevicePage = () => {
             name="device_password"
             rules={[{ required: true, message: "请填写密码" }]}
           >
-            <Input.Password style={formItemStyle} />
+            <Input.Password
+              style={formItemStyle}
+              onChange={(e) => setDeviceForm("devicePassword", e.target.value)}
+            />
           </Form.Item>
 
           <Form.Item
@@ -91,7 +112,12 @@ export const NewDevicePage = () => {
             name="port"
             rules={[{ required: true, message: "请填写端口号" }]}
           >
-            <InputNumber min={0} max={99999} style={formNumberItemStyle} />
+            <InputNumber
+              min={0}
+              max={99999}
+              style={formNumberItemStyle}
+              onChange={(value) => setDeviceForm("port", value)}
+            />
           </Form.Item>
 
           <Form.Item
@@ -99,11 +125,21 @@ export const NewDevicePage = () => {
             name="channel"
             rules={[{ required: true, message: "请填写通道号" }]}
           >
-            <InputNumber min={0} max={99999} style={formNumberItemStyle} />
+            <InputNumber
+              min={0}
+              max={99999}
+              style={formNumberItemStyle}
+              onChange={(value) => setDeviceForm("channel", value)}
+            />
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 4 }} name="submit">
-            <Button type="primary" htmlType={"submit"}>
+            <Button
+              type="primary"
+              loading={isLoading}
+              htmlType={"submit"}
+              onClick={handleSubmit}
+            >
               添加设备
             </Button>
           </Form.Item>
@@ -111,20 +147,6 @@ export const NewDevicePage = () => {
       </FormContainer>
     </AssetTemplate>
   );
-};
-
-const emphasizedText = (
-  title: string,
-  emphasis: string,
-  emphasisColor?: string
-) => {
-  return title.split(emphasis).reduce((prev, item, index) => {
-    if (index !== 0) {
-      prev.push(<span style={{ color: emphasisColor }}>{emphasis}</span>);
-    }
-    prev.push(<>{item}</>);
-    return prev;
-  }, [] as React.ReactNode[]) as ReactNode;
 };
 
 const FormContainer = styled.div`

@@ -8,7 +8,10 @@ export interface DeviceProps {
     name: string;
   };
   name: string;
-  rtsp: string;
+  nvr: {
+    id: number;
+    name: string;
+  };
 }
 
 interface State {

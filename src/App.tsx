@@ -11,11 +11,14 @@ import { AssetPageFrame } from "./screens/main/device";
 import { TaskIndexPage } from "./screens/main/task";
 import { TaskDetailPage } from "./screens/main/task/task-detail";
 import { RecordHandlingPage } from "./screens/main/record/handle";
-import { AssetOverviewPage } from "./screens/main/device/overview";
+import { LocationOverviewPage } from "./screens/main/device/location-overview";
 import { LocationPage } from "./screens/main/device/location";
 import { DevicePage } from "./screens/main/device/device";
 import { NewDevicePage } from "./screens/main/device/new-device";
 import { NewLocationPage } from "./screens/main/device/new-location";
+import { NvrPage } from "./screens/main/device/nvr";
+import { NvrOverviewPage } from "./screens/main/device/nvr-overview";
+import { NewNvrPage } from "./screens/main/device/new-nvr";
 
 function App() {
   const { user } = useAuthContext();
@@ -31,14 +34,15 @@ function App() {
             </BaseRoute>
             <AssetPageFrame>
               <BaseRoute path={"asset"} element={<>123123123</>}>
-                <BaseRoute path={"location"} element={<AssetOverviewPage />}>
+                <BaseRoute path={"location"} element={<LocationOverviewPage />}>
                   <Route path={":locationId"} element={<LocationPage />} />
                   <Route path={"new"} element={<NewLocationPage />} />
                 </BaseRoute>
-                <BaseRoute path={"nvr"} element={<AssetOverviewPage />}>
-                  <Route path={":nvrId"} element={<DevicePage />} />
+                <BaseRoute path={"nvr"} element={<NvrOverviewPage />}>
+                  <Route path={":nvrId"} element={<NvrPage />} />
+                  <Route path={"new"} element={<NewNvrPage />} />
                 </BaseRoute>
-                <BaseRoute path={"device"} element={<AssetOverviewPage />}>
+                <BaseRoute path={"device"} element={<LocationOverviewPage />}>
                   <Route path={":deviceId"} element={<DevicePage />} />
                   <Route path={"new"} element={<NewDevicePage />} />
                 </BaseRoute>
