@@ -6,7 +6,7 @@ export interface CreateLocationProps {
 }
 
 export interface DeleteLocationProps {
-  idList: string[];
+  idList: number[];
 }
 
 export const useBankLocation = () => {

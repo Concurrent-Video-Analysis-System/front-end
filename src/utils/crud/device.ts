@@ -12,7 +12,7 @@ export interface CreateDeviceProps {
 }
 
 export interface DeleteDeviceProps {
-  idList: string[];
+  idList: number[];
 }
 
 export const useDevice = () => {

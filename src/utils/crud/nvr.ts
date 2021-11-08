@@ -9,7 +9,7 @@ export interface CreateNvrProps {
 }
 
 export interface DeleteNvrProps {
-  idList: string[];
+  idList: number[];
 }
 
 export const useNvr = () => {
