@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Button, Tree } from "antd";
 import styled from "@emotion/styled";
-import { useSelector } from "react-redux";
-import { selectDeviceReducer } from "./device.slice";
-import { selectLocationReducer } from "./location.slice";
-import { getKeys, TreeItem } from "utils/tree-checkbox";
+import { getKeys } from "utils/tree-checkbox";
 import { DownOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { useGeneralQuery } from "utils/new-fetcher/general";
+import { DataNode } from "rc-tree/lib/interface";
 
 // 好像可以不设置treeData，改为使用TreeNode手动构建
 
@@ -36,8 +35,7 @@ export const DeviceAside = ({
   ) => void;
 }) => {
   const navigate = useNavigate();
-  const deviceSelector = useSelector(selectDeviceReducer);
-  const locationSelector = useSelector(selectLocationReducer);
+  const { deviceList, locationList, nvrList } = useGeneralQuery();
 
   const [checkedKeys, setCheckedKeys] = useState([] as React.Key[]);
   const onCheck = (
@@ -50,66 +48,131 @@ export const DeviceAside = ({
     }
   };
 
-  const treeData = [
-    ...locationSelector.locationList.map((location) => {
-      return {
-        key: location.id.toString(),
-        title: <TreeNodeItem>{location.name}</TreeNodeItem>,
-        description: location.location,
-        children: [
-          ...deviceSelector.deviceList
-            .filter((device) => {
-              return device.location.id === location.id;
-            })
-            .map((device) => {
-              return {
-                key: `${location.id}-${device.id}`,
-                title: <TreeNodeItem>{device.name}</TreeNodeItem>,
-                description: device.rtsp,
-                children: [] as TreeItem[],
-              };
-            }),
-          {
-            key: location.id.toString() + "-new",
-            title: (
-              <AddTreeNodeButton
-                onClick={() =>
-                  onNewButtonClicked(
-                    `/asset/device/new?location=${location.id}`
-                  )
-                }
-              >
-                <PlusIcon /> 添加新设备
-              </AddTreeNodeButton>
-            ),
-            description: "new-description",
-            children: [] as TreeItem[],
-            checkable: false,
-            selectable: false,
-          },
-        ],
-      };
-    }),
-    {
-      key: "-new",
-      title: (
-        <AddTreeNodeButton
-          onClick={() => onNewButtonClicked(`/asset/location/new`)}
-        >
-          <PlusIcon /> 添加网点
-        </AddTreeNodeButton>
-      ),
-      description: "new-description",
-      children: [] as TreeItem[],
-      checkable: false,
-      selectable: false,
+  const [selectedKeys, setSelectedKeys] = useState([] as React.Key[]);
+  const onSelect = useCallback(
+    (selectedKeys: React.Key[]) => {
+      setSelectedKeys(selectedKeys);
+      if (selectedKeys.length === 0) {
+        onSelectItem("none", {});
+      } else {
+        const idList = selectedKeys[0].toString().split("-");
+        onSelectItem(["location", "nvr", "device"][idList.length - 1], {
+          locationId: idList[0],
+          nvrId: idList[1],
+          deviceId: idList[2],
+        });
+      }
     },
-  ];
+    [onSelectItem]
+  );
 
-  const onNewButtonClicked = (navigateUrl: string) => {
-    onSelect([]);
-    navigate(navigateUrl);
+  const onNewButtonClicked = useCallback(
+    (navigateUrl: string) => {
+      onSelect([]);
+      navigate(navigateUrl);
+    },
+    [navigate, onSelect]
+  );
+
+  const toTreeDataList = useCallback(
+    <K extends unknown>(
+      dataList: K[],
+      keyMap: (data: K) => string | number,
+      titleMap: (data: K) => React.ReactNode,
+      childrenMap: (data: K) => DataNode[]
+    ) => {
+      return dataList.map((data) => {
+        return {
+          key: keyMap(data),
+          title: titleMap(data),
+          children: childrenMap(data),
+        } as DataNode;
+      });
+    },
+    []
+  );
+
+  const addNewDataButton = <F extends unknown>(
+    dataList: DataNode[],
+    buttonText: string,
+    keyMap: (parentData?: F) => string | number,
+    color?: string,
+    parentData?: F,
+    onButtonClick?: (parentData?: F) => void
+  ) => {
+    return [
+      ...dataList,
+      {
+        key: `${keyMap(parentData)}-new`,
+        title: (
+          <AddTreeNodeButton
+            style={{ color }}
+            onClick={() => onButtonClick && onButtonClick(parentData)}
+          >
+            <PlusIcon /> {buttonText}
+          </AddTreeNodeButton>
+        ),
+        children: [] as DataNode[],
+        checkable: false,
+        selectable: false,
+      } as DataNode,
+    ];
   };
+
+  const treeData = useMemo(() => {
+    let locationTree = toTreeDataList(
+      locationList || [],
+      (location) => location.id,
+      (location) => <TreeNodeItem>{location.name}</TreeNodeItem>,
+      (location) =>
+        toTreeDataList(
+          nvrList?.filter((nvr) => nvr.location.id === location.id) || [],
+          (nvr) => `${location.id}-${nvr.id}`,
+          (nvr) => <TreeNodeItem>{nvr.name}</TreeNodeItem>,
+          (nvr) =>
+            toTreeDataList(
+              deviceList?.filter((device) => device.nvr.id === nvr.id) || [],
+              (device) => `${location.id}-${nvr.id}-${device.id}`,
+              (device) => <TreeNodeItem>{device.name}</TreeNodeItem>,
+              () => [] as DataNode[]
+            )
+        )
+    );
+    locationTree.forEach((location) => {
+      location.children?.forEach((nvr) => {
+        nvr.children = addNewDataButton(
+          nvr.children || [],
+          "添加新设备",
+          (nvr) => nvr?.key || "",
+          "#A0A0A0",
+          nvr,
+          (nvr) => {
+            const nvrId = `${nvr?.key}`.split("-").pop();
+            onNewButtonClicked(`/asset/device/new?nvr=${nvrId}`);
+          }
+        );
+      });
+      location.children = addNewDataButton(
+        location.children || [],
+        "添加新 NVR",
+        (location) => location?.key || "",
+        "#f88700",
+        location,
+        (location) =>
+          onNewButtonClicked(`/asset/nvr/new?location=${location?.key}`)
+      );
+    });
+    locationTree = addNewDataButton(
+      locationTree,
+      "添加新网点",
+      () => "newLocation",
+      "#1890ff",
+      undefined,
+      () => onNewButtonClicked(`/asset/location/new`)
+    );
+
+    return locationTree;
+  }, [deviceList, locationList, nvrList, onNewButtonClicked, toTreeDataList]);
 
   const allHaveChecked = () => {
     return checkedKeys.length === getKeys(treeData).length;
@@ -125,20 +188,6 @@ export const DeviceAside = ({
 
   const uncheckAll = () => {
     setCheckedKeys([] as React.Key[]);
-  };
-
-  const [selectedKeys, setSelectedKeys] = useState([] as React.Key[]);
-  const onSelect = (selectedKeys: React.Key[]) => {
-    setSelectedKeys(selectedKeys);
-    if (selectedKeys.length === 0) {
-      onSelectItem("none", {});
-    } else {
-      const idList = selectedKeys[0].toString().split("-");
-      onSelectItem(idList.length === 1 ? "location" : "device", {
-        locationId: idList[0],
-        deviceId: idList[1],
-      });
-    }
   };
 
   const createTask = () => {
@@ -211,14 +260,9 @@ const TopContainer = styled.div`
 `;
 
 const AddTreeNodeButton = styled.span`
-  color: #1890ff;
   cursor: pointer;
   user-select: none;
   transition: color 0.2s;
-
-  :hover {
-    color: #007bff;
-  }
 `;
 
 const TreeNodeItem = styled.div`

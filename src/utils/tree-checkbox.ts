@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DataNode } from "rc-tree/lib/interface";
 
 export interface TreeItem {
   key: string;
@@ -23,10 +24,12 @@ const tree2treeCheckbox = (tree: Array<TreeItem>): Array<TreeCheckboxItem> => {
   });
 };
 
-export const getKeys = (tree: Array<TreeItem>): React.Key[] => {
-  return tree.reduce((prev, item) => {
-    return [...prev, item.key, ...getKeys(item.children)];
-  }, [] as React.Key[]);
+export const getKeys = (tree?: DataNode[]): React.Key[] => {
+  return (
+    tree?.reduce((prev, item) => {
+      return [...prev, item.key, ...(getKeys(item.children) || [])];
+    }, [] as React.Key[]) || []
+  );
 };
 
 const updateTreeCheckbox = (treeCheckbox: Array<TreeCheckboxItem>) => {
