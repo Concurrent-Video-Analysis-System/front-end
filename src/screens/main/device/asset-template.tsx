@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Button, Divider, Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
@@ -13,8 +13,10 @@ export const AssetTemplate = ({
   title?: string | React.ReactNode;
   children?: React.ReactNode;
   showDelete?: boolean;
-  onDelete?: () => void;
+  onDelete?: () => Promise<any>;
 }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   return (
     <Container>
       {title ? (
@@ -28,11 +30,21 @@ export const AssetTemplate = ({
                   "所有",
                   "#ff4f4f"
                 )}
-                okText={"删除"}
-                cancelText={"取消"}
-                onConfirm={onDelete}
+                okText={<PopButtonText>删 除</PopButtonText>}
+                cancelText={<PopButtonText>取 消</PopButtonText>}
+                okButtonProps={{ danger: true, size: "middle" }}
+                cancelButtonProps={{ size: "middle" }}
+                onConfirm={() => {
+                  setIsDeleting(true);
+                  onDelete && onDelete().finally(() => setIsDeleting(false));
+                }}
+                placement={"bottom"}
               >
-                <DeleteButton type={"primary"} shape={"circle"}>
+                <DeleteButton
+                  type={"primary"}
+                  shape={"circle"}
+                  loading={isDeleting}
+                >
                   <DeleteOutlined />
                 </DeleteButton>
               </Popconfirm>
@@ -59,6 +71,10 @@ const TitleContainer = styled.div`
 
 const TitleDivider = styled(Divider)`
   margin: 1rem 0;
+`;
+
+const PopButtonText = styled.div`
+  // padding: 1rem;
 `;
 
 const DeleteButton = styled(Button)`

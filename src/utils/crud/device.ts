@@ -31,9 +31,10 @@ export const useDevice = () => {
   };
 
   const deleteDevice = async (deviceProps: DeleteDeviceProps) => {
+    console.log(deviceProps);
     await deviceRequest("device/delete", {
       method: "POST",
-      data: { deviceProps },
+      data: { ...deviceProps },
     }).then(async (data) => {
       await updater();
       return data;

@@ -2,7 +2,7 @@ import { AssetTemplate } from "./asset-template";
 import { EmphasizedText } from "components/title/emphasized";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
-import { useGeneralQuery } from "../../../utils/new-fetcher/general";
+import { useGeneralQuery } from "utils/new-fetcher/general";
 import { useEffect, useMemo } from "react";
 import { DeviceProps } from "./device.slice";
 import { message } from "antd";
@@ -31,16 +31,22 @@ export const NvrPage = () => {
   useEffect(() => {
     if (!nvr) {
       message.error(`找不到编号为 ${nvrId} 的 NVR`).then(null);
-      navigate(`/asset/location`);
+      navigate(`/asset/nvr`);
     }
   }, [navigate, nvr, nvrId]);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (nvr) {
-      deleteNvr({ idList: [nvr.id] }).then(() =>
-        message.success("删除 NVR 成功！")
-      );
+      return deleteNvr({ idList: [nvr.id] })
+        .then(() => {
+          navigate(`/asset/nvr`);
+          message.success("删除 NVR 成功！").then(null);
+        })
+        .catch((errorMessage) => {
+          message.error(`删除 NVR 时出错：${errorMessage}`).then(null);
+        });
     }
+    return Promise.reject();
   };
 
   return (

@@ -28,10 +28,16 @@ export const DevicePage = () => {
 
   const handleDelete = () => {
     if (device) {
-      deleteDevice({ idList: [device.id] }).then(() =>
-        message.success("删除设备成功！")
-      );
+      return deleteDevice({ idList: [device.id] })
+        .then(() => {
+          navigate(`/asset/device`);
+          message.success("删除设备成功！").then(null);
+        })
+        .catch((errorMessage) => {
+          message.error(`删除设备时出错：${errorMessage}`).then(null);
+        });
     }
+    return Promise.reject();
   };
 
   return (

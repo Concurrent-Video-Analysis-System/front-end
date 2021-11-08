@@ -44,10 +44,16 @@ export const LocationPage = () => {
 
   const handleDelete = () => {
     if (location) {
-      deleteLocation({ idList: [location.id] }).then(() =>
-        message.success("删除网点成功！")
-      );
+      return deleteLocation({ idList: [location.id] })
+        .then(() => {
+          navigate(`/asset/location`);
+          message.success("删除网点成功！").then(null);
+        })
+        .catch((errorMessage) => {
+          message.error(`删除网点时出错：${errorMessage}`).then(null);
+        });
     }
+    return Promise.reject();
   };
 
   return (
