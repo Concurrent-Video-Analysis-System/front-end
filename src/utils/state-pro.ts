@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 /*export const useRemovableState = <T>(
   initialState: T[],
@@ -16,12 +16,15 @@ import { useState } from "react";
 };*/
 
 // FIXME
-export const usePartialState = <T extends object>(initialState: T) => {
-  const [state, setState] = useState<T>(initialState);
-  const setPartialState = (partialState: Partial<T>) => {
-    if (partialState) {
-      setState((state) => ({ ...state, ...partialState }));
-    }
-  };
-  return [state, setPartialState] as const;
+export const usePartialState = <T extends object>(
+  initialState?: Partial<T>
+) => {
+  const [state, setState] = useState<Partial<T> | undefined>(initialState);
+  const setPartialState = useCallback((key: keyof T, value: unknown) => {
+    setState((state) => ({ ...state, [key]: value }));
+  }, []);
+  return [state, setPartialState] as [
+    Partial<T> | undefined,
+    (key: keyof T, value: unknown) => void
+  ];
 };

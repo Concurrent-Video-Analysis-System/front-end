@@ -5,7 +5,6 @@ export interface LocationProps {
   id: number;
   name: string;
   location: string;
-  device_count: number;
 }
 
 interface State {
