@@ -5,6 +5,7 @@
 import qs from "qs";
 import { useAuthContext } from "contexts/authorize";
 import { HTTP_STATUS_CODES } from "./static/constants";
+import { useCallback } from "react";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -107,25 +108,28 @@ export const fetchHttp = async (
 
 export const useHttp = () => {
   const { user } = useAuthContext();
-  return async (endpoint: string, config: HttpConfig) => {
-    return fetchHttp(endpoint, {
-      token: user?.token,
-      ...config,
-    })
-      .then((data) => {
-        // if data code is a string, convert it to number
-        if (+data?.code === 0) {
-          // Success
-          return Promise.resolve(data);
-        } else {
-          // HTTP respond 200 (or OK code), but error code found
-          return Promise.reject<string>(
-            `${data?.message || ""}${data?.code ? `(${data?.code})` : ""}`
-          );
-        }
+  return useCallback(
+    async (endpoint: string, config: HttpConfig) => {
+      return fetchHttp(endpoint, {
+        token: user?.token,
+        ...config,
       })
-      .catch((message) => {
-        return Promise.reject(message);
-      });
-  };
+        .then((data) => {
+          // if data code is a string, convert it to number
+          if (+data?.code === 0) {
+            // Success
+            return Promise.resolve(data);
+          } else {
+            // HTTP respond 200 (or OK code), but error code found
+            return Promise.reject<string>(
+              `${data?.message || ""}${data?.code ? `(${data?.code})` : ""}`
+            );
+          }
+        })
+        .catch((message) => {
+          return Promise.reject(message);
+        });
+    },
+    [user?.token]
+  );
 };
