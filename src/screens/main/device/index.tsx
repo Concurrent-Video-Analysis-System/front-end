@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { DeviceAside } from "./aside";
 import { useNavigate } from "react-router-dom";
-import { useFetchDevice } from "utils/fetcher/device";
-import { useFetchLocation } from "utils/fetcher/location";
 
 export const AssetPageFrame = ({
   children,
@@ -11,8 +9,6 @@ export const AssetPageFrame = ({
   children?: React.ReactNode;
 }) => {
   const navigate = useNavigate();
-  useFetchDevice();
-  useFetchLocation();
 
   const [deviceIdList, setDeviceIdList] = useState([] as string[]);
 

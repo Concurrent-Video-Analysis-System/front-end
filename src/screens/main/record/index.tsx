@@ -16,39 +16,16 @@ import { useFilter } from "utils/filter";
 import { useDocumentTitle } from "utils/document-title";
 import { useGeneralLists } from "utils/general-list";
 import { FilterBar } from "components/filter-bar/filter-bar";
-import { selectGeneralListReducer } from "../general-list.slice";
-import { ReasonProps } from "../device/reason.slice";
-import { DeviceProps } from "../device/device.slice";
 import { PaginationBar } from "components/pagination/pagination";
-import { TaskDataProps } from "../task/task.slice";
 import { TypeSwitcher } from "components/type-switcher/type-switcher";
+import { useGeneralQuery } from "utils/new-fetcher/general";
 
 export const RecordIndexPage = () => {
   useDocumentTitle("违规记录列表");
 
-  const update = useGeneralLists([
-    "device",
-    "location",
-    "reason",
-    "task",
-    "recordlist",
-  ]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(update, []);
+  useGeneralLists(["device", "location", "reason", "task", "recordlist"]);
 
-  const generalListSelector = useSelector(selectGeneralListReducer);
-  const reasonList = useMemo(
-    () => generalListSelector.generalList.reason as ReasonProps[] | undefined,
-    [generalListSelector]
-  );
-  const deviceList = useMemo(
-    () => generalListSelector.generalList.device as DeviceProps[] | undefined,
-    [generalListSelector]
-  );
-  const taskList = useMemo(
-    () => generalListSelector.generalList.task as TaskDataProps | undefined,
-    [generalListSelector]
-  );
+  const { reasonList, deviceList, taskList } = useGeneralQuery();
 
   const [displayType, setDisplayType] = useState("card");
 

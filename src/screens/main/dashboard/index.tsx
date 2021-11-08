@@ -9,12 +9,10 @@ import {
 } from "./chart";
 import { useMemo, useState } from "react";
 import moment from "moment";
-import { useSelector } from "react-redux";
 import { LocationProps } from "../device/location.slice";
 import { pad } from "utils/time";
 import { useDocumentTitle } from "utils/document-title";
-import { selectGeneralListReducer } from "../general-list.slice";
-import { RecordDataProps } from "../record/content";
+import { useGeneralQuery } from "utils/new-fetcher/general";
 
 const usePastXDays = (x: number) => {
   return useMemo(() => {
@@ -36,18 +34,7 @@ const useEveryHourInADay = () => {
 
 export const DashBoardPage = () => {
   useDocumentTitle("主页-数据展示中心");
-
-  const generalListSelector = useSelector(selectGeneralListReducer);
-  const locationList = useMemo(
-    () =>
-      generalListSelector.generalList.location as LocationProps[] | undefined,
-    [generalListSelector]
-  );
-  const recordList = useMemo(
-    () =>
-      generalListSelector.generalList.recordlist as RecordDataProps | undefined,
-    [generalListSelector]
-  );
+  const { locationList, recordList } = useGeneralQuery();
 
   const [pastDays, setPastDays] = useState(7);
   const pastDayList = usePastXDays(pastDays);

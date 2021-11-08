@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React, { useEffect } from "react";
+import React from "react";
 import { useDocumentTitle } from "utils/document-title";
 import { useGeneralLists } from "utils/general-list";
 import { TaskFragment } from "./task";
@@ -9,14 +9,7 @@ export type TaskType = "realtime" | "history";
 export const TaskIndexPage = () => {
   useDocumentTitle("任务列表");
 
-  const update = useGeneralLists([
-    "device",
-    "location",
-    "reason",
-    "task",
-    "recordlist",
-  ]);
-  useEffect(update, [update]);
+  useGeneralLists(["device", "location", "reason", "task", "recordlist"]);
 
   return (
     <Container>

@@ -9,16 +9,14 @@ import { useGeneralLists } from "utils/general-list";
 
 export const MainPageFrame = () => {
   useDocumentTitle("海量数据智能并发解析平台");
-  const update = useGeneralLists([
+  useGeneralLists([
     "device",
+    "nvr",
     "location",
     "reason",
     "task",
     "recordlist",
   ]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(update, []);
 
   return (
     <Container>

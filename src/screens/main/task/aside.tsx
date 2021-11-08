@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { useSelector } from "react-redux";
 import { DatePicker, Form, Menu, Select } from "antd";
 import {
   UnorderedListOutlined,
@@ -10,10 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Moment } from "moment";
 import { RangeValue } from "rc-picker/lib/interface";
-import { useFetchReason } from "../../../utils/fetcher/reason";
-import { selectReasonReducer } from "../device/reason.slice";
-import { selectDeviceReducer } from "../device/device.slice";
-import { useFetchDevice } from "../../../utils/fetcher/device";
+import { useGeneralQuery } from "utils/new-fetcher/general";
 
 const { SubMenu } = Menu;
 
@@ -62,10 +58,7 @@ export const TaskAsidePanel = ({
 }: {
   setPartialProps: (props: any) => void;
 }) => {
-  useFetchDevice();
-  useFetchReason();
-  const deviceSelector = useSelector(selectDeviceReducer);
-  const reasonSelector = useSelector(selectReasonReducer);
+  const { deviceList, reasonList } = useGeneralQuery();
 
   return (
     <Menu
@@ -93,10 +86,12 @@ export const TaskAsidePanel = ({
             >
               <Form.Item label={"设备名称"}>
                 <FormSelector
-                  optionList={deviceSelector.deviceList.map((item) => ({
-                    id: item.id,
-                    name: item.name,
-                  }))}
+                  optionList={
+                    deviceList?.map((item) => ({
+                      id: item.id,
+                      name: item.name,
+                    })) || []
+                  }
                   onChange={(value) =>
                     setPartialProps({
                       device: value,
@@ -107,10 +102,12 @@ export const TaskAsidePanel = ({
 
               <Form.Item label={"违规类型"}>
                 <FormSelector
-                  optionList={reasonSelector.reasonList.map((item) => ({
-                    id: item.id,
-                    name: item.name,
-                  }))}
+                  optionList={
+                    reasonList?.map((item) => ({
+                      id: item.id,
+                      name: item.name,
+                    })) || []
+                  }
                   onChange={(value) => {
                     setPartialProps({
                       reason: value,
