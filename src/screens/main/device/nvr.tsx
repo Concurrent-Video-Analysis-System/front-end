@@ -8,6 +8,7 @@ import { DeviceProps } from "./device.slice";
 import { message } from "antd";
 import styled from "@emotion/styled";
 import { TagList } from "./create-task";
+import { useNvr } from "utils/crud/nvr";
 
 export const NvrPage = () => {
   const navigate = useNavigate();
@@ -25,15 +26,28 @@ export const NvrPage = () => {
     return deviceList?.filter((device) => device.nvr.id === nvr.id);
   }, [nvr, deviceList]);
 
+  const { deleteNvr } = useNvr();
+
   useEffect(() => {
     if (!nvr) {
       message.error(`找不到编号为 ${nvrId} 的 NVR`).then(null);
       navigate(`/asset/location`);
     }
   }, [navigate, nvr, nvrId]);
+
+  const handleDelete = () => {
+    if (nvr) {
+      deleteNvr({ idList: [nvr.id] }).then(() =>
+        message.success("删除 NVR 成功！")
+      );
+    }
+  };
+
   return (
     <AssetTemplate
       title={EmphasizedText(`${nvr?.name} NVR`, `${nvr?.name}`, "#f88700")}
+      showDelete
+      onDelete={handleDelete}
     >
       <Content>
         <Label>NVR 编号：</Label>

@@ -1,19 +1,43 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Divider } from "antd";
+import { Button, Divider, Popconfirm } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { EmphasizedText } from "components/title/emphasized";
 
-export const AssetTemplate = <T extends unknown>({
+export const AssetTemplate = ({
   title,
   children,
+  showDelete,
+  onDelete,
 }: {
   title?: string | React.ReactNode;
   children?: React.ReactNode;
+  showDelete?: boolean;
+  onDelete?: () => void;
 }) => {
   return (
     <Container>
       {title ? (
         <>
-          <TitleContainer>{title}</TitleContainer>
+          <TitleContainer>
+            <div>{title}</div>
+            {showDelete ? (
+              <Popconfirm
+                title={EmphasizedText(
+                  "是否删除该条目下的所有信息？",
+                  "所有",
+                  "#ff4f4f"
+                )}
+                okText={"删除"}
+                cancelText={"取消"}
+                onConfirm={onDelete}
+              >
+                <DeleteButton type={"primary"} shape={"circle"}>
+                  <DeleteOutlined />
+                </DeleteButton>
+              </Popconfirm>
+            ) : null}
+          </TitleContainer>
           <TitleDivider />
         </>
       ) : null}
@@ -22,45 +46,42 @@ export const AssetTemplate = <T extends unknown>({
   );
 };
 
-export const AssetListTemplate = <T extends unknown>({
-  title,
-  assetList,
-  renderer,
-}: {
-  title?: string | React.ReactNode;
-  assetList?: T[];
-  renderer?: (asset: T) => React.ReactNode;
-}) => {
-  return (
-    <Container>
-      {title ? (
-        <>
-          <TitleContainer>{title}</TitleContainer>
-          <TitleDivider />
-        </>
-      ) : null}
-      {assetList?.map((asset) => (
-        <>{renderer ? <AssetGroup>{renderer(asset)}</AssetGroup> : null}</>
-      ))}
-    </Container>
-  );
-};
-
 const Container = styled.div``;
 
 const TitleContainer = styled.div`
-  font-size: 2.6rem;
+  font-size: 2.7rem;
   font-weight: bold;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1.5rem;
 `;
 
 const TitleDivider = styled(Divider)`
   margin: 1rem 0;
 `;
 
-const AssetGroup = styled.div`
-  margin: 2rem 0;
-  padding: 1rem 2rem;
-  background-color: #fcfcfc;
-  border: 1px solid #e6e6e6;
-  border-left: 0.7rem solid #2990ff;
+const DeleteButton = styled(Button)`
+  border: 1.5px solid #ff4d4f;
+  color: #ff4d4f;
+  background-color: transparent;
+  transition: all 0.2s;
+
+  :hover {
+    color: #ffffff;
+    border: 1.5px solid #ff4d4f;
+    background-color: #ff4d4f;
+  }
+
+  :focus {
+    color: #ffffff;
+    border: 1.5px solid #ff4d4f;
+    background-color: #ff4d4f;
+  }
+
+  :active {
+    color: #ffffff;
+    border: 1.5px solid #db1d1d;
+    background-color: #db1d1d;
+  }
 `;

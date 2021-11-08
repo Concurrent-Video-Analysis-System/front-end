@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
 import { useEffect, useMemo } from "react";
-import { message, Typography } from "antd";
+import { message } from "antd";
 import styled from "@emotion/styled";
 import { useGeneralQuery } from "utils/new-fetcher/general";
 import { AssetTemplate } from "./asset-template";
 import { EmphasizedText } from "components/title/emphasized";
+import { useDevice } from "utils/crud/device";
 
 export const DevicePage = () => {
   const navigate = useNavigate();
@@ -16,12 +17,22 @@ export const DevicePage = () => {
     return deviceList?.find((item) => item.id === +deviceId);
   }, [deviceId, deviceList]);
 
+  const { deleteDevice } = useDevice();
+
   useEffect(() => {
     if (!device) {
       message.error(`找不到编号为 ${deviceId} 的设备`).then(null);
       navigate(`/asset/device`);
     }
   }, [device, deviceId, navigate]);
+
+  const handleDelete = () => {
+    if (device) {
+      deleteDevice({ idList: [device.id] }).then(() =>
+        message.success("删除设备成功！")
+      );
+    }
+  };
 
   return (
     <AssetTemplate
@@ -30,6 +41,8 @@ export const DevicePage = () => {
         `${device?.name}`,
         "#606060"
       )}
+      showDelete
+      onDelete={handleDelete}
     >
       <Content>
         <Label>设备编号：</Label>

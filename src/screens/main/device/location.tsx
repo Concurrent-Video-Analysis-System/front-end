@@ -1,9 +1,8 @@
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo } from "react";
-import { message, Typography } from "antd";
+import { message } from "antd";
 import styled from "@emotion/styled";
-import { EditTwoTone } from "@ant-design/icons";
 import { DeviceProps } from "./device.slice";
 import { TagList } from "./create-task";
 import { useGeneralQuery } from "utils/new-fetcher/general";
@@ -44,9 +43,11 @@ export const LocationPage = () => {
   }, [location, locationId, navigate]);
 
   const handleDelete = () => {
-    deleteLocation({ idList: [`${location?.id}`] }).then(() =>
-      message.success("删除成功！")
-    );
+    if (location) {
+      deleteLocation({ idList: [location.id] }).then(() =>
+        message.success("删除网点成功！")
+      );
+    }
   };
 
   return (
