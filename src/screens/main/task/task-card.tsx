@@ -425,7 +425,7 @@ const CardContainer = styled.div`
 
   cursor: pointer;
   :hover {
-    box-shadow: 3px 3px 7px #00000040;
+    box-shadow: 4px 4px 7px #00000030;
   }
 `;
 

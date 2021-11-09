@@ -60,6 +60,7 @@ export const TaskDetailPage = () => {
           recordlist={filteredRecords?.records || []}
           displayType={"table"}
           onUnmount={reloadData}
+          onReload={reloadData}
         />
       </TaskDetailContainer>
     </Container>

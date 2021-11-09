@@ -7,8 +7,8 @@ import { DeviceProps } from "./device.slice";
 import { TagList } from "./create-task";
 import { useGeneralQuery } from "utils/new-fetcher/general";
 import { AssetTemplate } from "./asset-template";
-import { EmphasizedText } from "../../../components/title/emphasized";
-import { useBankLocation } from "../../../utils/crud/location";
+import { EmphasizedText } from "components/title/emphasized";
+import { useBankLocation } from "utils/crud/location";
 
 export const LocationPage = () => {
   const navigate = useNavigate();

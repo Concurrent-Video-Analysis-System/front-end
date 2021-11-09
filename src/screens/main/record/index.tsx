@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { RecordContent, RecordDataProps } from "./content";
 import { Button, Divider } from "antd";
@@ -10,7 +10,6 @@ import {
   ExportOutlined,
   InfoCircleFilled,
 } from "@ant-design/icons";
-import { useSelector } from "react-redux";
 import { exportRecordList } from "./export";
 import { useFilter } from "utils/filter";
 import { useDocumentTitle } from "utils/document-title";
@@ -24,7 +23,6 @@ export const RecordIndexPage = () => {
   useDocumentTitle("违规记录列表");
 
   useGeneralLists(["device", "location", "reason", "task", "recordlist"]);
-
   const { reasonList, deviceList, taskList } = useGeneralQuery();
 
   const [displayType, setDisplayType] = useState("card");
@@ -90,7 +88,7 @@ export const RecordIndexPage = () => {
         style: { minWidth: "18rem", maxWidth: "18rem" },
       },
     ];
-  }, [reasonList, deviceList]);
+  }, [reasonList, deviceList, taskList?.tasks]);
 
   return (
     <Container>
@@ -98,9 +96,10 @@ export const RecordIndexPage = () => {
         <FilterBar<React.Key, React.Key>
           filters={recordFilters}
           filterState={filterProps}
-          onFilterUpdate={(filter, option) =>
-            setFilterProps(filter as any, option)
-          }
+          onFilterUpdate={(filter, option) => {
+            console.log(`SET ${filter} TO ${option}`);
+            setFilterProps(filter as any, option);
+          }}
         />
         <FloatRight>
           <div style={{ minWidth: "8rem" }}>展示格式：</div>
@@ -128,6 +127,7 @@ export const RecordIndexPage = () => {
           recordlist={filteredRecords?.records || []}
           displayType={displayType}
           onUnmount={reloadData}
+          onReload={reloadData}
         />
       </Content>
       <Footer>

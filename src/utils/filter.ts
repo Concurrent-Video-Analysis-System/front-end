@@ -7,7 +7,8 @@ export type FilterValue = string | number | undefined;
 
 export const useFilter = <K extends string>(
   fetchEndpoint: string = "",
-  filterPropsName: K[]
+  filterPropsName: K[],
+  keepUrl: boolean = false
 ) => {
   const [filterProps, setFilterPropsRaw] = useState(
     Object.fromEntries(
@@ -34,6 +35,7 @@ export const useFilter = <K extends string>(
   const sendHttp = useHttp();
 
   useEffect(() => {
+    console.log(`filter effect:`, filterProps, `changed`);
     setIsLoading(true);
     sendHttp(fetchEndpoint, { method: "GET", data: filterProps })
       .then((response) => {
@@ -46,8 +48,10 @@ export const useFilter = <K extends string>(
         setErrorMessage(errorMessage);
         message.error(`更新列表时出错：${errorMessage}`).then(null);
       });
-    setUrlParams(filterProps);
-  }, [fetchEndpoint, filterProps, sendHttp, setUrlParams]);
+    if (!keepUrl) {
+      setUrlParams(filterProps);
+    }
+  }, [fetchEndpoint, filterProps, keepUrl, sendHttp, setUrlParams]);
 
   return {
     filterProps,

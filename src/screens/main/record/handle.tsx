@@ -39,7 +39,10 @@ export const RecordHandlingPage = ({
 
   const onHandleButtonClick = (type: string) => {
     setIsLoading(true);
-    sendProcess(recordItem?.id || 0, type).then(() => {
+    sendProcess({
+      idList: [recordItem?.id || 0],
+      type,
+    }).then(() => {
       setProcessedType(null);
       setIsLoading(false);
       navigate("/record");
