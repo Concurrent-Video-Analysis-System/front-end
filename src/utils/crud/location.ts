@@ -41,7 +41,7 @@ export const useBankLocation = () => {
     });
     await locationRequest("network/delete", {
       method: "POST",
-      data: { locationProps },
+      data: { ...locationProps },
     }).then(async (data) => {
       await updater();
       return data;

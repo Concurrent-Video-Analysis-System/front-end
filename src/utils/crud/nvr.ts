@@ -39,12 +39,13 @@ export const useNvr = () => {
           ?.filter((device) => nvrProps.idList.includes(device.nvr.id))
           .map((device) => device.id) || [],
     });
-    await nvrRequest("nvr/delete", { method: "POST", data: { nvrProps } }).then(
-      async (data) => {
-        await updater();
-        return data;
-      }
-    );
+    await nvrRequest("nvr/delete", {
+      method: "POST",
+      data: { ...nvrProps },
+    }).then(async (data) => {
+      await updater();
+      return data;
+    });
   };
 
   return { newNvr, deleteNvr };
