@@ -311,11 +311,9 @@ const RecordTableList = ({
               type={"link"}
               size={"small"}
               onClick={() => {
-                console.log(record.id);
-                if (record && onRecordItemSelected) {
+                onRecordItemSelected &&
                   onRecordItemSelected(record as RecordItemProps);
-                  navigate(`/record/${record.id}`);
-                }
+                navigate(`${record.id}`);
               }}
             >
               查看详情
@@ -367,7 +365,7 @@ const RecordTableList = ({
       columns={tableColumns}
       size={"small"}
       pagination={false}
-    ></Table>
+    />
   );
 };
 

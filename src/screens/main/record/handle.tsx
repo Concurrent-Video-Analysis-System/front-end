@@ -69,20 +69,14 @@ export const RecordHandlingPage = ({
         <Title level={3} style={{ marginTop: 0 }}>
           「{recordItem?.reason?.name}」
         </Title>
-        {/*<Title level={5}>处理办法：</Title>
-        <Paragraph>
-          <blockquote>
-            根据《XX营业厅管理办法》：
-            <br />
-            需要对违纪人员处<Text strong>警告</Text>一次；
-            若多次违纪，则处以XX元至XX元的罚款，并暂停优秀资格评审
-          </blockquote>
-        </Paragraph>*/}
 
         <Title level={5}>详细信息：</Title>
         <ul>
-          <li>检测地点：{recordItem?.location?.name}</li>
-          <li>检测时间：{recordItem?.date}</li>
+          <li>编号：#{recordItem?.id}</li>
+          <li>所在网点：{recordItem?.location?.name}</li>
+          <li>检出设备：{recordItem?.device?.name}</li>
+          <li>发生时间：{recordItem?.date}</li>
+          <li>检出时间：{recordItem?.from}</li>
         </ul>
 
         <BottomParagraph>
@@ -139,7 +133,7 @@ const Container = styled.div`
   grid-gap: 1.5rem;
   width: 100%;
   height: calc(100% - 6rem);
-  padding: 2rem 0;
+  padding: 2rem 0 2rem 2rem;
 `;
 
 const Header = styled.div`

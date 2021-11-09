@@ -1,15 +1,12 @@
 import { useSelector } from "react-redux";
-import { selectRecordlistReducer } from "../recordlist.slice";
 import styled from "@emotion/styled";
 import { Divider } from "antd";
-import { DeviceProps, selectDeviceReducer } from "../device/device.slice";
+import { DeviceProps } from "../device/device.slice";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import { useDebugImageCard } from "../record/__debug__/__debug_image_card__";
 import { selectGeneralListReducer } from "../general-list.slice";
 import { useMemo } from "react";
-import { LocationProps } from "../device/location.slice";
-import { RecordDataProps, RecordItemProps } from "../record/content";
+import { RecordDataProps } from "../record/content";
 
 export const DashBoardAside = () => {
   const generalListSelector = useSelector(selectGeneralListReducer);
