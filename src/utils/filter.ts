@@ -47,7 +47,7 @@ export const useFilter = <K extends string>(
         message.error(`更新列表时出错：${errorMessage}`).then(null);
       });
     setUrlParams(filterProps);
-  }, [filterProps]);
+  }, [fetchEndpoint, filterProps, sendHttp, setUrlParams]);
 
   return {
     filterProps,
