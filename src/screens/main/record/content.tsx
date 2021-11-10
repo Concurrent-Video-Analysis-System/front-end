@@ -64,7 +64,7 @@ const type2typeLabel = (type?: string): RecordLabelProps | undefined => {
       };
     case "deleted":
       return {
-        label: "已删除",
+        label: "误报标记",
         color: "#808080",
         imageOpacity: 0.7,
       };
@@ -240,7 +240,7 @@ const RecordTableList = ({
             danger
             onClick={() => handleProcessButton("deleted")}
           >
-            删除选中项
+            标记为误报
           </Button>
           <Button
             icon={<ExportOutlined />}

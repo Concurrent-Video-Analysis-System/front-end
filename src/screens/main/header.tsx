@@ -24,9 +24,7 @@ export const Header = () => {
       >
         <CCBLogo />
       </HomeNavigation>
-      <div style={{ paddingLeft: "2rem", borderLeft: "2px solid #808080" }}>
-        海量数据智能并发解析平台
-      </div>
+      <HeaderTitle>网点违规行为 AI 识别分析系统</HeaderTitle>
       <RightPanel>
         <Popover
           placement={"bottom"}
@@ -71,4 +69,10 @@ const HomeNavigation = styled.div`
     background-color: #162b40;
     transition: 0.3s ease-out;
   }
+`;
+
+const HeaderTitle = styled.div`
+  font-size: 1.7rem;
+  padding-left: 2rem;
+  border-left: 2px solid #808080;
 `;

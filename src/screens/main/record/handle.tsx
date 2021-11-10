@@ -91,19 +91,19 @@ export const RecordHandlingPage = ({
                 完成处理
               </Button>
               <Popconfirm
-                title={"确定要删除这条记录吗？"}
+                title={"确定要标记这条记录为误报吗？"}
                 okText={"删除"}
                 cancelText={"取消"}
                 onConfirm={() => onHandleButtonClick("deleted")}
               >
                 <Button
-                  type={"primary"}
+                  type={"default"}
                   danger
                   size={"large"}
                   style={{ marginLeft: "2rem" }}
                   loading={processType === "deleted" && isLoading}
                 >
-                  反馈误报并删除
+                  标记误报
                 </Button>
               </Popconfirm>
             </>
@@ -159,5 +159,5 @@ const HandlingPanel = styled.div`
 
 const BottomParagraph = styled(Paragraph)`
   position: absolute;
-  bottom: 2rem;
+  bottom: 6rem;
 `;

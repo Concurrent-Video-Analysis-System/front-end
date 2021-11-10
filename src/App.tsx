@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { BaseRoute } from "./components/router";
 import { useAuthContext } from "./contexts/authorize";
 import { MainPageFrame } from "./screens/main";
@@ -19,6 +19,8 @@ import { NewLocationPage } from "./screens/main/device/new-location";
 import { NvrPage } from "./screens/main/device/nvr";
 import { NvrOverviewPage } from "./screens/main/device/nvr-overview";
 import { NewNvrPage } from "./screens/main/device/new-nvr";
+import { DeviceOverviewPage } from "./screens/main/device/device-overview";
+import { CreateTaskFragment } from "./screens/main/device/create-task";
 
 function App() {
   const { user } = useAuthContext();
@@ -33,7 +35,7 @@ function App() {
               <Route path={":recordId"} element={<RecordHandlingPage />} />
             </BaseRoute>
             <AssetPageFrame>
-              <BaseRoute path={"asset"} element={<>123123123</>}>
+              <BaseRoute path={"asset"} element={<></>}>
                 <BaseRoute path={"location"} element={<LocationOverviewPage />}>
                   <Route path={":locationId"} element={<LocationPage />} />
                   <Route path={"new"} element={<NewLocationPage />} />
@@ -42,16 +44,17 @@ function App() {
                   <Route path={":nvrId"} element={<NvrPage />} />
                   <Route path={"new"} element={<NewNvrPage />} />
                 </BaseRoute>
-                <BaseRoute path={"device"} element={<LocationOverviewPage />}>
+                <BaseRoute path={"device"} element={<DeviceOverviewPage />}>
                   <Route path={":deviceId"} element={<DevicePage />} />
                   <Route path={"new"} element={<NewDevicePage />} />
                 </BaseRoute>
+                <Route path={"create-task"} element={<CreateTaskFragment />} />
               </BaseRoute>
             </AssetPageFrame>
             <BaseRoute path={"task"} element={<TaskIndexPage />}>
               <Route path={":taskId"} element={<TaskDetailPage />} />
             </BaseRoute>
-            <Route path={"*"} element={<></>} />
+            <Route path={"*"} element={<Navigate to={"/dashboard"} />} />
           </Route>
         </Routes>
       ) : (

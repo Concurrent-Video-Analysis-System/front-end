@@ -13,9 +13,17 @@ export const AuthorizeFragment = () => {
     <Container>
       <ParticleBackground />
       <ShadowCard style={{ width: 380 }}>
-        <Title style={{ fontSize: "3.8rem" }}>海量视频</Title>
+        <Title
+          style={{
+            fontSize: "3.8rem",
+            borderBottom: "0.5rem solid #C0C0C0",
+            paddingBottom: "0.4rem",
+          }}
+        >
+          网点违规行为
+        </Title>
         <Title style={{ color: "#404040", paddingBottom: "2.5rem" }}>
-          智能并发解析系统
+          AI 识别分析系统
         </Title>
         <LoginFragment
           onLoginSuccess={() => {

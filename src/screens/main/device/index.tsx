@@ -10,15 +10,12 @@ export const AssetPageFrame = ({
 }) => {
   const navigate = useNavigate();
 
-  const [deviceIdList, setDeviceIdList] = useState([] as string[]);
-
   return (
     <Container>
       <Aside>
         <DeviceAside
-          onCreateTask={(deviceIdList) => {
-            setDeviceIdList(deviceIdList);
-            navigate(`create-task`);
+          onCreateTask={() => {
+            navigate(`/asset/create-task`);
           }}
           onSelectItem={(itemType, itemId) => {
             if (itemType === "location") {
