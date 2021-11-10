@@ -1,8 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
-import { DeviceProps, selectDeviceReducer } from "./device.slice";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -18,11 +17,12 @@ import {
 } from "antd";
 import { useDocumentTitle } from "utils/document-title";
 import { useTask } from "utils/task";
-import { selectReasonReducer } from "./reason.slice";
 import { useFetchReason } from "utils/fetcher/reason";
 import { usePartialState } from "utils/state-pro";
 import { RangeValue } from "rc-picker/lib/interface";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import { useGeneralQuery } from "utils/new-fetcher/general";
+import { selectSelectedDeviceReducer } from "./device-select.slice";
 
 export interface CreateTaskProps {
   name: string;
@@ -80,19 +80,20 @@ export const TagList = ({
   );
 };
 
-export const CreateTaskFragment = ({
-  deviceIdList,
-}: {
-  deviceIdList: string[];
-}) => {
-  // useDebugDeviceLocation();
-
+export const CreateTaskFragment = () => {
   useDocumentTitle("创建新任务");
   const navigate = useNavigate();
   useFetchReason();
-  const reasonSelector = useSelector(selectReasonReducer);
-  const deviceSelector = useSelector(selectDeviceReducer);
   const { newTask } = useTask();
+
+  const { reasonList, deviceList } = useGeneralQuery();
+  const deviceIdListSelector = useSelector(selectSelectedDeviceReducer);
+
+  const selectedDeviceList = useMemo(() => {
+    return deviceList?.filter((device) =>
+      deviceIdListSelector.id.includes(device.id)
+    );
+  }, [deviceIdListSelector.id]);
 
   const [taskFormProps, setTaskFormProps] = usePartialState<CreateTaskProps>({
     name: `${moment().format("MM月DD日")}创建的任务`,
@@ -105,24 +106,15 @@ export const CreateTaskFragment = ({
     undefined | "realtime" | "history"
   >();
 
-  const deviceList = useMemo(() => {
-    const newDeviceList = deviceIdList
-      .map((item) =>
-        deviceSelector.deviceList.find((device) => device.id === +item)
-      )
-      .reduce((prev, item) => {
-        return item ? [...prev, item] : prev;
-      }, [] as DeviceProps[]);
-    if (newDeviceList.length === 0) {
-      navigate(`/device`);
+  useEffect(() => {
+    if (!deviceList || deviceList.length === 0) {
+      navigate(`/asset/device`);
     }
     setTaskFormProps(
       "deviceIdList",
-      deviceIdList.map((item) => +item)
+      selectedDeviceList?.map((item) => item.id)
     );
-    return newDeviceList;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deviceSelector.deviceList, deviceIdList]);
+  }, [selectedDeviceList, deviceList, setTaskFormProps, navigate]);
 
   const onDatePickerChanged = (dates: RangeValue<moment.Moment>) => {
     if (dates) {
@@ -157,10 +149,11 @@ export const CreateTaskFragment = ({
   return (
     <Container>
       <TagList
-        propList={deviceList}
-        preStr={"为设备"}
-        afterStr={"创建监查任务："}
-        maxTagCount={5}
+        propList={selectedDeviceList || []}
+        preStr={<TagTitle>为设备</TagTitle>}
+        afterStr={<TagTitle>创建检查任务：</TagTitle>}
+        showEmpty
+        maxTagCount={4}
       />
       <Divider />
       <Form
@@ -247,7 +240,7 @@ export const CreateTaskFragment = ({
               setTaskFormProps("reasonIdList", Object.values(value || {}))
             }
           >
-            {reasonSelector.reasonList.map((reason) => (
+            {reasonList?.map((reason) => (
               <Select.Option value={reason.id} key={reason.id}>
                 {reason.name}
               </Select.Option>
@@ -305,6 +298,11 @@ const TagContainer = styled.div`
   align-content: flex-start;
   flex-wrap: wrap;
   gap: 1.2rem 1rem;
+`;
+
+const TagTitle = styled.div`
+  font-size: 2rem;
+  font-weight: bold;
 `;
 
 const TagContent = styled(Tag)`

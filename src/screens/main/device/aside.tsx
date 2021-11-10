@@ -6,6 +6,8 @@ import { DownOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useGeneralQuery } from "utils/new-fetcher/general";
 import { DataNode } from "rc-tree/lib/interface";
+import { useDispatch } from "react-redux";
+import { selectedDeviceSlices } from "./device-select.slice";
 
 // 好像可以不设置treeData，改为使用TreeNode手动构建
 
@@ -24,7 +26,7 @@ export const DeviceAside = ({
   onCreateTask,
   onSelectItem,
 }: {
-  onCreateTask: (deviceIdList: string[]) => void;
+  onCreateTask: () => void;
   onSelectItem: (
     itemType: string,
     id: {
@@ -36,6 +38,7 @@ export const DeviceAside = ({
 }) => {
   const navigate = useNavigate();
   const { deviceList, locationList, nvrList } = useGeneralQuery();
+  const dispatch = useDispatch();
 
   const [checkedKeys, setCheckedKeys] = useState([] as React.Key[]);
   const onCheck = (
@@ -191,16 +194,13 @@ export const DeviceAside = ({
   };
 
   const createTask = () => {
-    setSelectedKeys([]);
-    const deviceKeys = checkedKeys.reduce((prev, item) => {
-      const deviceId = item.toString().split("-")[1];
-      if (deviceId) {
-        return [...prev, deviceId];
-      } else {
-        return prev;
-      }
-    }, [] as string[]);
-    onCreateTask(deviceKeys);
+    const checkedDeviceIdList = checkedKeys
+      .map((item) => `${item}`.split("-")[2])
+      .reduce((prev, item) => {
+        return item && !isNaN(+item) ? [...prev, +item] : prev;
+      }, [] as number[]);
+    dispatch(selectedDeviceSlices.actions.set(checkedDeviceIdList));
+    onCreateTask();
   };
 
   return (
