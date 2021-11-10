@@ -10,7 +10,6 @@ import {
   ExportOutlined,
   InfoCircleFilled,
 } from "@ant-design/icons";
-import { exportRecordList } from "./export";
 import { useFilter } from "utils/filter";
 import { useDocumentTitle } from "utils/document-title";
 import { useGeneralLists } from "utils/general-list";
@@ -18,12 +17,13 @@ import { FilterBar } from "components/filter-bar/filter-bar";
 import { PaginationBar } from "components/pagination/pagination";
 import { TypeSwitcher } from "components/type-switcher/type-switcher";
 import { useGeneralQuery } from "utils/new-fetcher/general";
+import { useExport } from "utils/export";
 
 export const RecordIndexPage = () => {
   useDocumentTitle("违规记录列表");
 
   useGeneralLists(["device", "location", "reason", "task", "recordlist"]);
-  const { reasonList, deviceList, taskList } = useGeneralQuery();
+  const { reasonList, deviceList, taskList, recordList } = useGeneralQuery();
 
   const [displayType, setDisplayType] = useState("card");
 
@@ -35,6 +35,8 @@ export const RecordIndexPage = () => {
     () => responseData as RecordDataProps | undefined,
     [responseData]
   );
+
+  const exportRecordList = useExport();
 
   const recordFilters = useMemo(() => {
     return [
@@ -115,7 +117,11 @@ export const RecordIndexPage = () => {
           <Button
             icon={<ExportOutlined />}
             type={"primary"}
-            onClick={exportRecordList}
+            onClick={() =>
+              exportRecordList(
+                recordList?.records.map((item) => +item.id) || []
+              )
+            }
             danger
           >
             导出数据

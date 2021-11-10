@@ -18,9 +18,11 @@ import { useProcess } from "utils/process";
 import {
   CameraOutlined,
   EnvironmentOutlined,
+  ExportOutlined,
   HddOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
+import { useExport } from "utils/export";
 
 export interface RecordDataProps {
   totalNum: number;
@@ -145,6 +147,7 @@ const RecordTableList = ({
 }) => {
   const sendProcess = useProcess();
   const navigate = useNavigate();
+  const exportRecordList = useExport();
 
   const [rowSelection, setRowSelection] = useState([] as React.Key[]);
 
@@ -193,6 +196,16 @@ const RecordTableList = ({
     [handleRecord, onReload, rowSelection]
   );
 
+  const handleExportButton = useCallback(() => {
+    exportRecordList(rowSelection.map((item) => +item))
+      .then(() => {
+        message.success("导出成功！").then(null);
+      })
+      .catch((errorMessage) => {
+        message.error(`导出数据时出错：${errorMessage}`).then(null);
+      });
+  }, [exportRecordList, rowSelection]);
+
   const tableTitle = useMemo(
     () => () =>
       (
@@ -229,9 +242,18 @@ const RecordTableList = ({
           >
             删除选中项
           </Button>
+          <Button
+            icon={<ExportOutlined />}
+            type={"primary"}
+            disabled={!selectSomething}
+            danger
+            onClick={handleExportButton}
+          >
+            导出所选项
+          </Button>
         </TableTitle>
       ),
-    [handleProcessButton, recordlist, selectSomething]
+    [handleExportButton, handleProcessButton, recordlist, selectSomething]
   );
 
   const tableColumns = useMemo(

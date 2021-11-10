@@ -109,12 +109,19 @@ export const fetchHttp = async (
 export const useHttp = () => {
   const { user } = useAuthContext();
   return useCallback(
-    async (endpoint: string, config: HttpConfig) => {
-      return fetchHttp(endpoint, {
-        token: user?.token,
-        ...config,
-      })
+    async (endpoint: string, config: HttpConfig, parsingFormat?: string) => {
+      return fetchHttp(
+        endpoint,
+        {
+          token: user?.token,
+          ...config,
+        },
+        parsingFormat
+      )
         .then((data) => {
+          if (parsingFormat !== "json") {
+            return Promise.resolve(data);
+          }
           // if data code is a string, convert it to number
           if (+data?.code === 0) {
             // Success
