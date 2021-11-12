@@ -76,7 +76,6 @@ export const RecordHandlingPage = ({
           <li>所在网点：{recordItem?.location?.name}</li>
           <li>检出设备：{recordItem?.device?.name}</li>
           <li>发生时间：{recordItem?.date}</li>
-          <li>检出时间：{recordItem?.from}</li>
         </ul>
 
         <BottomParagraph>

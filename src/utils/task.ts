@@ -1,16 +1,13 @@
 import { useHttp } from "./http";
-import { taskSlice } from "../screens/main/task/task.slice";
-import { useDispatch, useSelector } from "react-redux";
 import { CreateTaskProps } from "../screens/main/device/create-task";
-import { selectDeviceReducer } from "../screens/main/device/device.slice";
-import { selectReasonReducer } from "../screens/main/device/reason.slice";
+import { useGeneralQuery } from "./new-fetcher/general";
+import { useUpdateGeneralLists } from "./general-list";
 
 export const useTask = () => {
   const taskRequest = useHttp();
 
-  const dispatch = useDispatch();
-  const deviceSelector = useSelector(selectDeviceReducer);
-  const reasonSelector = useSelector(selectReasonReducer);
+  const { deviceList, reasonList } = useGeneralQuery();
+  const updater = useUpdateGeneralLists(["task"]);
 
   const newTask = async (taskProps: CreateTaskProps) => {
     const data = {
@@ -19,10 +16,10 @@ export const useTask = () => {
       to: taskProps.to?.format("YYYY-MM-DD HH:mm:ss"),
       is_everyday_task: taskProps.isEverydayTask,
       is_history_task: taskProps.isHistoryTask,
-      device: deviceSelector.deviceList.filter((device) =>
+      device: deviceList?.filter((device) =>
         taskProps.deviceIdList.includes(device.id)
       ),
-      reason: reasonSelector.reasonList.filter((reason) =>
+      reason: reasonList?.filter((reason) =>
         taskProps.reasonIdList.includes(reason.id)
       ),
       state: taskProps.state,
@@ -39,8 +36,8 @@ export const useTask = () => {
   };
 
   const getTask = async () => {
-    taskRequest("task", { method: "GET" }).then((data) => {
-      dispatch(taskSlice.actions.set(data.data));
+    taskRequest("task", { method: "GET" }).then(async (data) => {
+      await updater();
       return data.data;
     });
   };

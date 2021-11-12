@@ -78,6 +78,7 @@ export const RecordIndexPage = () => {
             key: device.id,
             title: device.name,
           })) || [],
+        style: { minWidth: "22rem", maxWidth: "22rem" },
       },
       {
         key: "task",
@@ -87,7 +88,7 @@ export const RecordIndexPage = () => {
             key: task.id,
             title: `${task.name} - #${task.id}`,
           })) || [],
-        style: { minWidth: "18rem", maxWidth: "18rem" },
+        style: { minWidth: "22rem", maxWidth: "22rem" },
       },
     ];
   }, [reasonList, deviceList, taskList?.tasks]);
@@ -99,7 +100,7 @@ export const RecordIndexPage = () => {
           filters={recordFilters}
           filterState={filterProps}
           onFilterUpdate={(filter, option) => {
-            console.log(`SET ${filter} TO ${option}`);
+            // console.log(`SET ${filter} TO ${option}`);
             setFilterProps(filter as any, option);
           }}
         />

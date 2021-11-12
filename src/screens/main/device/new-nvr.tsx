@@ -34,7 +34,6 @@ export const NewNvrPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = () => {
     setIsLoading(true);
-    console.log(nvrForm as CreateNvrProps);
     newNvr(nvrForm as CreateNvrProps)
       .then(() => {
         setIsLoading(false);

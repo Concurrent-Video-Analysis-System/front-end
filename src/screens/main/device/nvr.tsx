@@ -30,7 +30,7 @@ export const NvrPage = () => {
 
   useEffect(() => {
     if (!nvr) {
-      message.error(`找不到编号为 ${nvrId} 的 NVR`).then(null);
+      // message.error(`找不到编号为 ${nvrId} 的 NVR`).then(null);
       navigate(`/asset/nvr`);
     }
   }, [navigate, nvr, nvrId]);

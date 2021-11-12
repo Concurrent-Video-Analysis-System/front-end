@@ -37,7 +37,7 @@ export const LocationPage = () => {
 
   useEffect(() => {
     if (!location) {
-      message.error(`找不到编号为 ${locationId} 的网点`).then(null);
+      // message.error(`找不到编号为 ${locationId} 的网点`).then(null);
       navigate(`/asset/location`);
     }
   }, [location, locationId, navigate]);

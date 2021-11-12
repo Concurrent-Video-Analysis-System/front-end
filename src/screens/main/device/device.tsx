@@ -21,7 +21,7 @@ export const DevicePage = () => {
 
   useEffect(() => {
     if (!device) {
-      message.error(`找不到编号为 ${deviceId} 的设备`).then(null);
+      // message.error(`找不到编号为 ${deviceId} 的设备`).then(null);
       navigate(`/asset/device`);
     }
   }, [device, deviceId, navigate]);
