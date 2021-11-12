@@ -94,15 +94,13 @@ export const TaskFragment = () => {
     ];
   }, [reasonList, deviceList]);
 
+  const filterPropsName = useMemo(
+    () => ["reason", "device", "state", "is_history_task", "pageSize", "page"],
+    []
+  );
+
   const { setFilterProps, isLoading, responseData, reloadData, errorMessage } =
-    useFilter(`task`, [
-      "reason",
-      "device",
-      "state",
-      "is_history_task",
-      "pageSize",
-      "page",
-    ]);
+    useFilter(`task`, filterPropsName);
   const filteredTask = useMemo(
     () => responseData as TaskDataProps | undefined,
     [responseData]

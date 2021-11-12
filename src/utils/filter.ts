@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useUrlQueryParams } from "./url";
 import { useHttp } from "./http";
 import { message } from "antd";
@@ -10,11 +10,15 @@ export const useFilter = <K extends string>(
   filterPropsName: K[],
   keepUrl: boolean = false
 ) => {
-  const [filterProps, setFilterPropsRaw] = useState(
-    Object.fromEntries(
-      filterPropsName.map((prop) => [prop, undefined as FilterValue])
-    )
+  const filterPropsInit = useMemo(
+    () =>
+      Object.fromEntries(
+        filterPropsName.map((prop) => [prop, undefined as FilterValue])
+      ),
+    [filterPropsName]
   );
+
+  const [filterProps, setFilterPropsRaw] = useState(filterPropsInit);
 
   const setFilterProps = (name: K, value: FilterValue) => {
     setFilterPropsRaw((prevFilterProps) => ({

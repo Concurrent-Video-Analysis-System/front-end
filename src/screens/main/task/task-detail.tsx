@@ -19,15 +19,15 @@ export const TaskDetailPage = () => {
     )?.tasks.find((item) => item.id === +taskId);
   }, [generalListSelector, taskId]);
 
-  const { setFilterProps, responseData, reloadData } = useFilter("recordlist", [
-    "type",
-    "location",
-    "device",
-    "reason",
-    "task",
-    "pageSize",
-    "page",
-  ]);
+  const filterPropsName = useMemo(
+    () => ["type", "location", "device", "reason", "task", "pageSize", "page"],
+    []
+  );
+
+  const { setFilterProps, responseData, reloadData } = useFilter(
+    "recordlist",
+    filterPropsName
+  );
   const filteredRecords = useMemo(
     () => responseData as RecordDataProps | undefined,
     [responseData]
