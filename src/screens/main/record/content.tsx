@@ -335,7 +335,7 @@ const RecordTableList = ({
               onClick={() => {
                 onRecordItemSelected &&
                   onRecordItemSelected(record as RecordItemProps);
-                navigate(`${record.id}`);
+                navigate(`/record/${record.id}`);
               }}
             >
               查看详情
