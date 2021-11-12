@@ -119,7 +119,7 @@ export const useHttp = () => {
         parsingFormat
       )
         .then((data) => {
-          if (parsingFormat !== "json") {
+          if (parsingFormat && parsingFormat !== "json") {
             return Promise.resolve(data);
           }
           // if data code is a string, convert it to number
