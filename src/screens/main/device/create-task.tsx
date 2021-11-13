@@ -59,6 +59,7 @@ export const TagList = ({
           <TagContent>
             {" "}
             {onClick ? (
+              // eslint-disable-next-line jsx-a11y/anchor-is-valid
               <a onClick={() => onClick(item.id, item.name)}>{item?.name}</a>
             ) : (
               item?.name
@@ -93,7 +94,7 @@ export const CreateTaskFragment = () => {
     return deviceList?.filter((device) =>
       deviceIdListSelector.id.includes(device.id)
     );
-  }, [deviceIdListSelector.id]);
+  }, [deviceIdListSelector.id, deviceList]);
 
   const [taskFormProps, setTaskFormProps] = usePartialState<CreateTaskProps>({
     name: `${moment().format("MM月DD日")}创建的任务`,

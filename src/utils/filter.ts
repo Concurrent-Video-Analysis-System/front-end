@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useUrlQueryParams } from "./url";
 import { useHttp } from "./http";
 import { message } from "antd";
@@ -20,12 +20,12 @@ export const useFilter = <K extends string>(
 
   const [filterProps, setFilterPropsRaw] = useState(filterPropsInit);
 
-  const setFilterProps = (name: K, value: FilterValue) => {
+  const setFilterProps = useCallback((name: K, value: FilterValue) => {
     setFilterPropsRaw((prevFilterProps) => ({
       ...prevFilterProps,
       [name]: value,
     }));
-  };
+  }, []);
 
   const reloadData = () => {
     setFilterPropsRaw((prevFilterProps) => ({ ...prevFilterProps }));

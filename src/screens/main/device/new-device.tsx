@@ -7,7 +7,6 @@ import { EmphasizedText } from "components/title/emphasized";
 import { useGeneralQuery } from "utils/new-fetcher/general";
 import { usePartialState } from "utils/state-pro";
 import { CreateDeviceProps, useDevice } from "utils/crud/device";
-import { useUpdateGeneralLists } from "../../../utils/general-list";
 
 export const NewDevicePage = () => {
   const [searchParams] = useSearchParams();
@@ -27,6 +26,8 @@ export const NewDevicePage = () => {
     );
   }, [locationList, nvr]);
 
+  const [deviceForm, setDeviceForm] = usePartialState<CreateDeviceProps>();
+
   useEffect(() => {
     if (!nvr) {
       message.error(`找不到编号为 ${nvrId} 的 NVR`, 2).then(null);
@@ -34,9 +35,7 @@ export const NewDevicePage = () => {
     }
     setDeviceForm("nvrId", nvr?.id);
     setDeviceForm("netId", location?.id);
-  }, [navigate, nvr, nvrId, location]);
-
-  const [deviceForm, setDeviceForm] = usePartialState<CreateDeviceProps>();
+  }, [navigate, nvr, nvrId, location, setDeviceForm]);
   const { newDevice } = useDevice();
   const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = () => {

@@ -99,8 +99,10 @@ export const TaskFragment = () => {
     []
   );
 
-  const { setFilterProps, isLoading, responseData, reloadData, errorMessage } =
-    useFilter(`task`, filterPropsName);
+  const { setFilterProps, responseData, reloadData } = useFilter(
+    `task`,
+    filterPropsName
+  );
   const filteredTask = useMemo(
     () => responseData as TaskDataProps | undefined,
     [responseData]

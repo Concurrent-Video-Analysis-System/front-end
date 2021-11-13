@@ -35,7 +35,7 @@ export const TaskDetailPage = () => {
 
   useEffect(() => {
     setFilterProps("task", taskId);
-  }, []);
+  }, [setFilterProps, taskId]);
 
   return (
     <Container>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
 import { DeviceAside } from "./aside";
 import { useNavigate } from "react-router-dom";
