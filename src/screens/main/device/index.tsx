@@ -1,70 +1,56 @@
+import React from "react";
 import styled from "@emotion/styled";
 import { DeviceAside } from "./aside";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import { LocationFragment } from "./location";
-import { DeviceFragment } from "./device";
-import { CreateTaskFragment } from "./create-task";
-import { OverviewFragment } from "./overview";
-import { useDocumentTitle } from "utils/document-title";
-import { useState } from "react";
-import { useFetchDevice } from "../../../utils/fetcher/device";
-import { useFetchLocation } from "../../../utils/fetcher/location";
+import { useNavigate } from "react-router-dom";
 
-export const DeviceIndexFragment = () => {
-  useDocumentTitle("设备列表");
+export const AssetPageFrame = ({
+  children,
+}: {
+  children?: React.ReactNode;
+}) => {
   const navigate = useNavigate();
-  useFetchDevice();
-  useFetchLocation();
-
-  const [deviceIdList, setDeviceIdList] = useState([] as string[]);
 
   return (
     <Container>
       <Aside>
         <DeviceAside
-          onCreateTask={(deviceIdList) => {
-            setDeviceIdList(deviceIdList);
-            navigate(`create-task`);
+          onCreateTask={() => {
+            navigate(`/asset/create-task`);
           }}
           onSelectItem={(itemType, itemId) => {
             if (itemType === "location") {
-              navigate(`location/${itemId.locationId}`);
+              navigate(`/asset/location/${itemId.locationId}`);
+            } else if (itemType === "nvr") {
+              navigate(`/asset/nvr/${itemId.nvrId}`);
             } else if (itemType === "device") {
-              navigate(`${itemId.deviceId}`);
+              navigate(`/asset/device/${itemId.deviceId}`);
             } else {
-              // itemType === "none"
-              navigate(`/device`);
+              navigate(`/asset/location`);
             }
           }}
         />
       </Aside>
-      <Content>
-        <Routes>
-          <Route path={"location/:locationId"} element={<LocationFragment />} />
-          <Route path={":deviceId"} element={<DeviceFragment />} />
-          <Route
-            path={"create-task"}
-            element={<CreateTaskFragment deviceIdList={deviceIdList} />}
-          />
-          <Route path={"/"} element={<OverviewFragment />} />
-        </Routes>
-      </Content>
+      <Content>{children}</Content>
     </Container>
   );
 };
 
 const Container = styled.div`
-  display: grid;
-  grid-template-areas: "aside content";
-  grid-template-columns: 30rem calc(100vw - 30rem);
+  width: 100%;
   height: 100%;
 `;
 
 const Aside = styled.div`
-  grid-area: aside;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36rem;
 `;
 
 const Content = styled.div`
-  grid-area: content;
+  position: absolute;
+  width: calc(100% - 36rem);
+  left: 36rem;
+  top: 0;
   padding: 2rem 4rem;
 `;

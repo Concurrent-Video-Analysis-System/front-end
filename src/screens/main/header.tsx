@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
-import { HomeOutlined } from "@ant-design/icons";
 import { Button, Popover } from "antd";
 import { useAuthContext } from "contexts/authorize";
-import { useLocation, useNavigate } from "react-router-dom";
+import CCBLogo from "components/icons/ccb-logo";
 
 export const LogoutPopoverContent = ({ logout }: { logout: () => void }) => {
   return (
@@ -13,40 +12,19 @@ export const LogoutPopoverContent = ({ logout }: { logout: () => void }) => {
   );
 };
 
-export const SurveillanceHeader = () => {
+export const Header = () => {
   const { user, logout } = useAuthContext();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [primaryLocation, setPrimaryLocation] = useState<string | undefined>();
-
-  useEffect(() => {
-    setPrimaryLocation(
-      location.pathname.split("/").filter((item) => item !== "")[0]
-    );
-  }, [location]);
 
   return (
     <HeaderContainer>
-      <HomeNavigation onClick={() => navigate("/")}>
-        <HomeOutlined style={{ fontSize: "2.2rem" }} />
+      <HomeNavigation
+        onClick={() => {
+          window.location.href = "http://www.ccb.com/";
+        }}
+      >
+        <CCBLogo />
       </HomeNavigation>
-      <div style={{ paddingLeft: "2rem", borderLeft: "2px solid #808080" }}>
-        海量数据智能并发解析平台
-      </div>
-      <div style={{ width: "4rem" }} />
-      {[
-        { key: "device", title: "设备信息" },
-        { key: "task", title: "任务管理" },
-        { key: "recordlist", title: "违规记录" },
-      ].map((item) =>
-        primaryLocation === item.key ? (
-          <SelectedNavigation>{item.title}</SelectedNavigation>
-        ) : (
-          <Navigation onClick={() => navigate(item.key)}>
-            {item.title}
-          </Navigation>
-        )
-      )}
+      <HeaderTitle>网点违规行为 AI 识别分析系统</HeaderTitle>
       <RightPanel>
         <Popover
           placement={"bottom"}
@@ -60,52 +38,19 @@ export const SurveillanceHeader = () => {
 };
 
 const HeaderContainer = styled.div`
-  background-color: #363636;
-  position: fixed;
-  height: 5.5rem;
-  z-index: 3;
+  background-color: #001529;
+  height: 100%;
   width: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   color: #ffffff;
-  font-size: 1.9rem;
+  font-size: 1.6rem;
 `;
 
 const RightPanel = styled.div`
   margin-left: auto;
   padding: 1rem 2rem;
-`;
-
-const SelectedNavigation = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 12rem;
-  font-size: 2rem;
-  font-weight: bold;
-  color: #404040;
-  background-color: #e7e7e7;
-  &:hover {
-    color: #000000;
-    background-color: #ffffff;
-    transition: 0.3s ease-out;
-  }
-`;
-
-const Navigation = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 12rem;
-  font-size: 1.9rem;
-  &:hover {
-    color: #ffffff;
-    background-color: #606060;
-    transition: 0.3s ease-out;
-  }
 `;
 
 const HomeNavigation = styled.div`
@@ -114,10 +59,20 @@ const HomeNavigation = styled.div`
   align-items: center;
   margin: 0 1rem;
   padding: 0 2rem;
+  width: 24rem;
   height: 100%;
+  cursor: pointer;
+
   &:hover {
     color: #ffffff;
-    background-color: #606060;
+    // background-color: #001529;
+    background-color: #162b40;
     transition: 0.3s ease-out;
   }
+`;
+
+const HeaderTitle = styled.div`
+  font-size: 1.7rem;
+  padding-left: 2rem;
+  border-left: 2px solid #808080;
 `;

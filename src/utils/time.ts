@@ -15,24 +15,6 @@ export const pad = (value: number, digits: number = 2) => {
 
 export const updateCurrentTime = () => {
   moment.locale("zh-cn");
-  /*moment.updateLocale("zh-cn", {
-    future: "%s后",
-    past:   "%s前",
-    s  : '几秒',
-    ss : '%d秒',
-    m:  "一分钟",
-    mm: "%d分钟",
-    h:  "一小时",
-    hh: "%d小时",
-    d:  "一天",
-    dd: "%d天",
-    w:  "一周",
-    ww: "%d周",
-    M:  "一个月",
-    MM: "%d个月",
-    y:  "一年",
-    yy: "%d 年"
-  });*/
 };
 
 export const useCurrentTime = () => {

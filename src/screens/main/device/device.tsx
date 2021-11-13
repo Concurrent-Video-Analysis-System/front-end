@@ -1,82 +1,98 @@
-import { selectDeviceReducer } from "./device.slice";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
-import { useSelector } from "react-redux";
 import { useEffect, useMemo } from "react";
-import { Typography } from "antd";
+import { message } from "antd";
 import styled from "@emotion/styled";
-import { EditTwoTone } from "@ant-design/icons";
+import { useGeneralQuery } from "utils/new-fetcher/general";
+import { AssetTemplate } from "./asset-template";
+import { EmphasizedText } from "components/title/emphasized";
+import { useDevice } from "utils/crud/device";
 
-export const DeviceFragment = () => {
+export const DevicePage = () => {
   const navigate = useNavigate();
   const { deviceId } = useParams();
-  const deviceSelector = useSelector(selectDeviceReducer);
+  const { deviceList } = useGeneralQuery();
 
   const device = useMemo(() => {
-    return deviceSelector.deviceList.find((item) => item.id === +deviceId);
-  }, [deviceId, deviceSelector.deviceList]);
+    return deviceList?.find((item) => item.id === +deviceId);
+  }, [deviceId, deviceList]);
+
+  const { deleteDevice } = useDevice();
 
   useEffect(() => {
     if (!device) {
-      navigate(`/device`);
+      // message.error(`找不到编号为 ${deviceId} 的设备`).then(null);
+      navigate(`/asset/device`);
     }
-  }, [device, navigate]);
+  }, [device, deviceId, navigate]);
 
-  const editableConfig = (fontSize: string) => {
-    return {
-      icon: (
-        <EditTwoTone
-          twoToneColor={"#E0E0E0"}
-          style={{ marginLeft: "1rem", fontSize: fontSize }}
-        />
-      ),
-      tooltip: false,
-    };
+  const handleDelete = () => {
+    if (device) {
+      return deleteDevice({ idList: [device.id] })
+        .then(() => {
+          navigate(`/asset/device`);
+          message.success("删除设备成功！").then(null);
+        })
+        .catch((errorMessage) => {
+          message.error(`删除设备时出错：${errorMessage}`).then(null);
+        });
+    }
+    return Promise.reject();
   };
 
   return (
-    <Container>
-      <Typography.Title level={2} editable={editableConfig("2rem")}>
-        {device?.location.name + " - " + device?.name}
-      </Typography.Title>
+    <AssetTemplate
+      title={EmphasizedText(
+        `${device?.name} 设备`,
+        `${device?.name}`,
+        "#606060"
+      )}
+      showDelete
+      onDelete={handleDelete}
+    >
+      <Content>
+        <Label>设备编号：</Label>
+        <Text>#{device?.id}</Text>
+      </Content>
 
-      <ParagraphContainer>
-        <ParagraphLabel>设备编号：</ParagraphLabel>
-        <Paragraph>#{device?.id}</Paragraph>
-      </ParagraphContainer>
+      <Content>
+        <Label>所在网点：</Label>
+        <Text>
+          {EmphasizedText(
+            `${device?.location.name} - #${device?.location.id}`,
+            ` - #${device?.location.id}`,
+            "#A0A0A0"
+          )}
+        </Text>
+      </Content>
 
-      <ParagraphContainer>
-        <ParagraphLabel>网点名称：</ParagraphLabel>
-        <Paragraph editable={editableConfig("2rem")}>
-          {device?.location.name}
-        </Paragraph>
-      </ParagraphContainer>
-
-      <ParagraphContainer>
-        <ParagraphLabel>RTSP地址：</ParagraphLabel>
-        <Paragraph editable={editableConfig("2rem")}>{device?.rtsp}</Paragraph>
-      </ParagraphContainer>
-    </Container>
+      <Content>
+        <Label>所在 NVR：</Label>
+        <Text>
+          {EmphasizedText(
+            `${device?.nvr.name} - #${device?.nvr.id}`,
+            ` - #${device?.nvr.id}`,
+            "#A0A0A0"
+          )}
+        </Text>
+      </Content>
+    </AssetTemplate>
   );
 };
 
-const Container = styled.div`
-  padding: 2rem 4rem;
-`;
-
-const ParagraphContainer = styled.div`
-  font-size: 1.8rem;
+const Content = styled.div`
+  font-size: 1.7rem;
   margin-bottom: 1rem;
 `;
 
-const ParagraphLabel = styled.div`
+const Label = styled.div`
   display: inline-block;
   text-align: right;
-  width: 9.6rem;
+  width: 12rem;
 `;
 
-const Paragraph = styled(Typography.Paragraph)`
+const Text = styled.div`
   display: inline;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   max-width: 70%;
 `;

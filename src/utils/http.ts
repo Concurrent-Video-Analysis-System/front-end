@@ -5,6 +5,7 @@
 import qs from "qs";
 import { useAuthContext } from "contexts/authorize";
 import { HTTP_STATUS_CODES } from "./static/constants";
+import { useCallback } from "react";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -105,38 +106,37 @@ export const fetchHttp = async (
     });
 };
 
-export const useHttp = (endpoint: string, config?: HttpConfig) => {
+export const useHttp = () => {
   const { user } = useAuthContext();
-  return (
-    configOverride?: HttpConfig,
-    onSuccess?: (data: any) => void,
-    onFailed?: (message: string) => void
-  ) => {
-    fetchHttp(endpoint, {
-      token: user?.token,
-      ...config,
-      ...configOverride,
-    })
-      .then(async (data) => {
-        // if data code is a string, convert it to number
-        if (+data?.code === 0) {
-          // Success
-          if (onSuccess) {
-            onSuccess(data);
+  return useCallback(
+    async (endpoint: string, config: HttpConfig, parsingFormat?: string) => {
+      return fetchHttp(
+        endpoint,
+        {
+          token: user?.token,
+          ...config,
+        },
+        parsingFormat
+      )
+        .then((data) => {
+          if (parsingFormat && parsingFormat !== "json") {
+            return Promise.resolve(data);
           }
-        } else {
-          // HTTP respond 200 (or OK code), but error code found
-          if (onFailed) {
-            onFailed(
+          // if data code is a string, convert it to number
+          if (+data?.code === 0) {
+            // Success
+            return Promise.resolve(data);
+          } else {
+            // HTTP respond 200 (or OK code), but error code found
+            return Promise.reject<string>(
               `${data?.message || ""}${data?.code ? `(${data?.code})` : ""}`
             );
           }
-        }
-      })
-      .catch(async (message) => {
-        if (onFailed) {
-          onFailed(message);
-        }
-      });
-  };
+        })
+        .catch((message) => {
+          return Promise.reject(message);
+        });
+    },
+    [user?.token]
+  );
 };

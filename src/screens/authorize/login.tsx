@@ -67,6 +67,7 @@ export const LoginFragment = ({
           size={"large"}
           loading={isLoading}
           block
+          style={{ backgroundColor: "#1b4787" }}
         >
           登 录
         </Button>

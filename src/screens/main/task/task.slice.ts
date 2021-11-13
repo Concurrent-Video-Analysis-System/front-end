@@ -1,12 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "store";
 
-export interface TaskProps {
+export interface TaskDataProps {
+  totalNum: number;
+  tasks: TaskItemProps[];
+}
+
+export interface TaskItemProps {
   id: number;
   name: string;
   from: string;
   to: string;
   // isEverydayTask?: boolean;
+  is_history_task?: boolean;
   device: {
     id: number;
     name: string;
@@ -19,7 +25,7 @@ export interface TaskProps {
 }
 
 interface State {
-  taskList: TaskProps[];
+  taskList: TaskItemProps[];
   isLoading: boolean;
 }
 

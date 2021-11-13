@@ -8,24 +8,22 @@ import {
 } from "screens/main/device/device.slice";
 
 export const useFetchDevice = () => {
-  const sendHttp = useHttp("device");
+  const sendHttp = useHttp();
   const dispatch = useDispatch();
   const deviceSelector = useSelector(selectDeviceReducer);
   useEffect(() => {
-    sendHttp(
-      { method: "GET", data: {} },
-      (data) => {
+    sendHttp("device", { method: "GET", data: {} })
+      .then((data) => {
         if (
           JSON.stringify(data.data) !==
           JSON.stringify(deviceSelector.deviceList)
         ) {
           dispatch(deviceSlice.actions.set(data.data));
         }
-      },
-      (errorMessage) => {
+      })
+      .catch((errorMessage) => {
         message.error(`更新列表时出错：${errorMessage}`).then(null);
-      }
-    );
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

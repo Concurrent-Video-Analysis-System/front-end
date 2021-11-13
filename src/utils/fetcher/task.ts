@@ -8,23 +8,21 @@ import {
 } from "../../screens/main/task/task.slice";
 
 export const useFetchTask = () => {
-  const sendHttp = useHttp("task");
+  const sendHttp = useHttp();
   const dispatch = useDispatch();
   const taskSelector = useSelector(selectTaskReducer);
   useEffect(() => {
-    sendHttp(
-      { method: "GET", data: {} },
-      (data) => {
+    sendHttp("task", { method: "GET", data: {} })
+      .then((data) => {
         if (
           JSON.stringify(data.data) !== JSON.stringify(taskSelector.taskList)
         ) {
           dispatch(taskSlice.actions.set(data.data));
         }
-      },
-      (errorMessage) => {
+      })
+      .then((errorMessage) => {
         message.error(`更新列表时出错：${errorMessage}`).then(null);
-      }
-    );
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

@@ -1,5 +1,5 @@
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 /**
  * Clear `null`, `undefined` and empty string (`''`) in the given object.
@@ -7,7 +7,9 @@ import { useMemo } from "react";
  */
 export const cleanObject = (origin: { [key in string]?: unknown }) => {
   return Object.entries(origin).reduce((prev, [key, value]) => {
-    return value == null || value === "" ? prev : { [key]: value, ...prev };
+    return value === null || value === undefined || value === ""
+      ? prev
+      : { [key]: value, ...prev };
   }, {} as { [key in string]: unknown });
 };
 
@@ -37,14 +39,25 @@ export const useUrlQueryParams = <K extends string>(keys: string[]) => {
 
   // To ensure the params passed to "setParsedParams" is in type K,
   // and clean the null, undefined values and empty string in params.
-  const setParsedParams = (params: Partial<{ [key in K]: unknown }>) => {
-    // `...params` overwrites keys in the origin object
-    const o = cleanObject({
-      ...Object.fromEntries(searchParams),
-      ...params,
-    }) as URLSearchParamsInit;
-    return setSearchParams(o);
-  };
+  const setParsedParams = useCallback(
+    (params: Partial<{ [key in K]: unknown }>) => {
+      // `...params` overwrites keys in the origin object
+      const o = cleanObject({
+        ...Object.fromEntries(searchParams),
+        ...params,
+      }) as URLSearchParamsInit;
+      console.log(o);
+      if (
+        Object.keys(o).length === 0 &&
+        Object.keys(cleanObject(parsedParams)).length === 0
+      ) {
+        console.log("not changed");
+        return null;
+      }
+      return setSearchParams(o);
+    },
+    [parsedParams, searchParams, setSearchParams]
+  );
 
   return [parsedParams, setParsedParams] as const;
 };

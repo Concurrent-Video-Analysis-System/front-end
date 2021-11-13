@@ -1,101 +1,127 @@
 import { useSelector } from "react-redux";
-import { selectRecordlistReducer } from "../recordlist.slice";
 import styled from "@emotion/styled";
 import { Divider } from "antd";
-import { selectDeviceReducer } from "../device/device.slice";
+import { DeviceProps } from "../device/device.slice";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { selectGeneralListReducer } from "../general-list.slice";
+import { useMemo } from "react";
+import { RecordDataProps } from "../record/content";
 
 export const DashBoardAside = () => {
-  const deviceSelector = useSelector(selectDeviceReducer);
-  const recordlistSelector = useSelector(selectRecordlistReducer);
+  const generalListSelector = useSelector(selectGeneralListReducer);
+  const deviceList = useMemo(
+    () => generalListSelector.generalList.device as DeviceProps[] | undefined,
+    [generalListSelector]
+  );
+  const recordList = useMemo(
+    () =>
+      generalListSelector.generalList.recordlist as RecordDataProps | undefined,
+    [generalListSelector]
+  );
   const navigate = useNavigate();
+
+  console.log(deviceList);
 
   return (
     <>
-      <AsideBlock>
+      <Block>
         <Title>近期违规记录</Title>
+        <ContentBlock>
+          <CollapsibleList
+            list={recordList?.records || []}
+            maxItemCount={7}
+            displayFormat={(record) =>
+              record ? (
+                <RecordItem
+                  key={record?.id}
+                  onClick={() => navigate(`/record/${record?.id}`)}
+                >
+                  {record?.type === "pending" ? (
+                    <EmphasisedText>[新] </EmphasisedText>
+                  ) : null}
+                  {moment(record?.date, "YYYY-MM-DD HH:mm:ss").format(
+                    "M月D日 HH:mm:ss"
+                  )}{" "}
+                  {record?.reason?.name}
+                </RecordItem>
+              ) : (
+                <RecordItem
+                  key={"more"}
+                  style={{ marginTop: "0.5rem", color: "#A0A0A0" }}
+                  onClick={() => {
+                    navigate(`/record`);
+                  }}
+                >
+                  查看更多记录……
+                </RecordItem>
+              )
+            }
+          />
+        </ContentBlock>
         <AsideDivider />
-        {recordlistSelector.recordlist
-          //.sort((a, b) =>
-          //  (+(a.type === "pending")) - (+(b.type === "pending")))
-          .filter((item, index) => index < 10)
-          .map((record) => (
-            <RecordItem>
-              <a
-                href={"/#"}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(`/recordlist/${record.id}`);
-                }}
-              >
-                {record.type === "pending" ? (
-                  <EmphasisedText>[新] </EmphasisedText>
-                ) : null}
-                {moment(record.date, "YYYY-MM-DD HH:mm:ss").format(
-                  "M月D日 HH:mm:ss"
-                )}{" "}
-                {record.reason}
-              </a>
-            </RecordItem>
-          ))}
-        {recordlistSelector.recordlist.length >= 10 ? (
-          <RecordItem style={{ marginTop: "1.5rem", color: "#A0A0A0" }}>
-            <a
-              href={"/#"}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(`/recordlist`);
-              }}
-            >
-              查看更多记录……
-            </a>
-          </RecordItem>
-        ) : null}
-      </AsideBlock>
+      </Block>
 
-      <AsideBlock>
+      <Block>
         <Title>设备列表</Title>
+        <ContentBlock>
+          <CollapsibleList
+            list={deviceList || []}
+            maxItemCount={5}
+            displayFormat={(device) =>
+              device ? (
+                <RecordItem
+                  key={device.id}
+                  onClick={() => navigate(`/device/${device.id}`)}
+                >
+                  {device.location.name} - {device.name}
+                </RecordItem>
+              ) : (
+                <RecordItem
+                  key={"more"}
+                  style={{ marginTop: "0.5rem", color: "#A0A0A0" }}
+                  onClick={() => {
+                    navigate(`/device`);
+                  }}
+                >
+                  查看更多设备……
+                </RecordItem>
+              )
+            }
+          />
+        </ContentBlock>
         <AsideDivider />
-        {deviceSelector.deviceList
-          .filter((device, index) => index < 5)
-          .map((device) => (
-            <RecordItem>
-              <a
-                href={"/#"}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(`/device/${device.id}`);
-                }}
-              >
-                {device.location.name} - {device.name}
-              </a>
-            </RecordItem>
-          ))}
-        {deviceSelector.deviceList.length >= 5 ? (
-          <RecordItem style={{ marginTop: "1.5rem", color: "#A0A0A0" }}>
-            <a
-              href={"/#"}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(`/device`);
-              }}
-            >
-              查看更多设备……
-            </a>
-          </RecordItem>
-        ) : null}
-      </AsideBlock>
+      </Block>
     </>
   );
 };
 
-const AsideBlock = styled.div`
+const CollapsibleList = <K extends unknown>({
+  list,
+  displayFormat,
+  maxItemCount = 10,
+}: {
+  list: K[];
+  displayFormat?: (item?: K) => JSX.Element;
+  maxItemCount?: number;
+}) => {
+  return (
+    <ul style={{ listStyleType: "none", padding: "0" }}>
+      {list
+        .filter((item, index) => index < maxItemCount)
+        .map((item) => displayFormat && displayFormat(item))}
+      {list.length >= maxItemCount ? displayFormat && displayFormat() : null}
+    </ul>
+  );
+};
+
+const Block = styled.div`
   margin-bottom: 4rem;
+  height: 40%;
 `;
 
 const Title = styled.div`
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: bold;
 `;
 
@@ -103,13 +129,24 @@ const AsideDivider = styled(Divider)`
   margin: 1rem 0;
 `;
 
-const RecordItem = styled.div`
+const ContentBlock = styled.div`
+  background-color: #ffffff;
+  max-height: calc(100% - 2rem);
+  overflow: hidden auto;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+`;
+
+const RecordItem = styled.li`
   margin-bottom: 1rem;
+  list-style: none;
   font-size: 1.7rem;
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  user-select: none;
+  cursor: pointer;
 `;
 
 const EmphasisedText = styled.span`

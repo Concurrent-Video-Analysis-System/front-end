@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux";
-import { TaskProps, taskSlice } from "../task.slice";
+import { TaskItemProps, taskSlice } from "../task.slice";
 import { useEffect } from "react";
 
-export const taskTemplate: TaskProps[] = [
+export const taskTemplate: TaskItemProps[] = [
   {
     id: 1,
     name: "每日检查任务",
