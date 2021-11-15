@@ -16,6 +16,7 @@ export const PaginationBar = (props: PaginationBarProps) => {
         <Pagination
           showQuickJumper
           defaultCurrent={props.currentPage}
+          defaultPageSize={100}
           total={props.totalNum}
           onChange={props.onPageChange}
           onShowSizeChange={props.onPageSizeChange}
