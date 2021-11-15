@@ -140,6 +140,7 @@ export const RecordIndexPage = () => {
       <Footer>
         <PaginationBar
           enabled={!!filteredRecords}
+          currentPage={+(filterProps["page"] || 1)}
           totalNum={filteredRecords?.totalNum}
           onPageChange={(page, pageSize) => {
             setFilterProps("pageSize", pageSize);
