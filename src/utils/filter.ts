@@ -27,9 +27,9 @@ export const useFilter = <K extends string>(
     }));
   }, []);
 
-  const reloadData = () => {
+  const reloadData = useCallback(() => {
     setFilterPropsRaw((prevFilterProps) => ({ ...prevFilterProps }));
-  };
+  }, []);
 
   const [urlParams, setUrlParams] = useUrlQueryParams(filterPropsName);
   const [responseData, setResponseData] = useState<unknown>();
@@ -39,7 +39,7 @@ export const useFilter = <K extends string>(
   const sendHttp = useHttp();
 
   useEffect(() => {
-    console.log(`filter effect:`, filterProps, `changed`);
+    // console.log(`filter effect:`, filterProps, `changed`);
     setIsLoading(true);
     sendHttp(fetchEndpoint, { method: "GET", data: filterProps })
       .then((response) => {
