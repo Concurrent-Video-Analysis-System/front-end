@@ -41,7 +41,7 @@ export const BreadcrumbNavigator = (props: BreadcrumbNavigatorProps) => {
       {props.icon}
       <Breadcrumb>
         {locationCascade.map((item) => (
-          <Breadcrumb.Item>
+          <Breadcrumb.Item key={item.path}>
             {item.path === "/" ? (
               <HomeOutlined />
             ) : (

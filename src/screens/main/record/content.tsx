@@ -124,7 +124,11 @@ const RecordCardList = ({
       ) : (
         <RecordCardContainer>
           {recordlist.map((item) => (
-            <RecordCard props={item} onSelected={onRecordItemSelected} />
+            <RecordCard
+              key={item.id}
+              props={item}
+              onSelected={onRecordItemSelected}
+            />
           ))}
         </RecordCardContainer>
       )}

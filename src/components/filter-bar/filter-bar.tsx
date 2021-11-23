@@ -31,7 +31,10 @@ export const FilterBar = <
     <Container>
       <FilterOutlined style={{ fontSize: "2rem", color: "#A0A0A0" }} />
       {props.filters.map((filter) => (
-        <div style={{ minWidth: "20rem", marginRight: "2rem" }}>
+        <div
+          key={filter.key}
+          style={{ minWidth: "20rem", marginRight: "2rem" }}
+        >
           {filter.title}：
           <Select
             placeholder={filter.title}
