@@ -27,9 +27,14 @@ export const RecordIndexPage = () => {
 
   const [displayType, setDisplayType] = useState("card");
 
+  const filterPropsName = useMemo(
+    () => ["type", "location", "device", "reason", "task", "pageSize", "page"],
+    []
+  );
+
   const { filterProps, setFilterProps, responseData, reloadData } = useFilter(
     "recordlist",
-    ["type", "location", "device", "reason", "task", "pageSize", "page"]
+    filterPropsName
   );
   const filteredRecords = useMemo(
     () => responseData as RecordDataProps | undefined,

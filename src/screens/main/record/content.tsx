@@ -88,7 +88,7 @@ const RecordCard = ({
         <Card
           cover={
             <img
-              alt="example"
+              alt="违规记录图片"
               src={props.imageUrl}
               style={{ opacity: typeLabel?.imageOpacity }}
             />
