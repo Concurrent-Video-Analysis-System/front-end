@@ -55,7 +55,8 @@ export const useFilter = <K extends string>(
     if (!keepUrl) {
       setUrlParams(filterProps);
     }
-  }, [fetchEndpoint, filterProps, keepUrl, sendHttp, setUrlParams]);
+    // eslint-disable-next-line
+  }, [fetchEndpoint, filterProps, keepUrl, sendHttp]);
 
   return {
     filterProps,
