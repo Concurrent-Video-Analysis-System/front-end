@@ -87,6 +87,11 @@ export const CreateTaskFragment = () => {
   useFetchReason();
   const { newTask } = useTask();
 
+  // 上线前一天晚上让我改需求，改接口来不及了，只能在这里写死
+  // 但愿后面有人能重构
+  const taskNotAvailableHours = Array.from(Array(24).keys());
+  taskNotAvailableHours.splice(8, 10);
+
   const { reasonList, deviceList } = useGeneralQuery();
   const deviceIdListSelector = useSelector(selectSelectedDeviceReducer);
 
@@ -186,6 +191,7 @@ export const CreateTaskFragment = () => {
               style={formItemStyle}
               disabled={isLoading}
               placeholder={["开始时间", "结束时间"]}
+              disabledHours={() => taskNotAvailableHours}
             />
           ) : (
             <DatePicker.RangePicker
@@ -195,6 +201,7 @@ export const CreateTaskFragment = () => {
               disabled={isLoading}
               placeholder={["开始日期", "结束日期"]}
               onChange={onDatePickerChanged}
+              disabledHours={() => taskNotAvailableHours}
             />
           )}
           {taskType ? (

@@ -27,9 +27,14 @@ export const RecordIndexPage = () => {
 
   const [displayType, setDisplayType] = useState("card");
 
+  const filterPropsName = useMemo(
+    () => ["type", "location", "device", "reason", "task", "pageSize", "page"],
+    []
+  );
+
   const { filterProps, setFilterProps, responseData, reloadData } = useFilter(
     "recordlist",
-    ["type", "location", "device", "reason", "task", "pageSize", "page"]
+    filterPropsName
   );
   const filteredRecords = useMemo(
     () => responseData as RecordDataProps | undefined,
@@ -140,6 +145,7 @@ export const RecordIndexPage = () => {
       <Footer>
         <PaginationBar
           enabled={!!filteredRecords}
+          currentPage={+(filterProps["page"] || 1)}
           totalNum={filteredRecords?.totalNum}
           onPageChange={(page, pageSize) => {
             setFilterProps("pageSize", pageSize);

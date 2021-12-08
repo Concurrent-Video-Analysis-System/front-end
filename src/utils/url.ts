@@ -33,8 +33,7 @@ export const useUrlQueryParams = <K extends string>(keys: string[]) => {
       keys.reduce((prev, key) => {
         return { ...prev, [key]: searchParams.get(key) || "" };
       }, {} as { [key in K]: string }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [searchParams]
+    [keys, searchParams]
   );
 
   // To ensure the params passed to "setParsedParams" is in type K,
@@ -54,7 +53,7 @@ export const useUrlQueryParams = <K extends string>(keys: string[]) => {
         console.log("not changed");
         return null;
       }
-      return setSearchParams(o);
+      setSearchParams(o);
     },
     [parsedParams, searchParams, setSearchParams]
   );

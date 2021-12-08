@@ -99,7 +99,7 @@ export const TaskFragment = () => {
     []
   );
 
-  const { setFilterProps, responseData, reloadData } = useFilter(
+  const { filterProps, setFilterProps, responseData, reloadData } = useFilter(
     `task`,
     filterPropsName
   );
@@ -164,6 +164,7 @@ export const TaskFragment = () => {
       <Footer>
         <PaginationBar
           enabled={!!filteredTask}
+          currentPage={+(filterProps["page"] || 1)}
           totalNum={filteredTask?.totalNum}
           onPageChange={(page, pageSize) => {
             setFilterProps("pageSize", pageSize);

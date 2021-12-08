@@ -45,109 +45,6 @@ const state2label = (state: string) => {
   }
 };
 
-const StatefulProgressBar = ({
-  state,
-  value,
-}: {
-  state: string;
-  value?: number;
-}) => {
-  const config = useMemo(() => {
-    const commonConfig = {
-      widthScale: 100,
-      dashWidth: 10,
-      deg: 30,
-    };
-
-    const processingConfig = {
-      color1: "#38ef06",
-      color2: "#009311",
-      speed: "0.5s",
-    };
-    const pendingConfig = { color1: "#ffd124", color2: "#bb8e00", speed: "0s" };
-    const pausedConfig = { color1: "#C0C0C0", color2: "#C0C0C0", speed: "0s" };
-    const finishedConfig = {
-      color1: "#00b3ee",
-      color2: "#0077d2",
-      speed: "0s",
-    };
-
-    return state === "processing"
-      ? { ...commonConfig, ...processingConfig, value }
-      : state === "finished"
-      ? { ...commonConfig, ...finishedConfig }
-      : state === "pause"
-      ? { ...commonConfig, ...pausedConfig }
-      : // else: "pending"
-        { ...commonConfig, ...pendingConfig };
-  }, [state, value]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useMemo(() => <ProgressBar config={config} />, [state, value]);
-};
-
-// Author: Morgan
-// April 10, 2020
-const ProgressBar = ({ config }: { config: any }) => {
-  const TotalContainer = styled.div`
-    width: 100%;
-    margin: 1rem 0;
-    background-color: #e7e7e7;
-    border: 1px solid #c0c0c0;
-  `;
-
-  const Restraint = styled.div`
-    width: ${config.value * 100}%;
-    /*overflow-x: hidden;*/
-  `;
-
-  const AnimationBackground = styled.div`
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
-
-  const AnimationSlide = styled.div`
-    min-height: 10px;
-    width: calc(
-      ${(config.dashWidth * 2) / Math.sin((config.deg * Math.PI) / 180)}px *
-        ${config.widthScale}
-    );
-    background-color: ${config.color2};
-    background-image: repeating-linear-gradient(
-      30deg,
-      transparent,
-      transparent ${config.dashWidth}px,
-      ${config.color1} ${config.dashWidth}px,
-      ${config.color1} ${config.dashWidth * 2}px
-    );
-
-    @keyframes slide {
-      from {
-        background-position-x: 0;
-      }
-      to {
-        background-position-x: ${(config.dashWidth * 2) /
-        Math.sin((config.deg * Math.PI) / 180)}px;
-      }
-    }
-
-    animation: slide ${config.speed} linear infinite;
-    will-change: background-position;
-  `;
-
-  return (
-    <TotalContainer>
-      <Restraint>
-        <AnimationBackground>
-          <AnimationSlide />
-        </AnimationBackground>
-      </Restraint>
-    </TotalContainer>
-  );
-};
-
 export const RealtimeTaskCard = ({
   taskProps,
   currentTime,
@@ -176,19 +73,6 @@ export const RealtimeTaskCard = ({
         ? "processing"
         : "pending",
     [currentTime, taskProps.state, fromMoment, toMoment]
-  );
-
-  const processPercentage = useMemo(
-    () =>
-      Math.min(
-        1,
-        Math.max(
-          0,
-          currentTime.diff(fromMoment, "seconds") /
-            toMoment.diff(fromMoment, "seconds")
-        )
-      ),
-    [currentTime, fromMoment, toMoment]
   );
 
   const processLabel = useMemo(
@@ -291,7 +175,7 @@ export const RealtimeTaskCard = ({
             </Button>
           </FloatRight>
         </TitleContainer>
-        <StatefulProgressBar state={processState} value={processPercentage} />
+        <Divider />
         <TagContainer>
           <Content>
             调用的设备：
@@ -398,10 +282,7 @@ export const HistoryTaskCard = ({
             </Button>
           </FloatRight>
         </TitleContainer>
-        <StatefulProgressBar
-          state={processState}
-          value={parseInt(progress?.split("%")[0] || "0") / 100}
-        />
+        <Divider />
         <TagContainer>
           <Content>
             调用的设备：
@@ -491,4 +372,10 @@ const CornerLabel = styled.div`
   text-align: center;
   font-size: 16px;
   display: block;
+`;
+
+const Divider = styled.div`
+  margin: 1rem;
+  height: 1px;
+  background-color: #e0e0e0;
 `;

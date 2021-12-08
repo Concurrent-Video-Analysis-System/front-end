@@ -3,6 +3,7 @@ import React from "react";
 
 export interface PaginationBarProps {
   enabled?: boolean;
+  currentPage?: number;
   totalNum?: number;
   onPageChange?: (page: number, pageSize: number | undefined) => void;
   onPageSizeChange?: (pageSize: number) => void;
@@ -14,7 +15,8 @@ export const PaginationBar = (props: PaginationBarProps) => {
       {props.enabled ? (
         <Pagination
           showQuickJumper
-          defaultCurrent={1}
+          defaultCurrent={props.currentPage}
+          defaultPageSize={100}
           total={props.totalNum}
           onChange={props.onPageChange}
           onShowSizeChange={props.onPageSizeChange}

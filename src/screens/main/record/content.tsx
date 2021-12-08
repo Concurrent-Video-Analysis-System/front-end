@@ -88,7 +88,7 @@ const RecordCard = ({
         <Card
           cover={
             <img
-              alt="example"
+              alt="违规记录图片"
               src={props.imageUrl}
               style={{ opacity: typeLabel?.imageOpacity }}
             />
@@ -124,7 +124,11 @@ const RecordCardList = ({
       ) : (
         <RecordCardContainer>
           {recordlist.map((item) => (
-            <RecordCard props={item} onSelected={onRecordItemSelected} />
+            <RecordCard
+              key={item.id}
+              props={item}
+              onSelected={onRecordItemSelected}
+            />
           ))}
         </RecordCardContainer>
       )}
