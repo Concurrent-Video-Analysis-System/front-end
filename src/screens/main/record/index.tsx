@@ -91,9 +91,9 @@ export const RecordIndexPage = () => {
         options:
           taskList?.tasks.map((task) => ({
             key: task.id,
-            title: `${task.name} - #${task.id}`,
+            title: `#${task.id} ${task.name}`,
           })) || [],
-        style: { minWidth: "22rem", maxWidth: "22rem" },
+        style: { minWidth: "24rem", maxWidth: "28rem" },
       },
     ];
   }, [reasonList, deviceList, taskList?.tasks]);
